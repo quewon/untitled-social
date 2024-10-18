@@ -193,7 +193,7 @@ function get_post_title(body) {
 
 function create_timestamp() {
     var date = new Date();
-    return date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDay() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 }
 
 // https://www.npmjs.com/package/nanoid
