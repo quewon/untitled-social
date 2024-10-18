@@ -24,14 +24,8 @@ app.use('/', express.static(path.join(__dirname, '../public')));
     app.set('view engine', 'ejs');
     app.set('views', path.join(__dirname, '../public/views'));
 
-app.get('/', (req, res) => {
-    fs.readdir('posts', async (err, files) => {
-        if (err) {
-            res.render('home', { root: '/' });
-        } else {
-            res.render('home', { root: '/', feed: await get_feed(0) });
-        }
-    })
+app.get('/', async (req, res) => {
+    res.render('home', { root: '/', feed: await get_feed(0) });
 })
 
 app.get('/posts', async (req, res) => {
@@ -132,17 +126,60 @@ function parse_post(post) {
 }
 
 function parse_markdown(markdown) {
-    // var split = markdown.split(/[[\]]/g);
-    // for (let phrase of split) {
-    //     if (media_tags == )
-    // }
+    // search for albums
+    let search = '![album]';
+    let index = markdown.indexOf(search);
+    while (index != -1) {
+        let split = markdown.split(search);
+        let split2 = split[1].split(')\n)');
+        let in_between = split2[0].split(')\r\n)')[0].slice(3);
+        let before = split[0];
+        let after = split2.length > 1 ? split2.slice(1).join('') : '';
 
-    // const media_tags = ['album', 'image', 'audio', 'video'];
-    // for (let tag of media_tags) {
-        
-    // }
+        in_between = in_between.trim().split(",").join('');
 
-    return markdown;
+        markdown = `${before}<div class='album block' data-type='album'>${in_between}</div>${after}`;
+
+        index = markdown.indexOf(search);
+    }
+
+    console.log(markdown);
+
+    const media_tags = ['image', 'audio', 'video'];
+
+    for (let tag of media_tags) {
+        let search = '![' + tag + ']';
+        let index = markdown.indexOf(search);
+        while (index != -1) {
+            let split = markdown.split(search);
+            let split2 = split[1].split(/[()]/g);
+            let src = split2[1];
+            let before = split[0];
+            let after = split2.length > 2 ? split2.slice(2).join('') : '';
+
+            let element = `<div class='${tag} block' data-type='${tag}'>`;
+            
+            switch (tag) {
+                case "image":
+                    element += `<img src='${src}'></img>`;
+                    break;
+                case "audio":
+                    element += `<audio controls><source src='${src}'></audio>`;
+                    break;
+                case "video":
+                    element += `<video src='${src}'></video>`;
+                    break;
+            }
+            
+            element += `</div>`;
+
+            markdown = before + element + after;
+
+            index = markdown.indexOf(search);
+        }
+    }
+
+    return marked.parse(markdown);
 }
 
 function get_post_title(body) {

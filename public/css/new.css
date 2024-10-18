@@ -54,11 +54,6 @@ input[type="file"] {
     align-items: center;
 }
 
-.block {
-    position: relative;
-    width: 100%;
-    margin-bottom: .25rem;
-}
 .block .options {
     position: absolute;
     top: 0;
@@ -105,45 +100,4 @@ textarea {
 }
 .drop-zone.dragover {
     border-style: solid;
-}
-
-.block.text, .audio, .image {
-    line-height: 0;
-}
-
-/* media */
-
-.image {
-    text-align: center;
-}
-.image img {
-    max-width: 100%;
-    max-height: var(--max-img-height);
-}
-
-.audio audio {
-    width: 100%;
-}
-
-/* album block */
-
-.block.album {
-    background: lightgray;
-}
-.slides {
-    height: var(--max-img-height);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.slides > div {
-    display: none;
-}
-.slides > div:first-child {
-    display: block;
-}
-.navigation {
-    margin-top: .25rem;
-    width: 100%;
-    text-align: center;
 }

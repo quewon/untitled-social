@@ -4,6 +4,7 @@
     <%- include ('fragments/global-head.ejs') %>
     <title>+ new post</title>
     <link rel="stylesheet" href="<%= root %>css/new.css">
+    <link rel="stylesheet" href="<%= root %>css/post.css">
 </head>
 <body>
 
@@ -169,20 +170,20 @@
                     markdown += block.querySelector("textarea").value + "\n\n";
                     break;
                 case "image":
-                    markdown += "[image](" + src + ")\n\n";
+                    markdown += "![image](" + src + ")\n\n";
                     break;
                 case "audio":
-                    markdown += "[audio](" + src + ")\n\n";
+                    markdown += "![audio](" + src + ")\n\n";
                     break;
                 case "video":
-                    markdown += "[video](" + src + ")\n\n";
+                    markdown += "![video](" + src + ")\n\n";
                     break;
                 case "album":
-                    markdown += "[album](\n";
+                    markdown += "![album](\n";
                     var slides = block.querySelector(".slides");
                     for (let i=0; i<slides.children.length; i++) {
                         let b = slides.children[i];
-                        markdown += "    [" + b.dataset.type + "](" + get_file_block_src_element(b).src + ")";
+                        markdown += "    ![" + b.dataset.type + "](" + get_file_block_src_element(b).src + ")";
                         if (i < slides.children.length - 1) markdown += ",\n"
                     }
                     markdown += "\n)\n\n";
