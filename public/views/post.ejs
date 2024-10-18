@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include ('fragments/global-head.ejs') %>
+    <link rel="stylesheet" href="<%= root %>css/post.css">
+    <link rel="icon" type="image/png" href="<%= root %>res/icons/32x32.png">
+    <title><%= title %></title>
+</head>
+<body>
+
+    <%- include('fragments/header.ejs') %>
+
+    <main>
+        <div class="post">
+            <div class="metadata">
+                <span>from <a href="<%= root %>posts/<%= author_path %>"><em><%= author %></em></a> on <%= date %></span>
+                <a href="<%= root %>reply/<%= path %>">reply</a>
+            </div>
+            <div class="content">
+                <%- body %>
+            </div>
+        </div>
+    </main>
+    
+</body>
+</html>

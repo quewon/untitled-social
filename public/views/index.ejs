@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include ('fragments/global-head.ejs') %>
+    <title>untitled social</title>
+    <link rel="stylesheet" href="<%= root %>css/index.css">
+</head>
+<body>
+
+    <%- include('fragments/header.ejs')  %>
+
+    <main>
+        <% for (let i=0; i<posts.length; i++) { %>
+            <% let post = posts[i] %>
+
+            <div class="indexed-post">
+                <span><%= i %></span>
+                <a class="title" href="<%= root %><%= post.path %>">
+                    <%= post.title %>
+                </a>
+                <a style="white-space: pre" href="<%= post.author_path %>"><em><%= post.author %></em></a>
+                <span><%= post.date %></span>
+            </div>
+        <% } %>
+    </main>
+    
+</body>
+
+</html>

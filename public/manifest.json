@@ -1,0 +1,19 @@
+{
+    "name": "untitled social",
+    "short_name": "us",
+    "icons": [
+        {
+            "src": "res/icons/192.png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "res/icons/512.png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/",
+    "display": "standalone",
+    "prefer_related_applications": false,
+    "background_color": "white",
+    "theme_color": "blue"
+}

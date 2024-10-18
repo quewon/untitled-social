@@ -1,0 +1,15 @@
+main {
+    gap: .5em;
+}
+
+.indexed-post {
+    border: 1px solid black;
+    padding: .5em 1em;
+    display: flex;
+    gap: 1em;
+    font-family: monospace;
+}
+
+.title {
+    width: 100%;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include ('fragments/global-head.ejs') %>
+    <title>untitled social</title>
+</head>
+<body>
+
+    <%- include('fragments/header.ejs')  %>
+
+    <main>
+        <% for (let post of feed) { %>
+            <div class="post">
+                <div class="metadata">
+                    <a href="posts/<%= post.path %>">
+                        --\>
+                    </a>
+                    <span>from <a href="posts/<%= post.author_path %>"><em><%= post.author %></em></a> on <%= post.date %></span>
+                    <a href="reply/<%= post.path %>">reply</a>
+                </div>
+                <div class="content">
+                    <%- post.body %>
+                </div>
+            </div>
+        <% } %>
+    </main>
+    
+</body>
+
+</html>

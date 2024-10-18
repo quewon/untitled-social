@@ -1,0 +1,121 @@
+:root {
+    --line-height: 1.4rem;
+    --max-post-width: 30rem;
+    --max-img-height: 20rem;
+}
+
+body, html {
+    margin: 0;
+    font-family: sans-serif;
+    line-height: var(--line-height);
+}
+
+/* header */
+
+header {
+    padding: 1rem;
+    border-bottom: 1px dotted blue;
+
+    display: flex;
+    gap: .5em 2em;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* styling */
+
+.grow {
+    flex-grow: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+dialog {
+    border: 1px dotted blue;
+    color: blue;
+    padding: 3rem;
+    text-align: center;
+}
+
+input, textarea, button {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    line-height: var(--line-height);
+}
+
+a, a:visited {
+    color: blue;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: pointer;
+
+    border: none;
+    background: none;
+    padding: 0;
+}
+a:hover, a:active {
+    background: blue;
+    color: white;
+    text-decoration: none;
+}
+
+em {
+    font-style: normal;
+    font-weight: bold;
+}
+
+*::selection {
+    background: blue;
+    color: white;
+}
+
+button, input[type="button"], input[type="submit"] {
+    border: 1px solid blue;
+    padding: .5em;
+    color: blue;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: pointer;
+    background: transparent;
+}
+button:hover, button:active,
+input[type="submit"]:hover, input[type="submit"]:active,
+input[type="button"]:hover, input[type="button"]:active {
+    background: blue;
+    color: white;
+    text-decoration: none;
+}
+
+/* layout */
+
+main {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.post {
+    /* border: 1px solid black; */
+    /* padding: 1em; */
+    width: fit-content;
+    max-width: var(--max-post-width);
+    min-width: 10em;
+    word-break: break-word;
+}
+
+.metadata, .content {
+    padding: 1em;
+    border: 1px solid black;
+}
+
+.metadata {
+    padding: .5em 1em;
+    font-family: monospace;
+    border-bottom: none;
+    display: flex;
+    gap: 2em;
+}

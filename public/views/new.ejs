@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include ('fragments/global-head.ejs') %>
+    <title>+ new post</title>
+    <link rel="stylesheet" href="<%= root %>css/new.css">
+</head>
+<body>
+
+    <div style="display: none" id="root"><%= root %></div>
+
+    <%- include('fragments/header.ejs')  %>
+
+    <main>
+        <% if (locals.replying_to) { %>
+            <div class="reply">
+                replying to <a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a>...
+            </div>
+        <% } %>
+        
+        <div>
+            <label>name</label><br>
+            <input autofocus type="text" placeholder="anonymous" id="post-name">
+
+            <br><br>
+
+            <label>post</label><br>
+            <div id="post-builder"></div>
+
+            <div class="buttonbar">
+                <span>+</span>
+                <button onclick="add_post_block('text')">text</button>
+                <button onclick="add_post_block('upload')">file(s)</button>
+                <!-- <button onclick="add_post_block('rec')">rec</button> -->
+                <!-- <button onclick="add_post_block('draw')">draw</button> -->
+                <span class="grow"></span>
+                <button onclick="upload_post()">post!</button>
+            </div>
+        </div>
+    </main>
+
+    <template id="text-block-template">
+        <div class="text block" data-type="text">
+            <textarea oninput="this.style.height=''; this.style.height=this.scrollHeight+'px'" placeholder="write here"></textarea>
+            <%- include('fragments/post-options.ejs') %>
+        </div>
+    </template>
+
+    <template id="upload-block-template">
+        <div class="upload block" data-type="upload">
+            <div class="drop-zone" 
+                ondrop="drop(this.parentElement, this, event)" 
+                ondragover="dragover(this, event)" 
+                ondragleave="this.classList.remove('dragover')"
+            >
+                <div class="center">
+                    drop file(s) here to upload<br>
+                    or <button onclick="this.nextElementSibling.click()">browse</button>
+                        <input type="file" name="file" multiple="multiple" onchange="add_files(this.parentElement.parentElement.parentElement, this.files)">
+                </div>
+            </div>
+            <%- include('fragments/post-options.ejs') %>
+        </div>
+    </template>
+
+    <template id="image-block-template">
+        <div class="image block" data-type="image">
+            <img src="" alt="">
+            <%- include('fragments/post-options.ejs') %>
+        </div>
+    </template>
+
+    <template id="video-block-template">
+        <div class="video block" data-type="video">
+            <video src=""></video>
+            <%- include('fragments/post-options.ejs') %>
+        </div>
+    </template>
+
+    <template id="album-block-template">
+        <div class="album block" data-type="album">
+            <div class="slides"></div>
+            <div class="navigation">
+                <a class="nav-button"><-</a>
+                <span class="counter">X/X</span>
+                <a class="nav-button">-></a>
+            </div>
+            <%- include('fragments/post-options.ejs') %>
+        </div>
+    </template>
+
+    <template id="audio-block-template">
+        <div class="audio block" data-type="audio">
+            <audio controls>
+                <source src="" type="">
+            </audio>
+            <%- include('fragments/post-options.ejs') %>
+        </div>
+    </template>
+
+    <template id="rec-block-template">
+        <div class="rec block" data-type="rec">
+            <%- include('fragments/post-options.ejs') %>
+        </div>
+    </template>
+
+    <template id="draw-block-template">
+        <div class="draw block" data-type="draw">
+            <%- include('fragments/post-options.ejs') %>
+        </div>
+    </template>
+
+    <dialog id="upload-dialog">
+        uploading post...
+        <br><br>
+        <button onclick="uploading_post=false; this.parentElement.close()">cancel</button>
+    </dialog>
+    
+</body>
+
+<script>
+    const root = document.getElementById("root").textContent;
+
+    const block_templates = {
+        // temporary blocks
+        upload: document.getElementById("upload-block-template"),
+        rec: document.getElementById("rec-block-template"),
+        draw: document.getElementById("draw-block-template"),
+
+        text: document.getElementById("text-block-template"),
+        image: document.getElementById("image-block-template"),
+        video: document.getElementById("video-block-template"),
+        audio: document.getElementById("audio-block-template"),
+        album: document.getElementById("album-block-template")
+    }
+
+    const media_tags = ['image', 'video', 'audio'];
+
+    var file_of_objecturl = {};
+
+    // build post
+
+    const post_builder = document.getElementById("post-builder");
+    var reordering_post = false;
+    
+    function add_post_block(type) {
+        var template = block_templates[type];
+        var clone = template.content.firstElementChild.cloneNode(true);
+        var element = post_builder.appendChild(clone);
+
+        if (type == 'text') {
+            element.querySelector("textarea").focus();
+        }
+
+        return element;
+    }
+
+    function post_to_markdown() {
+        var markdown = "";
+
+        var blocks = post_builder.getElementsByClassName("block");
+        for (let i=0; i<blocks.length; i++) {
+            var block = blocks[i];
+            var src_element = get_file_block_src_element(block);
+            var src = src_element ? src_element.src : null;
+
+            switch (block.dataset.type) {
+                case "text":
+                    markdown += block.querySelector("textarea").value + "\n\n";
+                    break;
+                case "image":
+                    markdown += "[image](" + src + ")\n\n";
+                    break;
+                case "audio":
+                    markdown += "[audio](" + src + ")\n\n";
+                    break;
+                case "video":
+                    markdown += "[video](" + src + ")\n\n";
+                    break;
+                case "album":
+                    markdown += "[album](\n";
+                    var slides = block.querySelector(".slides");
+                    for (let i=0; i<slides.children.length; i++) {
+                        let b = slides.children[i];
+                        markdown += "    [" + b.dataset.type + "](" + get_file_block_src_element(b).src + ")";
+                        if (i < slides.children.length - 1) markdown += ",\n"
+                    }
+                    markdown += "\n)\n\n";
+                    break;
+            }
+        }
+
+        return markdown.trim();
+    }
+
+    // publish post
+
+    const upload_dialog = document.getElementById("upload-dialog");
+    const post_name = document.getElementById("post-name");
+
+    async function upload_post() {
+        upload_dialog.showModal();
+        uploading_post = true;
+
+        await upload_all_files();
+
+        if (!uploading_post) return;
+
+        var form = new FormData();
+        form.append("name", post_name.value);
+        form.append("post", post_to_markdown());
+
+        var res = await fetch(root + 'publish', {
+            method: 'POST',
+            body: form
+        });
+        var json = await res.json();
+        
+        if (json && json.path) {
+            location.href = json.path;
+        } else {
+            alert("error? try again!");
+            uploading_post = false;
+            upload_dialog.close();
+        }
+    }
+
+    // file blocks
+
+    function dragover(element, e) {
+        element.classList.add('dragover');
+        e.preventDefault();
+    }
+
+    function drop(file_block, element, e) {
+        if (element) element.classList.remove('dragover');
+
+        var files = [];
+        if (e.dataTransfer.items) {
+                [...e.dataTransfer.items].forEach((item) => {
+                    if (item.kind === "file") {
+                        const file = item.getAsFile();
+                        files.push(file);
+                    }
+                })
+        } else {
+            files = e.dataTransfer.files;
+        }
+
+        add_files(file_block, files);
+
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    var filereader = new FileReader();
+
+    function get_file_block_src_element(block) {
+        let type = block.dataset.type;
+        switch (type) {
+            case "image":
+                return block.querySelector("img");
+                break;
+            case "video":
+                return block.querySelector("video");
+                break;
+            case "audio":
+                return block.querySelector("source");
+                break;
+        }
+        return null;
+    }
+
+    function add_files(file_block, files) {
+        var new_blocks = [];
+
+        [...files].forEach((file) => {
+            var block = add_file(file_block, file);
+            if (block) {
+                file_block = block;
+                new_blocks.push(block);
+            }
+        });
+
+        if (new_blocks.length > 1) {
+            // create album
+            var album = add_post_block('album');
+            var slides = album.querySelector(".slides");
+            file_block.after(album);
+
+            for (let block of new_blocks) {
+                block.classList.remove("block");
+                block.querySelector(".options").remove();
+                slides.appendChild(block);
+            }
+            
+            var navigation = document.querySelector(".navigation");
+            var buttons = navigation.querySelectorAll(".nav-button");
+            var counter = navigation.querySelector(".counter");
+
+            counter.textContent = "1/" + new_blocks.length;
+            counter.dataset.count = 1;
+            counter.dataset.length = new_blocks.length;
+
+            buttons[0].onclick = () => {
+                slides.appendChild(slides.firstElementChild);
+                var count = Number(counter.dataset.count) - 1;
+                if (count < 1) count = counter.dataset.length;
+                counter.dataset.count = count;
+                counter.textContent = count + "/" + counter.dataset.length;
+            }
+            buttons[1].onclick = () => {
+                slides.prepend(slides.lastElementChild);
+                var count = Number(counter.dataset.count) + 1;
+                if (count > Number(counter.dataset.length)) count = 1;
+                counter.dataset.count = count;
+                counter.textContent = count + "/" + counter.dataset.length;
+            }
+        }
+    }
+
+    function add_file(file_block, file) {
+        const type = file.type.split("/")[0];
+
+        if (block_templates[type]) {
+            var block = add_post_block(type);
+
+            if (file_block) {
+                if (file_block.dataset.type == "upload") {
+                    file_block.replaceWith(block);
+                } else {
+                    file_block.after(block);
+                }
+            }
+
+            var object_url = URL.createObjectURL(file);
+            var element_with_src;
+
+            switch (type) {
+                case "text":
+                    var textarea = block.querySelector("textarea");
+                    filereader.readAsText(file, "UTF-8");
+                    filereader.onload = (e) => {
+                        textarea.value = e.target.result;
+                    }
+                    filereader.onerror = (e) => {
+                        textarea.value = "error reading file";
+                    }
+                    break;
+                case "audio":
+                    var audio = block.querySelector("source");
+                    audio.src = object_url;
+                    audio.type = file.type;
+                    element_with_src = audio;
+                    break;
+                default:
+                    element_with_src = get_file_block_src_element(block);
+                    element_with_src.src = object_url;
+                    break;
+            }
+
+            block.dataset.src = object_url;
+            file_of_objecturl[object_url] = file;
+
+            if (element_with_src) {
+                element_with_src.classList.add("upload-incomplete");
+                upload_file(file, element_with_src, block);
+            }
+
+            return block;
+        } else {
+            alert("file type " + file.type + " not supported :(");
+        }
+    }
+
+    function all_file_blocks() {
+        var query = "";
+        for (let tag of media_tags) {
+            query += "[data-type='"+tag+"'],";
+        }
+        query = query.slice(0, -1);
+        return post_builder.querySelectorAll(query);
+    }
+
+    function all_files_uploaded() {
+        var blocks = all_file_blocks();
+        for (let block of blocks) {
+            if (!block.classList.contains("upload-complete")) return false;
+        }
+        return true;
+    }
+    
+    var uploading_post = false;
+
+    async function upload_all_files() {
+        var blocks = all_file_blocks();
+
+        var failed_upload_count = 0;
+        
+        while (!all_files_uploaded()) {
+            if (!uploading_post) return;
+
+            var counted_failed_upload = false;
+
+            // attempt to re-upload failed uploads
+            for (let block of blocks) {
+                if (!uploading_post) return;
+                if (block.classList.contains("upload-failed")) {
+                    if (!counted_failed_upload) {
+                        failed_upload_count++;
+                        counted_failed_upload = true;
+
+                        if (failed_upload_count > 3) {
+                            alert("failed to upload media up to 3 times in a row. are you sure you're connected to a network?");
+                            return;
+                        }
+                    }
+
+                    block.classList.remove("upload-failed");
+                    block.classList.add("upload-incomplete");
+                    let file = file_of_objecturl[block.dataset.src];
+                    await upload_file(file, get_file_block_src_element(block), block);
+                }
+            }
+
+            await wait(500);
+        }
+    }
+
+    function wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function upload_file(file, src_element, block) {
+        var form = new FormData();
+        form.append("file", file);
+
+        var res = await fetch(root + 'upload', {
+            method: 'POST',
+            body: form
+        });
+        var json = await res.json();
+
+        if (json && json.path) {
+            console.log(json.path);
+            if (src_element) src_element.src = json.path;
+            if (block) {
+                block.classList.remove("upload-incomplete");
+                block.classList.add("upload-complete");
+            }
+        } else {
+            if (block) {
+                block.classList.add("upload-failed");
+            }
+
+            if (json && json.message) {
+                console.error(json.message);
+
+                if (json.message == 'File too large') {
+                    alert("File too large :(\n(max file size: 10 MB)");
+                    if (block) {
+                        block.after(add_post_block('upload'));
+                        block.remove();
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+</html>
