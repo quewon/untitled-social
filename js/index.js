@@ -170,7 +170,12 @@ function nanoid(e=21) {
 // upload post
 const multer = require('multer');
 const storage = multer.diskStorage({
-    destination: 'media/temp',
+    destination: (req, file, cb) => {
+        if (!fs.existsSync('media/temp')) {
+            fs.mkdirSync('media/temp', { recursive: true });
+        }
+        cb(null, 'media/temp');
+    },
     filename: (req, file, cb) => {
         cb(null, nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + file.originalname);
     }
