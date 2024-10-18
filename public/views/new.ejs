@@ -119,6 +119,7 @@
     
 </body>
 
+<script src="<%= root %>js/post.js"></script>
 <script>
     const root = document.getElementById("root").textContent;
 
@@ -294,29 +295,8 @@
                 block.querySelector(".options").remove();
                 slides.appendChild(block);
             }
-            
-            var navigation = document.querySelector(".navigation");
-            var buttons = navigation.querySelectorAll(".nav-button");
-            var counter = navigation.querySelector(".counter");
 
-            counter.textContent = "1/" + new_blocks.length;
-            counter.dataset.count = 1;
-            counter.dataset.length = new_blocks.length;
-
-            buttons[0].onclick = () => {
-                slides.appendChild(slides.firstElementChild);
-                var count = Number(counter.dataset.count) - 1;
-                if (count < 1) count = counter.dataset.length;
-                counter.dataset.count = count;
-                counter.textContent = count + "/" + counter.dataset.length;
-            }
-            buttons[1].onclick = () => {
-                slides.prepend(slides.lastElementChild);
-                var count = Number(counter.dataset.count) + 1;
-                if (count > Number(counter.dataset.length)) count = 1;
-                counter.dataset.count = count;
-                counter.textContent = count + "/" + counter.dataset.length;
-            }
+            treat_album(album);
         }
     }
 

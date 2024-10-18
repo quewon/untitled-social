@@ -1,12 +1,29 @@
 const Database = require('better-sqlite3');
 const fs = require('fs');
+var db;
 
-if (!fs.existsSync('db')) {
-    fs.mkdirSync('db');
+if (!fs.existsSync('db')) fs.mkdirSync('db');
+if (!fs.existsSync('db/db.db')) {
+    db = new Database('db/db.db');
+    db.exec(`
+        CREATE TABLE "posts" (
+            "post_id"	INTEGER,
+            "timestamp"	TEXT,
+            "author"	TEXT,
+            "body"	TEXT,
+            "author_path"	TEXT,
+            "path"	TEXT,
+            PRIMARY KEY("post_id")
+        );
+        CREATE TABLE "temp_media" (
+            "path"	TEXT,
+            "post_id"	INTEGER,
+            "confirmed"	INTEGER
+        )
+    `);
+} else {
+    db = new Database('db/db.db');
 }
-const db = new Database('db/db.db', {
-    // verbose: console.log
-});
 
 exports.db = db;
 

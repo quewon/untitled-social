@@ -14,7 +14,7 @@
             <% let post = posts[i] %>
 
             <div class="indexed-post">
-                <span><%= i %></span>
+                <span><%= posts.length - i %></span>
                 <a class="title" href="<%= root %><%= post.path %>">
                     <%= post.title %>
                 </a>

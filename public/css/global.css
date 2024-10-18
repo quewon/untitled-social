@@ -112,10 +112,13 @@ main {
     border: 1px solid black;
 }
 
+.content {
+    border-top: none;
+}
+
 .metadata {
     padding: .5em 1em;
     font-family: monospace;
-    border-bottom: none;
     display: flex;
     gap: 2em;
 }

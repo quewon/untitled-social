@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="<%= root %>css/post.css">
     <link rel="icon" type="image/png" href="<%= root %>res/icons/32x32.png">
     <title><%= title %></title>
+    <style>
+        .metadata, .content {
+            border-color: transparent;
+        }
+    </style>
 </head>
 <body>
 
@@ -23,4 +28,9 @@
     </main>
     
 </body>
+
+<script src="<%= root %>js/post.js"></script>
+<script>
+    treat_posts();
+</script>
 </html>

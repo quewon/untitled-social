@@ -3,6 +3,7 @@
 <head>
     <%- include ('fragments/global-head.ejs') %>
     <title>untitled social</title>
+    <link rel="stylesheet" href="<%= root %>css/post.css">
 </head>
 <body>
 
@@ -18,13 +19,20 @@
                     <span>from <a href="posts/<%= post.author_path %>"><em><%= post.author %></em></a> on <%= post.date %></span>
                     <a href="reply/<%= post.path %>">reply</a>
                 </div>
-                <div class="content">
-                    <%- post.body %>
-                </div>
+                <% if (post.body != '') { %>
+                    <div class="content">
+                        <%- post.body %>
+                    </div>
+                <% } %>
             </div>
         <% } %>
     </main>
     
 </body>
+
+<script src="<%= root %>js/post.js"></script>
+<script>
+    treat_posts();
+</script>
 
 </html>

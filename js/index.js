@@ -136,14 +136,15 @@ function parse_markdown(markdown) {
         let before = split[0];
         let after = split2.length > 1 ? split2.slice(1).join('') : '';
 
-        in_between = in_between.trim().split(",").join('');
+        in_between = in_between.trim().split(",").join('') + ')';
 
-        markdown = `${before}<div class='album block' data-type='album'>${in_between}</div>${after}`;
+        markdown = `${before}<div class='album block' data-type='album'>`;
+        markdown += `<div class='slides'>${in_between}</div>`;
+        markdown += `<div class='navigation'><a class='nav-button'>&lt;-</a> <span class='counter'>X/X</span> <a class='nav-button'>-&gt;</a></div>`;
+        markdown += `</div>${after}`;
 
         index = markdown.indexOf(search);
     }
-
-    console.log(markdown);
 
     const media_tags = ['image', 'audio', 'video'];
 
@@ -161,13 +162,13 @@ function parse_markdown(markdown) {
             
             switch (tag) {
                 case "image":
-                    element += `<img src='${src}'></img>`;
+                    element += `<img src='${src}'>`;
                     break;
                 case "audio":
                     element += `<audio controls><source src='${src}'></audio>`;
                     break;
                 case "video":
-                    element += `<video src='${src}'></video>`;
+                    element += `<video src='${src}'>`;
                     break;
             }
             
@@ -240,7 +241,9 @@ app.post('/upload', (req, res) => {
 });
 
 app.post('/publish', multer().none(), async (req, res) => {
-    const name = req.body.name.trim();
+    var name = req.body.name.trim();
+    name = name == "" ? "anonymous" : name;
+
     const body = req.body.post.trim();
     const path = get_author_path(name) + '/' + nanoid(8);
     
