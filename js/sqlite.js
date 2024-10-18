@@ -1,4 +1,9 @@
 const Database = require('better-sqlite3');
+const fs = require('fs');
+
+if (!fs.existsSync('db')) {
+    fs.mkdirSync('db');
+}
 const db = new Database('db/db.db', {
     // verbose: console.log
 });
