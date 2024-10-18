@@ -24,15 +24,9 @@ app.use('/', express.static(path.join(__dirname, '../public')));
     app.set('view engine', 'ejs');
     app.set('views', path.join(__dirname, '../public/views'));
 
-app.get('/', (req, res) => {
-    fs.readdir('posts', async (err, files) => {
-        if (err) {
-            res.render('home', { root: '/' });
-        } else {
-            res.render('home', { root: '/', feed: await get_feed(0) });
-        }
-    })
-})
+app.get("/", async (req, res) => {
+    res.render("home", { root: "/", feed: await get_feed(0) });
+});
 
 app.get('/posts', async (req, res) => {
     const posts = await sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC");
