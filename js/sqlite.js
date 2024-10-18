@@ -2,7 +2,11 @@ const Database = require('better-sqlite3');
 const fs = require('fs');
 var db;
 
+const RESET_DB = true;
+
 if (!fs.existsSync('db')) fs.mkdirSync('db');
+if (RESET_DB) fs.unlinkSync('db/db.db');
+fs.unlink
 if (!fs.existsSync('db/db.db')) {
     db = new Database('db/db.db');
     db.exec(`
