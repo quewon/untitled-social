@@ -4,9 +4,12 @@ var db;
 
 const RESET_DB = true;
 
-if (!fs.existsSync('../db')) fs.mkdirSync('../db');
-if (RESET_DB) fs.unlinkSync('../db/db.db');
-if (!fs.existsSync('../db/db.db')) {
+if (!fs.existsSync('db')) {
+    fs.mkdirSync('db');
+} else if (RESET_DB) {
+    if (fs.existsSync('db/db.db')) fs.unlinkSync('db/db.db');
+}
+if (!fs.existsSync('db/db.db')) {
     db = new Database('db/db.db');
     db.exec(`
         CREATE TABLE "posts" (
