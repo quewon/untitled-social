@@ -92,33 +92,17 @@ input[type="button"]:hover, input[type="button"]:active {
 /* layout */
 
 main {
-    padding: 1em;
+    padding: 2em 1em;
     display: flex;
     flex-direction: column;
-    gap: 1em;
-}
-
-.post {
-    /* border: 1px solid black; */
-    /* padding: 1em; */
-    width: fit-content;
-    max-width: var(--max-post-width);
-    min-width: 10em;
-    word-break: break-word;
-}
-
-.metadata, .content {
-    padding: 1em;
-    border: 1px solid black;
-}
-
-.content {
-    border-top: none;
-}
-
-.metadata {
-    padding: .5em 1em;
-    font-family: monospace;
-    display: flex;
     gap: 2em;
+}
+
+footer {
+    border-top: 1px dotted blue;
+    padding: 1em;
+}
+nav {
+    text-align: center;
+    font-family: monospace;
 }

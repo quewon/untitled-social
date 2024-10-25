@@ -8,6 +8,7 @@ main {
     display: flex;
     gap: 1em;
     font-family: monospace;
+    box-sizing: border-box;
 }
 
 .title {

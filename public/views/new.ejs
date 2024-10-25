@@ -1,21 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%- include ('fragments/global-head.ejs') %>
-    <title>+ new post</title>
-    <link rel="stylesheet" href="<%= root %>css/new.css">
     <link rel="stylesheet" href="<%= root %>css/post.css">
+    <%- include ('fragments/global-head.ejs') %>
+    <link rel="stylesheet" href="<%= root %>css/new.css">
+    <title>+ new post</title>
 </head>
 <body>
 
-    <div style="display: none" id="root"><%= root %></div>
+    <pre style="display: none" id="root"><%= root %></pre>
+    <div style="display: none" id="replying_to">
+        <% if (locals.replying_to) { %>
+            <%= replying_to.path %>
+        <% } %>
+    </div>
 
     <%- include('fragments/header.ejs')  %>
 
     <main>
         <% if (locals.replying_to) { %>
             <div class="reply">
-                replying to <a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a>...
+                replying to 
+                <% if (replying_to.title.trim() == '') { %>
+                    <a href="<%= root %>posts/<%= replying_to.path %>"><em><%= replying_to.author %></em></a>...
+                <% } else { %>
+                    <a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a>...
+                <% } %>
             </div>
         <% } %>
         
@@ -122,6 +132,7 @@
 <script src="<%= root %>js/post.js"></script>
 <script>
     const root = document.getElementById("root").textContent;
+    const replying_to = document.getElementById("replying_to").textContent;
 
     const block_templates = {
         // temporary blocks
@@ -211,6 +222,7 @@
         var form = new FormData();
         form.append("name", post_name.value);
         form.append("post", post_to_markdown());
+        form.append("replying_to", replying_to);
 
         var res = await fetch(root + 'publish', {
             method: 'POST',
@@ -219,7 +231,7 @@
         var json = await res.json();
         
         if (json && json.path) {
-            location.href = json.path;
+            location.href = root + json.path;
         } else {
             alert("error? try again!");
             uploading_post = false;

@@ -1,11 +1,51 @@
+.post {
+    background: rgb(242, 242, 242);
+
+    width: fit-content;
+    max-width: var(--max-post-width);
+    min-width: 10em;
+    word-break: break-word;
+}
+
+.metadata, .content {
+    padding: 1em;
+    border: 1px solid rgb(230, 230, 230);
+}
+
+.content {
+    border-top: none;
+}
+
+.post > div {
+    border-bottom: 1px dotted rgb(129, 129, 129);
+}
+.post > div:last-child {
+    border-bottom: none;
+}
+
+.metadata, .reply {
+    font-family: monospace;
+    padding: .5em 1em;
+    display: flex;
+    gap: 0 2em;
+}
+.reply {
+    flex-wrap: wrap;
+}
+
+.metadata > a {
+    white-space: nowrap;
+}
+
 /* blocks */
+
 .block {
     position: relative;
     width: 100%;
     margin-bottom: .25rem;
 }
 
-.block.text, .audio, .image {
+.text, .audio, .image {
     line-height: 0;
 }
 
@@ -14,7 +54,7 @@
 .image {
     text-align: center;
 }
-.image img {
+img {
     max-width: 100%;
     max-height: var(--max-img-height);
 }
@@ -25,22 +65,22 @@
 
 /* album block */
 
-.block.album {
+.album {
     background: lightgray;
 }
-.block.album .slides {
+.slides {
     height: var(--max-img-height);
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.block.album .slides > div {
+.slides > div {
     display: none;
 }
-.block.album .slides > div:first-child {
+.slides > div:first-child {
     display: block;
 }
-.block.album .navigation {
+.navigation {
     margin-top: .25rem;
     width: var(--max-post-width);
     text-align: center;
@@ -54,4 +94,8 @@
 .navigation a {
     color: black;
     border-color: black;
+}
+
+.read-more {
+    font-family: monospace;
 }

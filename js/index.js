@@ -24,52 +24,53 @@ app.use('/', express.static(path.join(__dirname, '../public')));
     app.set('view engine', 'ejs');
     app.set('views', path.join(__dirname, '../public/views'));
 
-app.get('/', async (req, res) => {
-    res.render('home', { root: '/', feed: await get_feed(0) });
+app.get('/', (req, res) => {
+    res.locals.root = '/';
+    res.render('home', { feed: get_feed(0), page: 1, max_page: get_max_page() });
 })
 
-app.get('/posts', async (req, res) => {
-    const posts = await sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC");
+app.get('/posts', (req, res) => {
+    res.locals.root = '../';
+
+    const posts = sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC");
 
     var feed = [];
     for (let post of posts) {
-        let parsed = parse_post(post);
-        parsed.author_path = 'posts/' + parsed.author_path;
-        parsed.path = 'posts/' + parsed.path;
-        feed.push(parsed);
+        feed.push(parse_post_minimal(post));
     }
 
-    res.render('index', { root: '../', posts: feed });
+    res.render('index', { posts: feed });
 })
 
-app.get('/posts/:author', async (req, res) => {
-    const posts = await sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC");
+app.get('/posts/:author', (req, res) => {
+    res.locals.root = '../../';
+
+    const posts = sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC");
 
     var feed = [];
     for (let post of posts) {
         if (post.author_path == req.params.author) {
-            let parsed = parse_post(post);
-            parsed.author_path = '../posts/' + parsed.author_path;
-            parsed.path = '../posts/' + parsed.path;
-            feed.push(parsed);
+            feed.push(parse_post_minimal(post));
         }
     }
 
-    res.render('index', { root: '../../', posts: feed });
+    res.render('index', { posts: feed });
 })
 
-app.get('/posts/:author/:id', async (req, res) => {
+app.get('/posts/:author/:id', (req, res) => {
     res.locals.root = '../../../';
 
     const path = req.params.author + '/' + req.params.id;
-    const post = await sqlite.query(sqlite.db, "posts", { path: path });
+    const post = sqlite.query(sqlite.db, "posts", { path: path });
     if (post) {
         res.render('post', parse_post(post));
     } else {
         res.render('post', {
             title: '?',
+            timestamp: '?',
             date: '?',
             author: req.params.author,
+            author_path: req.params.author,
             body: 'this post does not exist!',
             path: path
         })
@@ -80,11 +81,11 @@ app.get('/new', (req, res) => {
     res.render('new', { root: '../../' });
 })
 
-app.get('/reply/:author/:id', async (req, res) => {
+app.get('/reply/:author/:id', (req, res) => {
     res.locals.root = '../../../';
 
     const path = req.params.author + '/' + req.params.id;
-    const post = await sqlite.query(sqlite.db, "posts", { path: path });
+    const post = sqlite.query(sqlite.db, "posts", { path: path });
 
     if (post) {
         res.render('new', {
@@ -95,17 +96,24 @@ app.get('/reply/:author/:id', async (req, res) => {
     }
 })
 
-app.get('/page/:pagenumber', async (req, res) => {
-    const page = req.params.pagenumber - 1;
-    const feed = await get_feed(page);
-    res.render('home', { root: '../../', feed: feed });
+app.get('/page/:pagenumber', (req, res) => {
+    res.locals.root = '../../';
+
+    const page = Number(req.params.pagenumber) || 0;
+    const feed = get_feed(page - 1);
+    res.render('home', { feed: feed, page: page, max_page: get_max_page() });
 })
 
-async function get_feed(page) {
-    const posts = await sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC LIMIT " + posts_per_page + " OFFSET " + page * posts_per_page);
+function get_max_page() {
+    let stmt = sqlite.db.prepare("SELECT COUNT(*) AS count FROM posts");
+    return Math.ceil(stmt.get().count / posts_per_page);
+}
+
+function get_feed(page, root) {
+    const posts = sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC LIMIT " + posts_per_page + " OFFSET " + (page * posts_per_page));
     var feed = [];
     for (let post of posts) {
-        feed.push(parse_post(post));
+        feed.push(parse_post(post, root));
     }
     return feed;
 }
@@ -115,17 +123,40 @@ function get_author_path(name) {
 }
 
 function parse_post(post) {
+    const replies = sqlite.queryall(sqlite.db, "posts", { replying_to: post.path }, "ORDER BY timestamp DESC");
+    var reply_posts = [];
+    for (let reply of replies) {
+        reply_posts.push(parse_post_minimal(reply));
+    }
+
     return {
         title: get_post_title(post.body),
+        timestamp: post.timestamp,
         date: post.timestamp.split(" ")[0].replaceAll("-", "/"),
         author: post.author,
         author_path: post.author_path,
+        preview_body: parse_markdown(post.body.split("\r\n---\r\n")[0]),
         body: parse_markdown(post.body),
-        path: post.path
+        path: post.path,
+        replies: reply_posts,
+        replying_to: post.replying_to && post.replying_to != '' ? parse_post_minimal(sqlite.query(sqlite.db, "posts", { path: post.replying_to })) : null
+    }
+}
+
+function parse_post_minimal(post) {
+    return {
+        title: get_post_title(post.body),
+        timestamp: post.timestamp,
+        date: post.timestamp.split(" ")[0].replaceAll("-", "/"),
+        author: post.author,
+        author_path: post.author_path,
+        path: post.path,
     }
 }
 
 function parse_markdown(markdown) {
+    markdown = markdown.replace(/(.)\n(?!\n)/g, '$1  \n');
+
     // search for albums
     let search = '![album]';
     let index = markdown.indexOf(search);
@@ -156,7 +187,9 @@ function parse_markdown(markdown) {
             let split2 = split[1].split(/[()]/g);
             let src = split2[1];
             let before = split[0];
-            let after = split2.length > 2 ? split2.slice(2).join('') : '';
+            let after = 
+                (split2.length > 2 ? split2.slice(2).join('') : '') +
+                (split.length > 2 ? search + split.slice(2).join(search) : '');
 
             let element = `<div class='${tag} block' data-type='${tag}'>`;
             
@@ -188,12 +221,24 @@ function get_post_title(body) {
     if (title != "") {
         title = title.substring(0, max_title_length);
     }
-    return title;
+    return title.trim();
 }
 
 function create_timestamp() {
     var date = new Date();
-    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+
+    var month = format_number(date.getMonth() + 1);
+    var day = format_number(date.getDate());
+    var hour = format_number(date.getHours());
+    var min = format_number(date.getMinutes());
+    var sec = format_number(date.getSeconds());
+
+    return date.getFullYear() + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec
+}
+
+function format_number(n) {
+    if (n < 10) return '0' + n;
+    return n;
 }
 
 // https://www.npmjs.com/package/nanoid
@@ -240,19 +285,25 @@ app.post('/upload', (req, res) => {
     })
 });
 
-app.post('/publish', multer().none(), async (req, res) => {
+app.post('/publish', multer().none(), (req, res) => {
+    var replying_to = req.body.replying_to.trim();
+    if (replying_to == "") {
+        replying_to = null;
+    }
+
     var name = req.body.name.trim();
     name = name == "" ? "anonymous" : name;
 
     const body = req.body.post.trim();
     const path = get_author_path(name) + '/' + nanoid(8);
     
-    await sqlite.insert(sqlite.db, "posts", {
+    sqlite.insert(sqlite.db, "posts", {
         author: name,
         author_path: get_author_path(name),
         body: body,
         timestamp: create_timestamp(),
-        path: path
+        path: path,
+        replying_to: replying_to
     })
 
     res.send({

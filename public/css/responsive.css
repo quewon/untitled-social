@@ -1,0 +1,39 @@
+@media only screen and (max-width: 767px) {
+    main {
+        padding: 2em 0;
+        text-align: center;
+    }
+    main > div {
+        text-align: left;
+    }
+    .post, .posts-list {
+        max-width: unset;
+        width: 100% !important;
+    }
+    .posts-list {
+        padding: 1em;
+        box-sizing: border-box;
+    }
+    .metadata > span {
+        flex-grow: 1;
+        text-align: center;
+    }
+    .metadata, .content {
+        border-left: none;
+        border-right: none;
+    }
+
+    .post .block {
+        margin-bottom: 0;
+    }
+    .image, .audio, .video {
+        margin-left: -1em;
+        width: calc(100% + 2em);
+    }
+    .image:first-child, .audio:first-child, .video:first-child {
+        margin-top: -1em;
+    }
+    .image:last-child, .audio:last-child, .video:last-child {
+        margin-bottom: -1em;
+    }
+}

@@ -1,32 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="<%= root %>css/post.css">
     <%- include ('fragments/global-head.ejs') %>
     <title>untitled social</title>
-    <link rel="stylesheet" href="<%= root %>css/post.css">
+    <style>
+        body {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100svh;
+        }
+
+        .scroll-container {
+            flex-grow: 1;
+            overflow-y: scroll;
+        }
+    </style>
 </head>
 <body>
 
     <%- include('fragments/header.ejs')  %>
 
-    <main>
-        <% for (let post of feed) { %>
-            <div class="post">
-                <div class="metadata">
-                    <a href="posts/<%= post.path %>">
-                        --\>
-                    </a>
-                    <span>from <a href="posts/<%= post.author_path %>"><em><%= post.author %></em></a> on <%= post.date %></span>
-                    <a href="reply/<%= post.path %>">reply</a>
-                </div>
-                <% if (post.body != '') { %>
-                    <div class="content">
-                        <%- post.body %>
+    <div class="scroll-container">
+        <main>
+            <% for (let post of feed) { %>
+                <div class="post">
+                    <div class="metadata">
+                        <a href="<%= root %>posts/<%= post.path %>">
+                            --\>
+                        </a>
+                        <span>from <a href="<%= root %>posts/<%= post.author_path %>"><em><%= post.author %></em></a> on <span title="<%= post.timestamp %>"><%= post.date %></span></span>
+                        <a href="<%= root %>reply/<%= post.path %>">reply</a>
                     </div>
+                    <% if (post.replying_to) { %>
+                        <div class="reply">
+                            replying to <a href="<%= root %>posts/<%= post.replying_to.path %>"><%= post.replying_to.title %></a> by <a href="<%= root %>posts/<%= post.replying_to.author_path %>"><%= post.replying_to.author %></a>
+                        </div>
+                    <% } %>
+                    <% if (post.body != '') { %>
+                        <div class="content">
+                            <%- post.preview_body %>
+                            <% if (post.preview_body != post.body) { %>
+                                <p class="read-more"><a href="<%= root %>posts/<%= post.path %>">read more...</a></p>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+    
+            <% if (feed.length == 0) { %>
+                <p><i>there are no posts here yet. you'll be the first to make one!</i></p>
+            <% } %>
+    
+            <% if (page == max_page) { %>
+                <p><i>end of posts.</i></p>
+            <% } %>
+        </main>
+    
+        <footer>
+            <nav>
+                <% if (page > 1) { %>
+                    <a href="<%= root %>page/<%= Number(page) - 1%>">&lt;-</a>
+                <% } else { %>
+                    <span></span>
                 <% } %>
-            </div>
-        <% } %>
-    </main>
+                <%= page %>
+                <% if (page < max_page) { %>
+                    <a href="<%= root %>page/<%= Number(page) + 1 %>">-&gt;</a>
+                <% } %>
+            </nav>
+        </footer>
+    </div>
     
 </body>
 

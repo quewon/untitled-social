@@ -19,6 +19,7 @@ if (!fs.existsSync('db/db.db')) {
             "body"	TEXT,
             "author_path"	TEXT,
             "path"	TEXT,
+            "replying_to" TEXT,
             PRIMARY KEY("post_id")
         );
         CREATE TABLE "temp_media" (
@@ -33,7 +34,7 @@ if (!fs.existsSync('db/db.db')) {
 
 exports.db = db;
 
-exports.insert = async (db, table, obj) => {
+exports.insert = (db, table, obj) => {
     var keynames = "";
     var keys = "";
     for (let key in obj) {
@@ -44,14 +45,10 @@ exports.insert = async (db, table, obj) => {
     keys = keys.slice(0, -1);
 
     const stmt = db.prepare("INSERT INTO " + table + "(" + keynames + ") VALUES (" + keys + ")");
-
-    return new Promise((resolve, reject) => {
-        const info = stmt.run(obj);
-        resolve(info);
-    });
+    return stmt.run(obj);
 }
 
-exports.delete = async (db, table, obj) => {
+exports.delete = (db, table, obj) => {
     var conditions = "";
     for (let key in obj) {
         conditions += "WHERE " + key + "=@" + key + " AND ";
@@ -59,14 +56,10 @@ exports.delete = async (db, table, obj) => {
     conditions = conditions.slice(0, -5);
 
     const stmt = db.prepare("DELETE FROM " + table + " " + conditions);
-
-    return new Promise((resolve, reject) => {
-        const info = stmt.run(obj);
-        resolve(info);
-    })
+    return stmt.run(obj);
 }
 
-exports.update = async (db, table, where, set) => {
+exports.update = (db, table, where, set) => {
     var obj = {};
 
     var where_conditions = "";
@@ -84,14 +77,10 @@ exports.update = async (db, table, where, set) => {
     set_conditions = set_conditions.slice(0, -5);
 
     const stmt = db.prepare("UPDATE " + table + " " + set_conditions + " " + where_conditions);
-
-    return new Promise((resolve, reject) => {
-        const info = stmt.run(obj);
-        resolve(info);
-    })
+    return stmt.run(obj);
 }
 
-exports.query = async (db, table, obj) => {
+exports.query = (db, table, obj) => {
     var conditions = "";
     for (let key in obj) {
         conditions += "WHERE " + key + "=@" + key + " AND ";
@@ -99,14 +88,10 @@ exports.query = async (db, table, obj) => {
     conditions = conditions.slice(0, -5);
 
     const stmt = db.prepare("SELECT * FROM " + table + " " + conditions);
-
-    return new Promise((resolve, reject) => {
-        const info = stmt.get(obj);
-        resolve(info);
-    })
+    return stmt.get(obj);
 }
 
-exports.queryall = async (db, table, obj, additional) => {
+exports.queryall = (db, table, obj, additional) => {
     var conditions = "";
     for (let key in obj) {
         conditions += "WHERE " + key + "=@" + key + " AND ";
@@ -117,8 +102,5 @@ exports.queryall = async (db, table, obj, additional) => {
 
     const stmt = db.prepare("SELECT * FROM " + table + " " + conditions);
 
-    return new Promise((resolve, reject) => {
-        const info = stmt.all(obj);
-        resolve(info);
-    })
+    return stmt.all(obj);
 }

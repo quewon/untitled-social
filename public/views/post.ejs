@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <%- include ('fragments/global-head.ejs') %>
     <link rel="stylesheet" href="<%= root %>css/post.css">
-    <link rel="icon" type="image/png" href="<%= root %>res/icons/32x32.png">
+    <%- include ('fragments/global-head.ejs') %>
+    <link rel="stylesheet" href="<%= root %>css/index.css">
     <title><%= title %></title>
     <style>
-        .metadata, .content {
-            border-color: transparent;
+        .posts-list {
+            font-family: monospace;
+            width: var(--max-post-width);
         }
     </style>
 </head>
@@ -18,13 +19,38 @@
     <main>
         <div class="post">
             <div class="metadata">
+                <a onclick="history.back()">
+                    &lt;\--
+                </a>
                 <span>from <a href="<%= root %>posts/<%= author_path %>"><em><%= author %></em></a> on <%= date %></span>
                 <a href="<%= root %>reply/<%= path %>">reply</a>
             </div>
+            <% if (replying_to) { %>
+                <div class="reply">
+                    replying to <a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a> by <a href="<%= root %>posts/<%= replying_to.author_path %>"><%= replying_to.author %></a>
+                </div>
+            <% } %>
             <div class="content">
                 <%- body %>
             </div>
         </div>
+
+        <% if (replies.length > 0) { %>
+            <div class="posts-list">
+                <p>replies:</p>
+                <% for (let i=0; i<replies.length; i++) { %>
+                    <% let post = replies[i] %>
+                    <div class="indexed-post">
+                        <span><%= replies.length - i %></span>
+                        <a class="title" href="<%= root %>posts/<%= post.path %>">
+                            <%= post.title %>
+                        </a>
+                        <a style="white-space: pre" href="<%= root %>posts/<%= post.author_path %>"><em><%= post.author %></em></a>
+                        <span title="<%= post.timestamp %>"><%= post.date %></span>
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
     </main>
     
 </body>
