@@ -47,6 +47,18 @@
                             <% } %>
                         </div>
                     <% } %>
+                    <% if (post.reply_count > 0) { %>
+                        <div class="reply">
+                            <a href="<%= root %>posts/<%= post.path %>">
+                                <%= post.reply_count %>
+                                <% if (post.reply_count > 1) { %>
+                                    replies
+                                <% } else { %> 
+                                    reply
+                                <% } %>
+                            </a>
+                        </div>
+                    <% } %>
                 </div>
             <% } %>
     

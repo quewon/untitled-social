@@ -139,7 +139,8 @@ function parse_post(post) {
         body: parse_markdown(post.body),
         path: post.path,
         replies: reply_posts,
-        replying_to: post.replying_to && post.replying_to != '' ? parse_post_minimal(sqlite.query(sqlite.db, "posts", { path: post.replying_to })) : null
+        reply_count: replies.length,
+        replying_to: post.replying_to ? parse_post_minimal(sqlite.query(sqlite.db, "posts", { path: post.replying_to })) : null
     }
 }
 
@@ -150,7 +151,7 @@ function parse_post_minimal(post) {
         date: post.timestamp.split(" ")[0].replaceAll("-", "/"),
         author: post.author,
         author_path: post.author_path,
-        path: post.path,
+        path: post.path
     }
 }
 

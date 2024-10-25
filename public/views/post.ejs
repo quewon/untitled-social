@@ -6,6 +6,18 @@
     <link rel="stylesheet" href="<%= root %>css/index.css">
     <title><%= title %></title>
     <style>
+        .post {
+            width: var(--max-post-width);
+        }
+        .post > div {
+            background: white;
+            border-color: white;
+            border-bottom: 1px dotted rgb(129, 129, 129);
+        }
+        .post > div:last-child {
+            border-bottom-color: white;
+        }
+
         .posts-list {
             font-family: monospace;
             width: var(--max-post-width);

@@ -7,20 +7,16 @@
     word-break: break-word;
 }
 
-.metadata, .content {
+.post > div {
     padding: 1em;
     border: 1px solid rgb(230, 230, 230);
-}
-
-.content {
-    border-top: none;
-}
-
-.post > div {
     border-bottom: 1px dotted rgb(129, 129, 129);
 }
+.post > div:not(:first-child) {
+    border-top: none;
+}
 .post > div:last-child {
-    border-bottom: none;
+    border-bottom: 1px solid rgb(230, 230, 230);
 }
 
 .metadata, .reply {

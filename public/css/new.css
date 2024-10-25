@@ -13,7 +13,7 @@ input[type="button"]:hover, input[type="button"]:active {
     background-color: black;
 }
 
-label, .reply, .options, .buttonbar, .drop-zone {
+label, .replying-to, .options, .buttonbar, .drop-zone {
     font-family: monospace;
 }
 

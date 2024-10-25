@@ -19,7 +19,7 @@
 
     <main>
         <% if (locals.replying_to) { %>
-            <div class="reply">
+            <div class="replying-to">
                 replying to 
                 <% if (replying_to.title.trim() == '') { %>
                     <a href="<%= root %>posts/<%= replying_to.path %>"><em><%= replying_to.author %></em></a>...
