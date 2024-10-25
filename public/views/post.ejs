@@ -2,8 +2,8 @@
 <html>
 <head>
     <link rel="stylesheet" href="<%= root %>css/post.css">
-    <%- include ('fragments/global-head.ejs') %>
     <link rel="stylesheet" href="<%= root %>css/index.css">
+    <%- include ('fragments/global-head.ejs') %>
     <title><%= title %></title>
     <style>
         .post {
@@ -20,7 +20,8 @@
 
         .posts-list {
             font-family: monospace;
-            width: var(--max-post-width);
+            min-width: var(--max-post-width);
+            width: fit-content;
         }
     </style>
 </head>

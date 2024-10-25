@@ -1,16 +1,13 @@
-main {
-    gap: .5em;
-}
-
 .indexed-post {
-    border: 1px solid black;
-    padding: .5em 1em;
+    background: var(--post-bg);
+    border: 1px solid var(--post-border);
+    padding: 0 .5em;
     display: flex;
     gap: 1em;
     font-family: monospace;
     box-sizing: border-box;
 }
 
-.title {
+.indexed-post .title {
     width: 100%;
 }

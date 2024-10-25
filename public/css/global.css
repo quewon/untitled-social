@@ -2,6 +2,10 @@
     --line-height: 1.4rem;
     --max-post-width: 30rem;
     --max-img-height: 20rem;
+
+    --post-bg: rgb(242, 242, 242);
+    --post-border: rgb(230, 230, 230);
+    --post-divider: rgb(129, 129, 129);
 }
 
 body, html {

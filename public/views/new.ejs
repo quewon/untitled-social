@@ -90,12 +90,7 @@
 
     <template id="album-block-template">
         <div class="album block" data-type="album">
-            <div class="slides"></div>
-            <div class="navigation">
-                <a class="nav-button"><-</a>
-                <span class="counter">X/X</span>
-                <a class="nav-button">-></a>
-            </div>
+            <div class="slides-wrapper"><div class="slides"></div></div>
             <%- include('fragments/post-options.ejs') %>
         </div>
     </template>

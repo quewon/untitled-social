@@ -25,17 +25,23 @@
         border-right: none;
     }
 
-    .post .block {
-        margin-bottom: 0;
-    }
-    .image, .audio, .video {
+    .content > .image,
+    .content > .audio,
+    .content > .video,
+    .content > .album {
         margin-left: -1em;
         width: calc(100% + 2em);
     }
-    .image:first-child, .audio:first-child, .video:first-child {
+    .content > .image:first-child,
+    .content > .audio:first-child,
+    .content > .video:first-child,
+    .content > .album:first-child {
         margin-top: -1em;
     }
-    .image:last-child, .audio:last-child, .video:last-child {
+    .content > .image:last-child,
+    .content > .audio:last-child,
+    .content > .video:last-child,
+    .content > .album:last-child {
         margin-bottom: -1em;
     }
 }

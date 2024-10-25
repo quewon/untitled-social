@@ -6,27 +6,53 @@ function treat_posts() {
 }
 
 function treat_album(block) {
-    var navigation = block.querySelector(".navigation");
-    var buttons = navigation.querySelectorAll(".nav-button");
-    var counter = navigation.querySelector(".counter");
+    var wrapper = block.querySelector(".slides-wrapper");
     var slides = block.querySelector(".slides");
 
-    counter.textContent = "1/" + slides.children.length;
-    counter.dataset.count = 1;
-    counter.dataset.length = slides.children.length;
+    // slide counter
 
-    buttons[0].onclick = () => {
-        slides.appendChild(slides.firstElementChild);
-        var count = Number(counter.dataset.count) - 1;
-        if (count < 1) count = counter.dataset.length;
-        counter.dataset.count = count;
-        counter.textContent = count + "/" + counter.dataset.length;
+    var counter = document.createElement("div");
+    counter.className = "counter";
+    counter.textContent = "1/" + slides.children.length;
+    block.appendChild(counter);
+
+    // navigation buttons
+
+    block.dataset.slides_count = slides.children.length;
+    block.dataset.slide_index = 1;
+
+    var nav = document.createElement("div");
+    nav.className = "navigation";
+
+    var button_prev = document.createElement("button");
+    var button_next = document.createElement("button");
+    button_prev.textContent = "<";
+    button_next.textContent = ">";
+    nav.appendChild(button_prev);
+    nav.appendChild(button_next);
+
+    button_prev.onclick = () => {
+        let index = Number(block.dataset.slide_index);
+        index--;
+        if (index < 1) index = Number(block.dataset.slides_count);
+
+        wrapper.scrollLeft = (index - 1) * wrapper.clientWidth;
+        block.dataset.slide_index = index;
     }
-    buttons[1].onclick = () => {
-        slides.prepend(slides.lastElementChild);
-        var count = Number(counter.dataset.count) + 1;
-        if (count > Number(counter.dataset.length)) count = 1;
-        counter.dataset.count = count;
-        counter.textContent = count + "/" + counter.dataset.length;
+
+    button_next.onclick = () => {
+        let index = Number(block.dataset.slide_index);
+        index++;
+        if (index > Number(block.dataset.slides_count)) index = 1;
+
+        wrapper.scrollLeft = (index - 1) * wrapper.clientWidth;
+        block.dataset.slide_index = index;
     }
+
+    wrapper.onscroll = function() {
+        block.dataset.slide_index = Math.round(this.scrollLeft / this.clientWidth) + 1;
+        counter.textContent = block.dataset.slide_index + "/" + block.dataset.slides_count;
+    }
+
+    block.appendChild(nav);
 }

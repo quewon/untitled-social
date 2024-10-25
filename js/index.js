@@ -166,13 +166,14 @@ function parse_markdown(markdown) {
         let split2 = split[1].split(')\n)');
         let in_between = split2[0].split(')\r\n)')[0].slice(3);
         let before = split[0];
-        let after = split2.length > 1 ? split2.slice(1).join('') : '';
+        let after = 
+            (split2.length > 1 ? split2.slice(1).join('') : '') +
+            (split.length > 2 ? search + split.slice(2).join(search) : '');
 
         in_between = in_between.trim().split(",").join('') + ')';
 
         markdown = `${before}<div class='album block' data-type='album'>`;
-        markdown += `<div class='slides'>${in_between}</div>`;
-        markdown += `<div class='navigation'><a class='nav-button'>&lt;-</a> <span class='counter'>X/X</span> <a class='nav-button'>-&gt;</a></div>`;
+        markdown += `<div class='slides-wrapper'><div class='slides'>${in_between}</div></div>`;
         markdown += `</div>${after}`;
 
         index = markdown.indexOf(search);

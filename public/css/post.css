@@ -1,5 +1,5 @@
 .post {
-    background: rgb(242, 242, 242);
+    background: var(--post-bg);
 
     width: fit-content;
     max-width: var(--max-post-width);
@@ -8,15 +8,15 @@
 }
 
 .post > div {
-    padding: 1em;
-    border: 1px solid rgb(230, 230, 230);
-    border-bottom: 1px dotted rgb(129, 129, 129);
+    padding: .5em;
+    border: 1px solid var(--post-border);
+    border-bottom: 1px dotted var(--post-divider);
 }
 .post > div:not(:first-child) {
     border-top: none;
 }
 .post > div:last-child {
-    border-bottom: 1px solid rgb(230, 230, 230);
+    border-bottom: 1px solid var(--post-border);
 }
 
 .metadata, .reply {
@@ -31,6 +31,10 @@
 
 .metadata > a {
     white-space: nowrap;
+}
+
+.post .content {
+    padding: 1em;
 }
 
 /* blocks */
@@ -62,34 +66,58 @@ img {
 /* album block */
 
 .album {
-    background: lightgray;
+    background: white;
+    padding-bottom: .25rem;
+}
+.slides-wrapper {
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
 }
 .slides {
     height: var(--max-img-height);
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 .slides > div {
-    display: none;
+    width: 100%;
+    flex-shrink: 0;
+    scroll-snap-align: center;
 }
-.slides > div:first-child {
-    display: block;
-}
-.navigation {
-    margin-top: .25rem;
-    width: var(--max-post-width);
-    text-align: center;
-    font-family: monospace;
+.album:hover .navigation {
+    display: flex;
 }
 
-.navigation a:hover, .navigation a:active {
-    background-color: black;
-    color: white;
+.counter, .navigation {
+    font-size: .8em;
+    pointer-events: none;
+    position: absolute;
 }
-.navigation a {
-    color: black;
-    border-color: black;
+
+.navigation {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    display: none;
+    justify-content: space-between;
+    transform: translate(0, -50%);
+}
+.navigation button {
+    color: white;
+    background: black;
+    opacity: .5;
+    pointer-events: all;
+}
+
+.counter {
+    top: 0;
+    right: 0;
+    padding: .25em .5em;
+    border-radius: 2em;
+    margin: .5em;
+    font-family: monospace;
+    background: black;
+    color: white;
+    opacity: .5;
 }
 
 .read-more {
