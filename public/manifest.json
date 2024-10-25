@@ -15,5 +15,5 @@
     "display": "standalone",
     "prefer_related_applications": false,
     "background_color": "white",
-    "theme_color": "#4f8ac9"
+    "theme_color": "white"
 }
