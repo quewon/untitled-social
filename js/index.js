@@ -92,7 +92,7 @@ app.get('/reply/:author/:id', (req, res) => {
             replying_to: parse_post(post)
         })
     } else {
-        res.render('new');
+        res.redirect('/new');
     }
 })
 

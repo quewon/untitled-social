@@ -8,7 +8,6 @@
 }
 
 .post > div {
-    padding: .5em;
     border: 1px solid var(--post-border);
     border-bottom: 1px dotted var(--post-divider);
 }
@@ -20,13 +19,16 @@
 }
 
 .metadata, .reply {
-    font-family: monospace;
-    padding: .5em 1em;
     display: flex;
+    justify-content: space-between;
     gap: 0 2em;
+    padding: .5em .5em;
+    font-family: monospace;
 }
-.reply {
-    flex-wrap: wrap;
+
+.reply > span:first-child,
+.reply > span:last-child {
+    white-space: nowrap;
 }
 
 .metadata > a {

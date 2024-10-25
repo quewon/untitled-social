@@ -1,6 +1,25 @@
 main {
     padding: 1.5em 2em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 5em;
+}
+main > div:first-child {
+    max-width: 50%;
     padding-bottom: 50vh;
+}
+
+@media only screen and (max-width: 767px) {
+    main {
+        flex-direction: column;
+    }
+    main > div:first-child {
+        padding-bottom: 0;
+    }
+    main > div {
+        max-width: unset;
+    }
 }
 
 input[type="button"], button, main a {

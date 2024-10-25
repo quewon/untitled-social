@@ -5,6 +5,9 @@
     main, nav {
         text-align: center;
     }
+    nav {
+        justify-content: space-between;
+    }
     main > div {
         text-align: left;
     }
@@ -43,5 +46,17 @@
     .content > .video:last-child,
     .content > .album:last-child {
         margin-bottom: -1em;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .index-button::after {
+        content: "";
+    }
+}
+
+@media only screen and (max-width: 430px) {
+    .new-post-button::after {
+        content: ""
     }
 }

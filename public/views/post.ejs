@@ -20,8 +20,8 @@
 
         .posts-list {
             font-family: monospace;
-            min-width: var(--max-post-width);
             width: fit-content;
+            max-width: 100%;
         }
     </style>
 </head>
@@ -40,12 +40,16 @@
             </div>
             <% if (replying_to) { %>
                 <div class="reply">
-                    replying to <a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a> by <a href="<%= root %>posts/<%= replying_to.author_path %>"><%= replying_to.author %></a>
+                    <span>re:</span>
+                    <span><a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a></span>
+                    <span>by <a href="<%= root %>posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></span>
                 </div>
             <% } %>
-            <div class="content">
-                <%- body %>
-            </div>
+            <% if (body != '') { %>
+                <div class="content">
+                    <%- body %>
+                </div>
+            <% } %>
         </div>
 
         <% if (replies.length > 0) { %>

@@ -3,6 +3,8 @@
     --max-post-width: 30rem;
     --max-img-height: 20rem;
 
+    --theme-color: #4f8ac9;
+
     --post-bg: rgb(242, 242, 242);
     --post-border: rgb(230, 230, 230);
     --post-divider: rgb(129, 129, 129);
@@ -10,20 +12,8 @@
 
 body, html {
     margin: 0;
-    font-family: sans-serif;
+    font-family: system-ui, sans-serif;
     line-height: var(--line-height);
-}
-
-/* header */
-
-header {
-    padding: 1rem;
-    border-bottom: 1px dotted blue;
-
-    display: flex;
-    gap: .5em 2em;
-    flex-wrap: wrap;
-    align-items: center;
 }
 
 /* styling */
@@ -37,8 +27,8 @@ header {
 }
 
 dialog {
-    border: 1px dotted blue;
-    color: blue;
+    border: 1px dotted var(--theme-color);
+    color: var(--theme-color);
     padding: 3rem;
     text-align: center;
 }
@@ -51,7 +41,7 @@ input, textarea, button {
 }
 
 a, a:visited {
-    color: blue;
+    color: var(--theme-color);
     text-decoration: underline;
     text-decoration-style: dotted;
     cursor: pointer;
@@ -61,7 +51,7 @@ a, a:visited {
     padding: 0;
 }
 a:hover, a:active {
-    background: blue;
+    background: var(--theme-color);
     color: white;
     text-decoration: none;
 }
@@ -72,14 +62,14 @@ em {
 }
 
 *::selection {
-    background: blue;
+    background: var(--theme-color);
     color: white;
 }
 
 button, input[type="button"], input[type="submit"] {
-    border: 1px solid blue;
+    border: 1px solid var(--theme-color);
     padding: .5em;
-    color: blue;
+    color: var(--theme-color);
     text-decoration: underline;
     text-decoration-style: dotted;
     cursor: pointer;
@@ -88,7 +78,7 @@ button, input[type="button"], input[type="submit"] {
 button:hover, button:active,
 input[type="submit"]:hover, input[type="submit"]:active,
 input[type="button"]:hover, input[type="button"]:active {
-    background: blue;
+    background: var(--theme-color);
     color: white;
     text-decoration: none;
 }
@@ -99,13 +89,48 @@ main {
     padding: 2em 1em;
     display: flex;
     flex-direction: column;
-    gap: 2em;
+    gap: 3em;
+}
+
+/*  */
+
+header {
+    padding: 1rem;
+    border-bottom: 2px dotted var(--theme-color);
+
+    display: flex;
+    gap: .5em 2em;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+header > * {
+    min-width: 1em;
+    text-align: center;
+}
+header > .grow {
+    text-align: left;
+}
+
+.index-button::after {
+    content: "ndex";
+}
+.new-post-button::after {
+    content: " new post";
 }
 
 footer {
-    border-top: 1px dotted blue;
+    border-top: 2px dotted var(--theme-color);
     padding: 1em;
 }
-nav {
+footer a {
     font-family: monospace;
+    font-size: 1rem;
+}
+footer pre {
+    margin: 0;
+}
+nav {
+    display: flex;
+    gap: 2em;
 }

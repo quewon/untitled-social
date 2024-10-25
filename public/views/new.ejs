@@ -18,17 +18,6 @@
     <%- include('fragments/header.ejs')  %>
 
     <main>
-        <% if (locals.replying_to) { %>
-            <div class="replying-to">
-                replying to 
-                <% if (replying_to.title.trim() == '') { %>
-                    <a href="<%= root %>posts/<%= replying_to.path %>"><em><%= replying_to.author %></em></a>...
-                <% } else { %>
-                    <a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a>...
-                <% } %>
-            </div>
-        <% } %>
-        
         <div>
             <label>name</label><br>
             <input autofocus type="text" placeholder="anonymous" id="post-name">
@@ -48,6 +37,40 @@
                 <button onclick="upload_post()">post!</button>
             </div>
         </div>
+
+        <% if (locals.replying_to) { %>
+            <div class="replying-to">
+                <div class="post">
+                    <div class="metadata">
+                        <span>
+                            <% if (replying_to.body == '') { %>
+                                replying to
+                                <a href="<%= root %>posts/<%= replying_to.path %>">a shout</a>
+                                by 
+                                <a href="<%= root %>posts/<%= replying_to.path %>"><em><%= replying_to.author %></em></a>...
+                            <% } else { %>
+                                replying to
+                                <a href="<%= root %>posts/<%= replying_to.path %>">this post</a>
+                                by 
+                                <a href="<%= root %>posts/<%= replying_to.author_path %>"><em><%= replying_to.author %></em></a>...
+                            <% } %>
+                        </span>
+                    </div>
+                    <% if (replying_to.replying_to) { %>
+                        <div class="reply">
+                            <span>re:</span>
+                            <span><a href="<%= root %>posts/<%= replying_to.replying_to.path %>"><%= replying_to.replying_to.title %></a></span>
+                            <span>by <a href="<%= root %>posts/<%= replying_to.replying_to.author_path %>"><%= replying_to.replying_to.author %></a></span>
+                        </div>
+                    <% } %>
+                    <% if (replying_to.body != '') { %>
+                        <div class="content">
+                            <%- replying_to.body %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
     </main>
 
     <template id="text-block-template">
