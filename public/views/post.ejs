@@ -6,21 +6,9 @@
     <%- include ('fragments/global-head.ejs') %>
     <title><%= title %></title>
     <style>
-        .post {
-            width: var(--max-post-width);
-        }
-        .post > div {
-            background: white;
-            border-color: white;
-            border-bottom: 1px dotted rgb(129, 129, 129);
-        }
-        .post > div:last-child {
-            border-bottom-color: white;
-        }
-
         .posts-list {
             font-family: monospace;
-            width: fit-content;
+            width: var(--max-post-width);
             max-width: 100%;
         }
     </style>
@@ -31,20 +19,28 @@
 
     <main>
         <div class="post">
-            <div class="metadata">
-                <a onclick="history.back()">
-                    &lt;\--
-                </a>
-                <span>from <a href="<%= root %>posts/<%= author_path %>"><em><%= author %></em></a> on <%= date %></span>
-                <a href="<%= root %>reply/<%= path %>">reply</a>
-            </div>
-            <% if (replying_to) { %>
-                <div class="reply">
-                    <span>re:</span>
-                    <span><a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a></span>
-                    <span>by <a href="<%= root %>posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></span>
-                </div>
-            <% } %>
+            <table>
+                <tr>
+                    <td>
+                        <a onclick="history.back()">
+                            &lt;\--
+                        </a>
+                    </td>
+                    <td>
+                        from <a href="<%= root %>posts/<%= author_path %>"><em><%= author %></em></a> · <%= date_informal %>
+                    </td>
+                    <td>
+                        <a href="<%= root %>reply/<%= path %>">reply</a>
+                    </td>
+                </tr>
+                <% if (locals.replying_to) { %>
+                    <tr>
+                        <td>re:</td>
+                        <td><a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a></td>
+                        <td>by <a href="<%= root %>posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></td>
+                    </tr>
+                <% } %>
+            </table>
             <% if (body != '') { %>
                 <div class="content">
                     <%- body %>
@@ -52,7 +48,7 @@
             <% } %>
         </div>
 
-        <% if (replies.length > 0) { %>
+        <% if (locals.replies && replies.length > 0) { %>
             <div class="posts-list">
                 <p>replies:</p>
                 <% for (let i=0; i<replies.length; i++) { %>

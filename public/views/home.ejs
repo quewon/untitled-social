@@ -27,20 +27,26 @@
         <main>
             <% for (let post of feed) { %>
                 <div class="post">
-                    <div class="metadata">
-                        <a href="<%= root %>posts/<%= post.path %>">
-                            --\>
-                        </a>
-                        <span>from <a href="<%= root %>posts/<%= post.author_path %>"><em><%= post.author %></em></a> on <span title="<%= post.timestamp %>"><%= post.date %></span></span>
-                        <a href="<%= root %>reply/<%= post.path %>">reply</a>
-                    </div>
-                    <% if (post.replying_to) { %>
-                        <div class="reply">
-                            <span>re:</span>
-                            <span><a href="<%= root %>posts/<%= post.replying_to.path %>"><%= post.replying_to.title %></a></span>
-                            <span>by <a href="<%= root %>posts/<%= post.replying_to.author_path %>"><%= post.replying_to.author %></a></span>
-                        </div>
-                    <% } %>
+                    <table>
+                        <tr>
+                            <td>
+                                <a href="<%= root %>posts/<%= post.path %>">--\></a>
+                            </td>
+                            <td class="flex">
+                                <span class="grow">from <a href="<%= root %>posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span title="<%= post.timestamp %>"><%= post.date_informal %></span></span>
+                                <a href="<%= root %>reply/<%= post.path %>">reply</a>
+                            </td>
+                        </tr>
+                        <% if (post.replying_to) { %>
+                            <tr>
+                                <td>re:</td>
+                                <td class="flex">
+                                    <a class="grow" href="<%= root %>posts/<%= post.replying_to.path %>"><%= post.replying_to.title %></a>
+                                    <span>by <a href="<%= root %>posts/<%= post.replying_to.author_path %>"><%= post.replying_to.author %></a></span>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </table>
                     <% if (post.body != '') { %>
                         <div class="content">
                             <%- post.preview_body %>
@@ -49,18 +55,22 @@
                             <% } %>
                         </div>
                     <% } %>
-                    <% if (post.reply_count > 0) { %>
-                        <div class="reply">
-                            <a href="<%= root %>posts/<%= post.path %>">
-                                <%= post.reply_count %>
-                                <% if (post.reply_count > 1) { %>
-                                    replies
-                                <% } else { %> 
-                                    reply
-                                <% } %>
-                            </a>
-                        </div>
-                    <% } %>
+                    <table>
+                        <% if (post.reply_count > 0) { %>
+                            <tr>
+                                <td>
+                                    <a href="<%= root %>posts/<%= post.path %>">
+                                        <%= post.reply_count %>
+                                        <% if (post.reply_count > 1) { %>
+                                            replies
+                                        <% } else { %> 
+                                            reply
+                                        <% } %>
+                                    </a>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </table>
                 </div>
             <% } %>
     

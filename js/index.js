@@ -129,10 +129,41 @@ function parse_post(post) {
         reply_posts.push(parse_post_minimal(reply));
     }
 
+    var date;
+    var today = create_timestamp().split(" ")[0];
+    var post_day = post.timestamp.split(" ")[0];
+
+    var ptime = post.timestamp.split(" ")[1].split(":");
+    var hour = ptime[0] > 12 ? ptime[0] - 12 : ptime[0];
+    var ampm = ptime[0] > 12 ? "pm" : "am";
+
+    if (today == post_day) {
+        date = hour + ":" + ptime[1] + ampm;
+    } else {
+        var ts = today.split("-");
+        var ps = post_day.split("-");
+
+        if (ts[0] == ps[0]) {
+            if (Number(ts[2]) - Number(ps[2]) == 1) {
+                date = "yesterday";
+            } else {
+                date = ps[1] + "/" + ps[2];
+            }
+        } else {
+            date = post_day.replaceAll("-", "/");
+        }
+        
+        var time = hour +  ampm;
+        if (time == "12am") time = "midnight";
+
+        date = time + ", " + date;
+    }
+
     return {
         title: get_post_title(post.body),
         timestamp: post.timestamp,
-        date: post.timestamp.split(" ")[0].replaceAll("-", "/"),
+        date: post_day.replaceAll("-", "/"),
+        date_informal: date,
         author: post.author,
         author_path: post.author_path,
         preview_body: parse_markdown(post.body.split("\r\n---\r\n")[0]),

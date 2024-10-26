@@ -1,7 +1,6 @@
 .indexed-post {
-    background: var(--post-bg);
-    border: 1px solid var(--post-border);
-    padding: 0 .5em;
+    border: 1px dotted var(--post-border);
+    padding: 5px 1em;
     display: flex;
     gap: 1em;
     font-family: monospace;

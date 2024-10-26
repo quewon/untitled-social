@@ -16,36 +16,14 @@
         width: 100% !important;
     }
     .posts-list {
-        padding: 1em;
+        padding: .5em;
         box-sizing: border-box;
     }
-    .metadata > span {
-        flex-grow: 1;
-        text-align: center;
-    }
-    .metadata, .content {
-        border-left: none;
-        border-right: none;
-    }
 
-    .content > .image,
-    .content > .audio,
-    .content > .video,
-    .content > .album {
-        margin-left: -1em;
-        width: calc(100% + 2em);
-    }
-    .content > .image:first-child,
-    .content > .audio:first-child,
-    .content > .video:first-child,
-    .content > .album:first-child {
-        margin-top: -1em;
-    }
-    .content > .image:last-child,
-    .content > .audio:last-child,
-    .content > .video:last-child,
-    .content > .album:last-child {
-        margin-bottom: -1em;
+    .post table {
+        margin-left: .5em;
+        margin-right: .5em;
+        width: calc(100% - 1em);
     }
 }
 
@@ -56,6 +34,12 @@
 }
 
 @media only screen and (max-width: 430px) {
+    .new-post-button::after {
+        content: " post"
+    }
+}
+
+@media only screen and (max-width: 350px) {
     .new-post-button::after {
         content: ""
     }

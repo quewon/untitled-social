@@ -41,28 +41,32 @@
         <% if (locals.replying_to) { %>
             <div class="replying-to">
                 <div class="post">
-                    <div class="metadata">
-                        <span>
-                            <% if (replying_to.body == '') { %>
-                                replying to
-                                <a href="<%= root %>posts/<%= replying_to.path %>">a shout</a>
-                                by 
-                                <a href="<%= root %>posts/<%= replying_to.path %>"><em><%= replying_to.author %></em></a>...
-                            <% } else { %>
-                                replying to
-                                <a href="<%= root %>posts/<%= replying_to.path %>">this post</a>
-                                by 
-                                <a href="<%= root %>posts/<%= replying_to.author_path %>"><em><%= replying_to.author %></em></a>...
-                            <% } %>
-                        </span>
-                    </div>
-                    <% if (replying_to.replying_to) { %>
-                        <div class="reply">
-                            <span>re:</span>
-                            <span><a href="<%= root %>posts/<%= replying_to.replying_to.path %>"><%= replying_to.replying_to.title %></a></span>
-                            <span>by <a href="<%= root %>posts/<%= replying_to.replying_to.author_path %>"><%= replying_to.replying_to.author %></a></span>
-                        </div>
-                    <% } %>
+                    <table>
+                        <tr>
+                            <td>
+                                <% if (replying_to.body == '') { %>
+                                    replying to
+                                    <a href="<%= root %>posts/<%= replying_to.path %>">a shout</a>
+                                    by 
+                                    <a href="<%= root %>posts/<%= replying_to.path %>"><em><%= replying_to.author %></em></a>...
+                                <% } else { %>
+                                    replying to
+                                    <a href="<%= root %>posts/<%= replying_to.path %>">this post</a>
+                                    by 
+                                    <a href="<%= root %>posts/<%= replying_to.author_path %>"><em><%= replying_to.author %></em></a>...
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% if (replying_to.replying_to) { %>
+                            <tr>
+                                <td>re:</td>
+                                <td>
+                                    <a href="<%= root %>posts/<%= replying_to.replying_to.path %>"><%= replying_to.replying_to.title %></a>
+                                    <span>by <a href="<%= root %>posts/<%= replying_to.replying_to.author_path %>"><%= replying_to.replying_to.author %></a></span>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </table>
                     <% if (replying_to.body != '') { %>
                         <div class="content">
                             <%- replying_to.body %>

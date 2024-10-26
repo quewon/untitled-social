@@ -1,5 +1,4 @@
 main {
-    padding: 1.5em 2em;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -15,9 +14,8 @@ main > div:first-child {
         flex-direction: column;
     }
     main > div:first-child {
+        padding: 0 1em;
         padding-bottom: 0;
-    }
-    main > div {
         max-width: unset;
     }
 }
@@ -121,4 +119,12 @@ textarea {
 }
 .drop-zone.dragover {
     border-style: solid;
+}
+
+/*  */
+
+.post {
+    width: fit-content;
+    max-width: var(--max-post-width);
+    min-width: 10em;
 }
