@@ -96,6 +96,9 @@ main {
     display: flex;
     flex-direction: column;
     gap: .25em;
+    font-family: monospace;
+    width: var(--max-post-width);
+    max-width: 100%;
 }
 
 /*  */

@@ -30,7 +30,7 @@
                     <table>
                         <tr>
                             <td>
-                                <a href="<%= root %>posts/<%= post.path %>">--\></a>
+                                <a class="share-anchor" href="<%= root %>posts/<%= post.path %>" title="go to post">--\></a>
                             </td>
                             <td class="flex">
                                 <span class="grow">from <a href="<%= root %>posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span title="<%= post.timestamp %>"><%= post.date_informal %></span></span>
@@ -105,6 +105,14 @@
 <script src="<%= root %>js/post.js"></script>
 <script>
     treat_posts();
+
+    if (navigator.share) {
+        var share_anchors = document.querySelectorAll(".share-anchor");
+        for (let a of share_anchors) {
+            a.onclick = navigator.share({ url: a.href });
+            a.href = "";
+        }
+    }
 </script>
 
 </html>

@@ -5,13 +5,6 @@
     <link rel="stylesheet" href="<%= root %>css/index.css">
     <%- include ('fragments/global-head.ejs') %>
     <title><%= title %></title>
-    <style>
-        .posts-list {
-            font-family: monospace;
-            width: var(--max-post-width);
-            max-width: 100%;
-        }
-    </style>
 </head>
 <body>
 
@@ -26,18 +19,18 @@
                             &lt;\--
                         </a>
                     </td>
-                    <td>
-                        from <a href="<%= root %>posts/<%= author_path %>"><em><%= author %></em></a> · <%= date_informal %>
-                    </td>
-                    <td>
+                    <td class="flex">
+                        <span class="grow">from <a href="<%= root %>posts/<%= author_path %>"><em><%= author %></em></a> · <%= date_informal %></span>
                         <a href="<%= root %>reply/<%= path %>">reply</a>
                     </td>
                 </tr>
                 <% if (locals.replying_to) { %>
                     <tr>
                         <td>re:</td>
-                        <td><a href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a></td>
-                        <td>by <a href="<%= root %>posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></td>
+                        <td class="flex">
+                            <a class="grow" href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a>
+                            <span>by <a href="<%= root %>posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></span>
+                        </td>
                     </tr>
                 <% } %>
             </table>
