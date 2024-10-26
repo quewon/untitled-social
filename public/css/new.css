@@ -147,6 +147,8 @@ textarea {
     display: block;
 }
 
+/* draw block */
+
 .draw {
     text-align: center;
 }
@@ -171,6 +173,10 @@ textarea {
     vertical-align: middle;
 }
 .draw .buttons button.selected {
+    border-style: solid;
+}
+
+.draw canvas.drawing {
     border-style: solid;
 }
 

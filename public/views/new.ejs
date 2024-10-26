@@ -134,7 +134,7 @@
     </template>
 
     <template id="rec-block-template">
-        <div class="rec block" data-type="rec">
+        <div class="rec block">
             <div class="wrapper">
                 <img src="<%= root %>res/microphone.png">
                 <div class="time">0:00</div>
@@ -145,11 +145,11 @@
     </template>
 
     <template id="draw-block-template">
-        <div class="draw block" data-type="draw">
+        <div class="draw block" data-type="image">
             <canvas width="300" height="300"></canvas>
             <div class="buttons">
-                <button class="selected"><img src="<%= root %>res/pencil.png"></button>
-                <button><img src="<%= root %>res/eraser.png"></button>
+                <button class="pencil"><img src="<%= root %>res/pencil.png"></button>
+                <button class="eraser"><img src="<%= root %>res/eraser.png"></button>
             </div>
             <%- include('fragments/post-options.ejs') %>
         </div>

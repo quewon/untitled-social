@@ -314,10 +314,15 @@ app.post('/upload', (req, res) => {
                 })
             }
         } else {
-            res.send({
-                message: 'success',
-                path: req.file.path
-            })
+            try {
+                res.send({
+                    message: 'success',
+                    path: req.file.path
+                })
+            }
+            catch {
+                res.send();
+            }
         }
     })
 });

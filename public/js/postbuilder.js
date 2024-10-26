@@ -34,7 +34,7 @@ function add_post_block(type) {
     } else if (type == 'rec') {
         start_recording(element);
     } else if (type == 'draw') {
-
+        setup_canvas(element);
     }
 
     return element;
@@ -46,8 +46,7 @@ function post_to_markdown() {
     var blocks = post_builder.getElementsByClassName("block");
     for (let i=0; i<blocks.length; i++) {
         var block = blocks[i];
-        var src_element = get_file_block_src_element(block);
-        var src = src_element ? src_element.src : null;
+        var src = block.dataset.src;
 
         switch (block.dataset.type) {
             case "text":
@@ -67,7 +66,7 @@ function post_to_markdown() {
                 var slides = block.querySelector(".slides");
                 for (let i=0; i<slides.children.length; i++) {
                     let b = slides.children[i];
-                    markdown += "    ![" + b.dataset.type + "](" + get_file_block_src_element(b).src + ")";
+                    markdown += "    ![" + b.dataset.type + "](" + b.dataset.src + ")";
                     if (i < slides.children.length - 1) markdown += ",\n"
                 }
                 markdown += "\n)\n\n";
@@ -148,7 +147,11 @@ function get_file_block_src_element(block) {
     let type = block.dataset.type;
     switch (type) {
         case "image":
-            return block.querySelector("img");
+            if (block.classList.contains("draw")) {
+                return null;
+            } else {
+                return block.querySelector("img");
+            }
             break;
         case "video":
         case "audio":
@@ -236,9 +239,6 @@ function add_file(file_block, file) {
         block.dataset.src = object_url;
         file_of_objecturl[object_url] = file;
 
-        if (element_with_src)
-            element_with_src.classList.add("upload-incomplete");
-
         return block;
     } else {
         alert("file type " + file.type + " not supported :(");
@@ -289,7 +289,6 @@ async function upload_all_files() {
                 }
 
                 block.classList.remove("upload-failed");
-                block.classList.add("upload-incomplete");
             }
             if (!block.classList.contains("upload-complete")) {
                 let file = file_of_objecturl[block.dataset.src];
@@ -322,7 +321,6 @@ async function upload_file(file, src_element, block) {
 
         if (src_element) src_element.src = json.path;
         if (block) {
-            block.classList.remove("upload-incomplete");
             block.classList.add("upload-complete");
         }
     }
@@ -415,4 +413,103 @@ function start_recording(block) {
         alert("recording not supported on this browser");
         block.remove();
     }
+}
+
+// drawing
+
+function setup_canvas(block) {
+    var canvas = block.querySelector("canvas");
+    var pencil = block.querySelector(".pencil");
+    var eraser = block.querySelector(".eraser");
+
+    var context = canvas.getContext("2d");
+    context.lineCap = "round";
+
+    var mode = 0;
+    var mousedown = false;
+    var radius = [5, 3];
+    var prev_point;
+
+    pencil.onclick = () => {
+        eraser.classList.remove("selected");
+        pencil.classList.add("selected");
+        mode = 1;
+        context.fillStyle = context.strokeStyle = "black";
+        context.lineWidth = radius[mode] * 1.2;
+    }
+    eraser.onclick = () => {
+        pencil.classList.remove("selected");
+        eraser.classList.add("selected");
+        mode = 0;
+        context.fillStyle = context.strokeStyle = "white";
+        context.lineWidth = radius[mode] * 2;
+    }
+
+    pencil.onclick();
+
+    canvas.onmousedown = canvas.ontouchstart = (e) => {
+        mousedown = true;
+        canvas.classList.add("drawing");
+
+        let touch = e.touches ? e.touches[0] : e;
+        let rect = canvas.getBoundingClientRect();
+        let x = touch.pageX - rect.left;
+        let y = touch.pageY - rect.top - document.documentElement.scrollTop;
+        draw(x, y);
+    }
+    canvas.onmouseup = canvas.onmouseleave = canvas.ontouchend = () => {
+        if (prev_point) {
+            let x = prev_point.x;
+            let y = prev_point.y;
+            prev_point = null;
+            draw(x, y);
+        }
+
+        mousedown = false;
+        prev_point = null;
+        canvas.classList.remove("drawing");
+
+        // turn canvas into blob
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            file_of_objecturl[url] = blob;
+            block.dataset.src = url;
+        })
+    }
+    document.addEventListener("mousemove", (e) => {
+        if (mousedown) {
+            let rect = canvas.getBoundingClientRect();
+            let x = e.pageX - rect.left;
+            let y = e.pageY - rect.top - document.documentElement.scrollTop;
+            draw(x, y);
+        }
+    })
+    canvas.addEventListener("touchmove", (e) => {
+        if (mousedown) {
+            let rect = canvas.getBoundingClientRect();
+            let x = e.touches[0].pageX - rect.left;
+            let y = e.touches[0].pageY - rect.top - document.documentElement.scrollTop;
+            draw(x, y);
+            e.preventDefault();
+        }
+    })
+
+    function draw(x, y) {
+        if (prev_point) {
+            context.beginPath();
+            context.moveTo(prev_point.x, prev_point.y);
+            context.lineTo(x, y);
+            context.stroke();
+        } else {
+            context.beginPath();
+            context.arc(x, y, radius[mode], 0, Math.PI * 2);
+            context.fill();
+        }
+
+        prev_point = { x: x, y: y };
+    }
+
+    canvas.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+    })
 }
