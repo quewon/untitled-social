@@ -310,24 +310,18 @@ async function upload_file(file, src_element, block) {
     var form = new FormData();
     form.append("file", file);
 
-    try {
-        var res = await fetch(root + 'upload', {
-            method: 'POST',
-            body: form
-        });
-        var json = await res.json();
+    var res = await fetch(root + 'upload', {
+        method: 'POST',
+        body: form
+    });
+    var json = await res.json();
 
-        console.log(json.path);
-
+    if (json && json.path) {
+        block.dataset.src = json.path;
         if (src_element) src_element.src = json.path;
-        if (block) {
-            block.classList.add("upload-complete");
-        }
-    }
-    catch {
-        if (block) {
-            block.classList.add("upload-failed");
-        }
+        if (block) block.classList.add("upload-complete");
+    } else {
+        if (block) block.classList.add("upload-failed");
 
         if (json && json.message) {
             console.error(json.message);
@@ -388,13 +382,30 @@ function start_recording(block) {
                 block.after(audio_block);
                 block.remove();
 
-                const blob = new Blob(chunks, { type: recorder.mimeType });
+                const blob = new Blob(chunks);
                 chunks = [];
 
+                var extension = '';
+                switch (recorder.mimeType) {
+                    case 'audio/mpeg':
+                        extension = ".mp3";
+                        break;
+                    default:
+                        if (recorder.mimeType.trim() == '') {
+                            extension = ".webm";
+                        } else {
+                            extension = "." + recorder.mimeType.split('/')[1];
+                        }
+                        break;
+                }
+
                 const url = URL.createObjectURL(blob);
-                file_of_objecturl[url] = blob;
+                file_of_objecturl[url] = new File([blob], "recording" + extension, { type: recorder.mimeType });
                 audio_block.dataset.src = url;
-                audio_block.querySelector("source").src = url;
+
+                let source = audio_block.querySelector("source");
+                source.src = url;
+                source.type = recorder.mimeType;
             }
 
             recorder.ondataavailable = (e) => {
@@ -472,7 +483,7 @@ function setup_canvas(block) {
         // turn canvas into blob
         canvas.toBlob((blob) => {
             const url = URL.createObjectURL(blob);
-            file_of_objecturl[url] = blob;
+            file_of_objecturl[url] = new File([blob], "doodle");
             block.dataset.src = url;
         })
     }

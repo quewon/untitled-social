@@ -74,7 +74,6 @@ input[type="file"] {
     display: flex;
     flex-direction: column;
     gap: .25rem;
-    flex-wrap: wrap;
     max-height: 100%;
 }
 .block .options button {

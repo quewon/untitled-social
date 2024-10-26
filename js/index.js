@@ -26,7 +26,7 @@ app.use('/', express.static(path.join(__dirname, '../public')));
 
 app.get('/', (req, res) => {
     res.locals.root = '/';
-    res.render('home', { feed: get_feed(0), page: 1, max_page: get_max_page() });
+    res.render('home', { feed: get_feed(0, res.locals.root), page: 1, max_page: get_max_page() });
 })
 
 app.get('/posts', (req, res) => {
@@ -63,7 +63,7 @@ app.get('/posts/:author/:id', (req, res) => {
     const path = req.params.author + '/' + req.params.id;
     const post = sqlite.query(sqlite.db, "posts", { path: path });
     if (post) {
-        res.render('post', parse_post(post));
+        res.render('post', parse_post(post, res.locals.root));
     } else {
         res.render('post', {
             title: '?',
@@ -94,7 +94,7 @@ app.get('/reply/:author/:id', (req, res) => {
 
     if (post) {
         res.render('new', {
-            replying_to: parse_post(post)
+            replying_to: parse_post(post, res.locals.root)
         })
     } else {
         res.redirect('/new');
@@ -105,7 +105,7 @@ app.get('/page/:pagenumber', (req, res) => {
     res.locals.root = '../../';
 
     const page = Number(req.params.pagenumber) || 0;
-    const feed = get_feed(page - 1);
+    const feed = get_feed(page - 1, res.locals.root);
     res.render('home', { feed: feed, page: page, max_page: get_max_page() });
 })
 
@@ -127,7 +127,7 @@ function get_author_path(name) {
     return name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
 }
 
-function parse_post(post) {
+function parse_post(post, root) {
     const replies = sqlite.queryall(sqlite.db, "posts", { replying_to: post.path }, "ORDER BY timestamp DESC");
     var reply_posts = [];
     for (let reply of replies) {
@@ -171,8 +171,8 @@ function parse_post(post) {
         date_informal: date,
         author: post.author,
         author_path: post.author_path,
-        preview_body: parse_markdown(post.body.split("\r\n---\r\n")[0]),
-        body: parse_markdown(post.body),
+        preview_body: parse_markdown(post.body.split("\r\n---\r\n")[0], root),
+        body: parse_markdown(post.body, root),
         path: post.path,
         replies: reply_posts,
         reply_count: replies.length,
@@ -191,7 +191,7 @@ function parse_post_minimal(post) {
     }
 }
 
-function parse_markdown(markdown) {
+function parse_markdown(markdown, root) {
     markdown = markdown.replace(/(.)\n(?!\n)/g, '$1  \n');
 
     // search for albums
@@ -230,7 +230,9 @@ function parse_markdown(markdown) {
                 (split.length > 2 ? search + split.slice(2).join(search) : '');
 
             let element = `<div class='${tag} block' data-type='${tag}'>`;
-            
+
+            src = root + src;
+
             switch (tag) {
                 case "image":
                     element += `<img src='${src}'>`;
