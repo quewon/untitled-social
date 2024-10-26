@@ -69,11 +69,16 @@ app.get('/posts/:author/:id', (req, res) => {
             title: '?',
             timestamp: '?',
             date: '?',
+            date_informal: '?',
             author: req.params.author,
             author_path: req.params.author,
+            preview_body: 'this post does not exist!',
             body: 'this post does not exist!',
-            path: path
-        })
+            path: path,
+            replies: [],
+            reply_count: 0,
+            replying_to: null
+        });
     }
 })
 
@@ -198,18 +203,18 @@ function parse_markdown(markdown) {
         let in_between = split2[0].split(')\r\n)')[0].slice(3);
         let before = split[0];
         let after = 
-            (split2.length > 1 ? split2.slice(1).join('') : '') +
+            (split2.length > 1 ? split2.slice(1).join(')\n)') : '') +
             (split.length > 2 ? search + split.slice(2).join(search) : '');
 
         in_between = in_between.trim().split(",").join('') + ')';
 
         markdown = `${before}<div class='album block' data-type='album'>`;
-        markdown += `<div class='slides-wrapper'><div class='slides'>${in_between}</div></div>`;
+        markdown += `<div class='slides-wrapper'><div class='slides'>\r\n    ${in_between}\r\n</div></div>`;
         markdown += `</div>${after}`;
 
         index = markdown.indexOf(search);
     }
-
+    
     const media_tags = ['image', 'audio', 'video'];
 
     for (let tag of media_tags) {
@@ -221,7 +226,7 @@ function parse_markdown(markdown) {
             let src = split2[1];
             let before = split[0];
             let after = 
-                (split2.length > 2 ? split2.slice(2).join('') : '') +
+                (split2.length > 2 ? split[1].replace('('+src+')', '') : '') +
                 (split.length > 2 ? search + split.slice(2).join(search) : '');
 
             let element = `<div class='${tag} block' data-type='${tag}'>`;
@@ -234,7 +239,7 @@ function parse_markdown(markdown) {
                     element += `<audio controls><source src='${src}'></audio>`;
                     break;
                 case "video":
-                    element += `<video src='${src}'>`;
+                    element += `<video controls><source src='${src}'></video>`;
                     break;
             }
             
@@ -287,10 +292,9 @@ function nanoid(e=21) {
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        if (!fs.existsSync('media/temp')) {
-            fs.mkdirSync('media/temp', { recursive: true });
-        }
-        cb(null, 'media/temp');
+        if (!fs.existsSync('media'))
+            fs.mkdirSync('media');
+        cb(null, 'media');
     },
     filename: (req, file, cb) => {
         cb(null, nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + file.originalname);

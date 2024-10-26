@@ -16,8 +16,8 @@
         width: 100% !important;
     }
     .posts-list {
-        padding: .5em;
-        box-sizing: border-box;
+        padding-left: .5em;
+        padding-right: .5em;
     }
 
     .post table {
@@ -25,6 +25,10 @@
         margin-right: .5em;
         width: calc(100% - 1em);
     }
+    /* .content {
+        border-right: none;
+        border-left: none;
+    } */
 }
 
 @media only screen and (max-width: 500px) {

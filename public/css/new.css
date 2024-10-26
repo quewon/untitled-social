@@ -125,6 +125,5 @@ textarea {
 
 .post {
     width: fit-content;
-    max-width: var(--max-post-width);
     min-width: 10em;
 }

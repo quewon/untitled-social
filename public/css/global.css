@@ -1,7 +1,7 @@
 :root {
     --line-height: 1.4rem;
     --max-post-width: 30rem;
-    --max-img-height: 20rem;
+    --max-img-height: 30rem;
 
     --theme-color: #4f8ac9;
 
@@ -89,16 +89,17 @@ main {
     padding: 2em 1em;
     display: flex;
     flex-direction: column;
-    gap: 2em;
+    gap: 3em;
 }
 
 .posts-list {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: .25em;
     font-family: monospace;
-    width: var(--max-post-width);
-    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /*  */

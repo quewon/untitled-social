@@ -53,16 +53,16 @@ table .flex > *:last-child {
     margin-bottom: 0;
 }
 
-.text, .audio, .image {
+.text, .audio, .image, .video {
     line-height: 0;
 }
 
 /* media */
 
-.image {
+.image, .video {
     text-align: center;
 }
-img {
+img, video {
     max-width: 100%;
     max-height: var(--max-img-height);
 }

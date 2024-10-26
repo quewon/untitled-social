@@ -110,7 +110,9 @@
 
     <template id="video-block-template">
         <div class="video block" data-type="video">
-            <video src=""></video>
+            <video controls>
+                <source src="" type="">
+            </video>
             <%- include('fragments/post-options.ejs') %>
         </div>
     </template>
@@ -153,11 +155,12 @@
 
 <script src="<%= root %>js/post.js"></script>
 <script>
+    const max_file_size = 1000 * 1000 * 10;
+
     const root = document.getElementById("root").textContent;
     const replying_to = document.getElementById("replying_to").textContent;
 
     const block_templates = {
-        // temporary blocks
         upload: document.getElementById("upload-block-template"),
         rec: document.getElementById("rec-block-template"),
         draw: document.getElementById("draw-block-template"),
@@ -237,6 +240,8 @@
         upload_dialog.showModal();
         uploading_post = true;
 
+        console.log("uploading files...");
+
         await upload_all_files();
 
         if (!uploading_post) return;
@@ -298,8 +303,6 @@
                 return block.querySelector("img");
                 break;
             case "video":
-                return block.querySelector("video");
-                break;
             case "audio":
                 return block.querySelector("source");
                 break;
@@ -335,6 +338,13 @@
     }
 
     function add_file(file_block, file) {
+        if (file.size > max_file_size) {
+            alert("File too large :(\n(max file size: 10 MB)");
+            file_block.after(add_post_block('upload'));
+            file_block.remove();
+            return;
+        }
+
         const type = file.type.split("/")[0];
 
         if (block_templates[type]) {
@@ -362,11 +372,12 @@
                         textarea.value = "error reading file";
                     }
                     break;
+                case "video":
                 case "audio":
-                    var audio = block.querySelector("source");
-                    audio.src = object_url;
-                    audio.type = file.type;
-                    element_with_src = audio;
+                    var source = block.querySelector("source");
+                    source.src = object_url;
+                    source.type = file.type;
+                    element_with_src = source;
                     break;
                 default:
                     element_with_src = get_file_block_src_element(block);
@@ -377,10 +388,8 @@
             block.dataset.src = object_url;
             file_of_objecturl[object_url] = file;
 
-            if (element_with_src) {
+            if (element_with_src)
                 element_with_src.classList.add("upload-incomplete");
-                upload_file(file, element_with_src, block);
-            }
 
             return block;
         } else {
@@ -413,8 +422,6 @@
         var failed_upload_count = 0;
         
         while (!all_files_uploaded()) {
-            if (!uploading_post) return;
-
             var counted_failed_upload = false;
 
             // attempt to re-upload failed uploads
@@ -433,6 +440,8 @@
 
                     block.classList.remove("upload-failed");
                     block.classList.add("upload-incomplete");
+                }
+                if (!block.classList.contains("upload-complete")) {
                     let file = file_of_objecturl[block.dataset.src];
                     await upload_file(file, get_file_block_src_element(block), block);
                 }
@@ -456,8 +465,9 @@
         });
         var json = await res.json();
 
+        console.log(json);
+
         if (json && json.path) {
-            console.log(json.path);
             if (src_element) src_element.src = json.path;
             if (block) {
                 block.classList.remove("upload-incomplete");
@@ -473,6 +483,8 @@
 
                 if (json.message == 'File too large') {
                     alert("File too large :(\n(max file size: 10 MB)");
+                    uploading_post = false;
+                    upload_dialog.close();
                     if (block) {
                         block.after(add_post_block('upload'));
                         block.remove();
