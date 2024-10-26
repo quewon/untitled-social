@@ -74,15 +74,13 @@ img, video {
 /* album block */
 
 .album {
-    background: white;
-    padding-bottom: .25rem;
+    background: var(--album-bg);
 }
 .slides-wrapper {
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
 }
 .slides {
-    height: var(--max-img-height);
     display: flex;
     align-items: center;
 }
@@ -110,9 +108,9 @@ img, video {
     transform: translate(0, -50%);
 }
 .navigation button {
+    width: 3em;
+    text-align: center;
     color: white;
-    background: black;
-    opacity: .5;
     pointer-events: all;
 }
 
@@ -123,9 +121,11 @@ img, video {
     border-radius: 2em;
     margin: .5em;
     font-family: monospace;
-    background: black;
     color: white;
-    opacity: .5;
+}
+
+.navigation button, .counter {
+    background: rgba(0, 0, 0, .7);
 }
 
 .read-more {
