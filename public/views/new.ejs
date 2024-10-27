@@ -36,6 +36,60 @@
                 <span class="grow"></span>
                 <button onclick="upload_post()">post!</button>
             </div>
+
+            <p>
+                <details>
+                    <summary>formatting tips</summary>
+                    <p>hello. here are some ways to spice up your text, if you want to. (this website uses a slightly modified version of markdown.)</p>
+                    <table>
+                        <tr>
+                            <th>STYLE</th>
+                            <th>TYPE IT LIKE THIS</th>
+                            <th>& IT'LL LOOK LIKE THIS</th>
+                        </tr>
+                        <tr>
+                            <th>italic</th>
+                            <td>*italic text*</td>
+                            <td><i>italic text</i></td>
+                        </tr>
+                        <tr>
+                            <th>bold</th>
+                            <td>**bold text**</td>
+                            <td><b>bold text</b></td>
+                        </tr>
+                        <tr>
+                            <th>bold and italic</th>
+                            <td>***bold and italic text***</td>
+                            <td><b><i>bold and italic text</i></b></td>
+                        </tr>
+                        <tr>
+                            <th>strikethrough</th>
+                            <td>~~strikethrough~~</td>
+                            <td><s>strikethrough</s></td>
+                        </tr>
+                        <tr>
+                            <th>heading 1</th>
+                            <td># heading 1</td>
+                            <td><h1>heading 1</h1></td>
+                        </tr>
+                        <tr>
+                            <th>heading 2</th>
+                            <td>## heading 2</td>
+                            <td><h2>heading 2</h2></td>
+                        </tr>
+                        <tr>
+                            <th>link</th>
+                            <td>[link](https://website.com)</td>
+                            <td><a href="/">link</a></td>
+                        </tr>
+                        <tr>
+                            <th>read more...</th>
+                            <td>---</td>
+                            <td>breaks your post into two. everything under the dashes becomes hidden until a user clicks <a>read more...</a>.<br>(the dashes should be on its own line.)</td>
+                        </tr>
+                    </table>
+                </details>
+            </p>
         </div>
 
         <% if (locals.replying_to) { %>

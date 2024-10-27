@@ -26,6 +26,10 @@ body, html {
     display: none;
 }
 
+details summary {
+    cursor: pointer;
+}
+
 dialog {
     border: 1px dotted var(--theme-color);
     color: var(--theme-color);

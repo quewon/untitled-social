@@ -11,6 +11,34 @@ main:has(.post) > div:first-child {
     max-width: 50%;
 }
 
+details p, details table {
+    font-size: .8em;
+}
+details summary, details th {
+    font-family: monospace;
+    font-weight: normal;
+}
+details table, details td, details th {
+    border: 1px solid var(--post-border);
+    border-collapse: collapse;
+}
+details td, details th {
+    padding: .5em;
+    box-sizing: border-box;
+}
+details th {
+    background: var(--post-bg);
+    text-align: left;
+}
+details tr:first-child th {
+    background: black;
+    color: var(--post-bg);
+    border-right-color: var(--post-bg);
+}
+details tr:first-child th:last-child {
+    border-right-color: black;
+}
+
 .post {
     width: fit-content;
     min-width: 10em;
@@ -188,6 +216,8 @@ textarea {
     main > div:first-child {
         padding: 0 1em;
         padding-bottom: 0;
+    }
+    main:has(.post) > div:first-child {
         max-width: unset;
     }
     .post {
