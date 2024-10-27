@@ -193,6 +193,7 @@ function parse_post_minimal(post) {
 
 function parse_markdown(markdown, root) {
     markdown = markdown.replace(/(.)\r\n(?!\r\n)/g, '$1  \r\n');
+    markdown = markdown.replaceAll("> ", "&gt; ");
 
     // search for albums
     let search = '![album]';

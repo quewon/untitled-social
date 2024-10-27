@@ -1,6 +1,7 @@
+window.root = document.getElementById("root").textContent;
+
 const max_file_size = 1000 * 1000 * 10;
 
-const root = document.getElementById("root").textContent;
 const replying_to = document.getElementById("replying_to").textContent;
 
 const block_templates = {
@@ -35,6 +36,8 @@ function add_post_block(type) {
         start_recording(element);
     } else if (type == 'draw') {
         setup_canvas(element);
+    } else if (type == 'audio') {
+        treat_audio(element);
     }
 
     return element;
@@ -355,18 +358,7 @@ function start_recording(block) {
 
             var interval = setInterval(() => {
                 time += 1;
-
-                var sec = time % 60;
-                var min = Math.floor(time / 60) % 60;
-                var hour = Math.floor(time / 60 / 60);
-                if (sec < 10) sec = '0'+sec;
-                if (hour > 0 && min < 10) min = '0'+min;
-
-                if (hour > 0) {
-                    time_counter.textContent = hour + ':' + min + ':' + sec;
-                } else {
-                    time_counter.textContent = min + ':' + sec;
-                }
+                time_counter.textContent = get_audio_time_string(time);
             }, 1000);
 
             stop_button.onclick = () => {
@@ -441,20 +433,21 @@ function setup_canvas(block) {
     var prev_point;
 
     context.lineCap = "round";
+    context.fillStyle = context.strokeStyle = "black";
 
     pencil.onclick = () => {
         eraser.classList.remove("selected");
         pencil.classList.add("selected");
         mode = 1;
-        context.fillStyle = context.strokeStyle = "black";
         context.lineWidth = radius[mode] * 1.2;
+        context.globalCompositeOperation = "source-over";
     }
     eraser.onclick = () => {
         pencil.classList.remove("selected");
         eraser.classList.add("selected");
         mode = 0;
-        context.fillStyle = context.strokeStyle = "white";
         context.lineWidth = radius[mode] * 2;
+        context.globalCompositeOperation = "destination-out";
     }
 
     pencil.onclick();

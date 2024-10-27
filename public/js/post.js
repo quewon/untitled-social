@@ -1,7 +1,12 @@
+window.root = document.getElementById("root").textContent;
+
 function treat_posts() {
-    var albums = document.querySelectorAll(".album");
-    for (let album of albums) {
+    for (let album of document.querySelectorAll(".album")) {
         treat_album(album);
+    }
+
+    for (let audio of document.querySelectorAll(".audio")) {
+        treat_audio(audio);
     }
 }
 
@@ -55,4 +60,73 @@ function treat_album(block) {
     }
 
     block.appendChild(nav);
+}
+
+function treat_audio(block) {
+    var audio = block.querySelector("audio");
+
+    var controls = document.createElement("div");
+    controls.className = "controls";
+    controls.innerHTML = `
+        <a class="play-button paused">
+            <img class="play-icon" src="${root}res/play.svg" title="play" alt="play">
+            <img class="pause-icon" src="${root}res/pause.svg" title="pause" alt="pause">
+        </a>
+        <input type="range" class="slider" max="100" value="0">
+        <div class="time">0:00 / 0:00</div>
+        <a href="${audio.querySelector('source').src}"><img src="${root}res/download.svg" title="download" alt="download"></a>
+    `;
+
+    audio.classList.add("hidden");
+    block.appendChild(controls);
+
+    var play_button = controls.querySelector(".play-button");
+    play_button.onclick = () => {
+        if (audio.paused) {
+            audio.play();
+            play_button.className = "play-button playing";
+        } else {
+            audio.pause();
+            play_button.className = "play-button paused";
+        }
+    }
+
+    var seeking = false;
+
+    var time_element = controls.querySelector(".time");
+    audio.addEventListener("timeupdate", () => {
+        if (!seeking) slider.value = (audio.currentTime / audio.duration) * 100;
+        time_element.textContent = get_audio_time_string(audio.currentTime) + " / " + get_audio_time_string(audio.duration);
+    })
+
+    var slider = controls.querySelector(".slider");
+    slider.onmousedown = slider.ontouchstart = () => { seeking = true; }
+    slider.onmouseup = slider.ontouchend = () => { seeking = false; }
+    slider.onchange = () => {
+        audio.currentTime = audio.duration * (slider.value / 100);
+        time_element.textContent = get_audio_time_string(audio.currentTime) + " / " + get_audio_time_string(audio.duration);
+    }
+
+    audio.load();
+    audio.onloadeddata = slider.onchange;
+
+    audio.onended = () => {
+        play_button.className = "play-button paused";
+    }
+}
+
+function get_audio_time_string(seconds) {
+    seconds = Math.floor(seconds);
+
+    var sec = seconds % 60;
+    var min = Math.floor(seconds / 60) % 60;
+    var hour = Math.floor(seconds / 60 / 60);
+    if (sec < 10) sec = '0'+sec;
+    if (hour > 0 && min < 10) min = '0'+min;
+
+    if (hour > 0) {
+        return hour + ':' + min + ':' + sec;
+    } else {
+        return min + ':' + sec;
+    }
 }

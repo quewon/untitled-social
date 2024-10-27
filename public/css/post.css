@@ -71,6 +71,35 @@ img, video {
     width: 100%;
 }
 
+.audio {
+    background: var(--theme-color);
+}
+.audio .controls {
+    display: flex;
+    gap: 1.5em;
+    font-family: monospace;
+    align-items: center;
+    width: 100%;
+    height: 5em;
+    padding: 1.5em;
+    box-sizing: border-box;
+    color: white;
+}
+.audio div {
+    white-space: nowrap;
+}
+.audio img {
+    height: 1.5em;
+    width: 2em;
+}
+.play-button img {
+    display: none;
+}
+.play-button.playing .pause-icon,
+.play-button.paused .play-icon {
+    display: block;
+}
+
 /* album block */
 
 .album {
