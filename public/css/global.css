@@ -31,7 +31,7 @@ details summary {
 }
 
 dialog {
-    border: 1px dotted var(--theme-color);
+    border: 2px dotted var(--theme-color);
     color: var(--theme-color);
     padding: 3rem;
     text-align: center;

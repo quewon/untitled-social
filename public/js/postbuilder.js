@@ -82,6 +82,7 @@ function post_to_markdown() {
 
 // publish post
 
+const confirm_dialog = document.getElementById("confirm-dialog");
 const upload_dialog = document.getElementById("upload-dialog");
 const post_name = document.getElementById("post-name");
 

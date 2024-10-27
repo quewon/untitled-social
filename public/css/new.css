@@ -54,6 +54,11 @@ main > div:first-child button:hover, main > div:first-child button:active {
     background-color: lightgray;
 }
 
+.dialog-close-button {
+    border-color: black;
+    color: black;
+}
+
 label, .replying-to, .options, .buttonbar, .drop-zone {
     font-family: monospace;
 }

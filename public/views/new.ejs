@@ -33,7 +33,7 @@
                 <button onclick="add_post_block('rec')">rec</button>
                 <button onclick="add_post_block('draw')">draw</button>
                 <span class="grow"></span>
-                <button onclick="upload_post()">post!</button>
+                <button onclick="confirm_dialog.showModal()">post!</button>
             </div>
 
             <p>
@@ -208,10 +208,18 @@
         </div>
     </template>
 
+    <dialog id="confirm-dialog">
+        ready to post?<br>
+        posts can't be deleted or edited, so make sure everything looks good!<br>
+        <br>
+        <button class="dialog-close-button" onclick="this.parentElement.close()">cancel</button>
+        <button onclick="this.parentElement.close(); upload_post()">ready!</button>
+    </dialog>
+
     <dialog id="upload-dialog">
         uploading post...
         <br><br>
-        <button onclick="uploading_post=false; this.parentElement.close()">cancel</button>
+        <button class="dialog-close-button" onclick="uploading_post=false; this.parentElement.close()">cancel</button>
     </dialog>
     
 </body>
