@@ -434,12 +434,13 @@ function setup_canvas(block) {
     var eraser = block.querySelector(".eraser");
 
     var context = canvas.getContext("2d");
-    context.lineCap = "round";
 
     var mode = 0;
     var mousedown = false;
     var radius = [5, 3];
     var prev_point;
+
+    context.lineCap = "round";
 
     pencil.onclick = () => {
         eraser.classList.remove("selected");
