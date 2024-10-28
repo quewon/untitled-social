@@ -25,10 +25,6 @@
         margin-right: .5em;
         width: calc(100% - 1em);
     }
-    /* .content {
-        border-right: none;
-        border-left: none;
-    } */
 }
 
 @media only screen and (max-width: 500px) {

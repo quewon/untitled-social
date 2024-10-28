@@ -1,5 +1,3 @@
-window.root = document.getElementById("root").textContent;
-
 const max_file_size = 1000 * 1000 * 10;
 
 const replying_to = document.getElementById("replying_to").textContent;
@@ -101,7 +99,7 @@ async function upload_post() {
     form.append("post", post_to_markdown());
     form.append("replying_to", replying_to);
 
-    var res = await fetch(root + 'publish', {
+    var res = await fetch('/publish', {
         method: 'POST',
         body: form
     });
@@ -111,7 +109,7 @@ async function upload_post() {
     upload_dialog.close();
     
     if (json && json.path) {
-        location.href = root + json.path;
+        location.href = '/' + json.path;
     } else {
         alert("error? try again!");
     }
@@ -314,7 +312,7 @@ async function upload_file(file, src_element, block) {
     var form = new FormData();
     form.append("file", file);
 
-    var res = await fetch(root + 'upload', {
+    var res = await fetch('/upload', {
         method: 'POST',
         body: form
     });

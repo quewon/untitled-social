@@ -1,5 +1,3 @@
-window.root = document.getElementById("root").textContent;
-
 function treat_posts() {
     for (let album of document.querySelectorAll(".album")) {
         treat_album(album);
@@ -69,12 +67,12 @@ function treat_audio(block) {
     controls.className = "controls";
     controls.innerHTML = `
         <a class="play-button paused">
-            <img class="play-icon" src="${root}res/play.svg" title="play" alt="play">
-            <img class="pause-icon" src="${root}res/pause.svg" title="pause" alt="pause">
+            <img class="play-icon" src="/res/play.svg" title="play" alt="play">
+            <img class="pause-icon" src="/res/pause.svg" title="pause" alt="pause">
         </a>
         <input type="range" class="slider" max="100" value="0">
         <div class="time">0:00 / 0:00</div>
-        <a href="${audio.querySelector('source').src}"><img src="${root}res/download.svg" title="download" alt="download"></a>
+        <a class="download-button" href="${audio.querySelector('source').src}"><img src="/res/download.svg" title="download" alt="download"></a>
     `;
 
     audio.classList.add("hidden");

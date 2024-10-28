@@ -181,6 +181,11 @@ textarea {
     display: block;
 }
 
+/* audio block */
+.audio .download-button {
+    display: none;
+}
+
 /* draw block */
 
 .draw {

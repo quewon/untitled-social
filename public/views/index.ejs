@@ -3,7 +3,7 @@
 <head>
     <%- include ('fragments/global-head.ejs') %>
     <title>untitled social</title>
-    <link rel="stylesheet" href="<%= root %>css/index.css">
+    <link rel="stylesheet" href="/css/index.css">
     <style>
         main {
             gap: .5em;
@@ -20,10 +20,10 @@
 
             <div class="indexed-post">
                 <span><%= posts.length - i %></span>
-                <a class="title" href="<%= root %>posts/<%= post.path %>">
+                <a class="title" href="/posts/<%= post.path %>">
                     <%= post.title %>
                 </a>
-                <a style="white-space: pre" href="<%= root %>posts/<%= post.author_path %>"><em><%= post.author %></em></a>
+                <a style="white-space: pre" href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a>
                 <span title="<%= post.timestamp %>"><%= post.date %></span>
             </div>
         <% } %>

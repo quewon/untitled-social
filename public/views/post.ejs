@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="<%= root %>css/post.css">
-    <link rel="stylesheet" href="<%= root %>css/index.css">
+    <link rel="stylesheet" href="/css/post.css">
+    <link rel="stylesheet" href="/css/index.css">
     <%- include ('fragments/global-head.ejs') %>
     <title><%= title %></title>
     <style>
@@ -25,16 +25,16 @@
                         </a>
                     </td>
                     <td class="flex">
-                        <span class="grow">from <a href="<%= root %>posts/<%= author_path %>"><em><%= author %></em></a> · <%= date_informal %></span>
-                        <a href="<%= root %>reply/<%= path %>">reply</a>
+                        <span class="grow">from <a href="/posts/<%= author_path %>"><em><%= author %></em></a> · <%= date_informal %></span>
+                        <a href="/reply/<%= path %>">reply</a>
                     </td>
                 </tr>
                 <% if (locals.replying_to) { %>
                     <tr>
                         <td>re:</td>
                         <td class="flex">
-                            <a class="grow" href="<%= root %>posts/<%= replying_to.path %>"><%= replying_to.title %></a>
-                            <span>by <a href="<%= root %>posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></span>
+                            <a class="grow" href="/posts/<%= replying_to.path %>"><%= replying_to.title %></a>
+                            <span>by <a href="/posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></span>
                         </td>
                     </tr>
                 <% } %>
@@ -53,10 +53,10 @@
                     <% let post = replies[i] %>
                     <div class="indexed-post">
                         <span><%= replies.length - i %></span>
-                        <a class="title" href="<%= root %>posts/<%= post.path %>">
+                        <a class="title" href="/posts/<%= post.path %>">
                             <%= post.title %>
                         </a>
-                        <a style="white-space: pre" href="<%= root %>posts/<%= post.author_path %>"><em><%= post.author %></em></a>
+                        <a style="white-space: pre" href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a>
                         <span title="<%= post.timestamp %>"><%= post.date %></span>
                     </div>
                 <% } %>
@@ -66,7 +66,7 @@
     
 </body>
 
-<script src="<%= root %>js/post.js"></script>
+<script src="/js/post.js"></script>
 <script>
     treat_posts();
 </script>

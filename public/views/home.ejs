@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="<%= root %>css/post.css">
+    <link rel="stylesheet" href="/css/post.css">
     <%- include ('fragments/global-head.ejs') %>
     <title>untitled social</title>
     <style>
@@ -30,19 +30,19 @@
                     <table>
                         <tr>
                             <td>
-                                <a class="share-anchor" href="<%= root %>posts/<%= post.path %>" title="go to post">--\></a>
+                                <a class="share-anchor" href="/posts/<%= post.path %>" title="go to post">--\></a>
                             </td>
                             <td class="flex">
-                                <span class="grow">from <a href="<%= root %>posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span title="<%= post.timestamp %>"><%= post.date_informal %></span></span>
-                                <a href="<%= root %>reply/<%= post.path %>">reply</a>
+                                <span class="grow">from <a href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span title="<%= post.timestamp %>"><%= post.date_informal %></span></span>
+                                <a href="/reply/<%= post.path %>">reply</a>
                             </td>
                         </tr>
                         <% if (post.replying_to) { %>
                             <tr>
                                 <td>re:</td>
                                 <td class="flex">
-                                    <a class="grow" href="<%= root %>posts/<%= post.replying_to.path %>"><%= post.replying_to.title %></a>
-                                    <span>by <a href="<%= root %>posts/<%= post.replying_to.author_path %>"><%= post.replying_to.author %></a></span>
+                                    <a class="grow" href="/posts/<%= post.replying_to.path %>"><%= post.replying_to.title %></a>
+                                    <span>by <a href="/posts/<%= post.replying_to.author_path %>"><%= post.replying_to.author %></a></span>
                                 </td>
                             </tr>
                         <% } %>
@@ -51,7 +51,7 @@
                         <div class="content">
                             <%- post.preview_body %>
                             <% if (post.preview_body != post.body) { %>
-                                <p class="read-more"><a href="<%= root %>posts/<%= post.path %>">read more...</a></p>
+                                <p class="read-more"><a href="/posts/<%= post.path %>">read more...</a></p>
                             <% } %>
                         </div>
                     <% } %>
@@ -59,7 +59,7 @@
                         <% if (post.reply_count > 0) { %>
                             <tr>
                                 <td>
-                                    <a href="<%= root %>posts/<%= post.path %>">
+                                    <a href="/posts/<%= post.path %>">
                                         <%= post.reply_count %>
                                         <% if (post.reply_count > 1) { %>
                                             replies
@@ -86,13 +86,13 @@
         <footer>
             <nav>
                 <% if (page > 1) { %>
-                    <a href="<%= root %>page/<%= Number(page) - 1%>">&lt;--</a>
+                    <a href="/page/<%= Number(page) - 1%>">&lt;--</a>
                 <% } else { %>
                     <pre>   </pre>
                 <% } %>
                 <%= page %>
                 <% if (page < max_page) { %>
-                    <a href="<%= root %>page/<%= Number(page) + 1 %>">--&gt;</a>
+                    <a href="/page/<%= Number(page) + 1 %>">--&gt;</a>
                 <% } else { %>
                     <pre>   </pre>
                 <% } %>
@@ -102,7 +102,7 @@
     
 </body>
 
-<script src="<%= root %>js/post.js"></script>
+<script src="/js/post.js"></script>
 <script>
     treat_posts();
 

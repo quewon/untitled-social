@@ -25,13 +25,10 @@ app.use('/', express.static(path.join(__dirname, '../public')));
     app.set('views', path.join(__dirname, '../public/views'));
 
 app.get('/', (req, res) => {
-    res.locals.root = '/';
-    res.render('home', { feed: get_feed(0, res.locals.root), page: 1, max_page: get_max_page() });
+    res.render('home', { feed: get_feed(0), page: 1, max_page: get_max_page() });
 })
 
 app.get('/posts', (req, res) => {
-    res.locals.root = '../';
-
     const posts = sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC");
 
     var feed = [];
@@ -43,8 +40,6 @@ app.get('/posts', (req, res) => {
 })
 
 app.get('/posts/:author', (req, res) => {
-    res.locals.root = '../../';
-
     const posts = sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC");
 
     var feed = [];
@@ -58,12 +53,10 @@ app.get('/posts/:author', (req, res) => {
 })
 
 app.get('/posts/:author/:id', (req, res) => {
-    res.locals.root = '../../../';
-
     const path = req.params.author + '/' + req.params.id;
     const post = sqlite.query(sqlite.db, "posts", { path: path });
     if (post) {
-        res.render('post', parse_post(post, res.locals.root));
+        res.render('post', parse_post(post));
     } else {
         res.render('post', {
             title: '?',
@@ -83,18 +76,16 @@ app.get('/posts/:author/:id', (req, res) => {
 })
 
 app.get('/new', (req, res) => {
-    res.render('new', { root: '../../' });
+    res.render('new');
 })
 
 app.get('/reply/:author/:id', (req, res) => {
-    res.locals.root = '../../../';
-
     const path = req.params.author + '/' + req.params.id;
     const post = sqlite.query(sqlite.db, "posts", { path: path });
 
     if (post) {
         res.render('new', {
-            replying_to: parse_post(post, res.locals.root)
+            replying_to: parse_post(post)
         })
     } else {
         res.redirect('/new');
@@ -102,10 +93,8 @@ app.get('/reply/:author/:id', (req, res) => {
 })
 
 app.get('/page/:pagenumber', (req, res) => {
-    res.locals.root = '../../';
-
     const page = Number(req.params.pagenumber) || 0;
-    const feed = get_feed(page - 1, res.locals.root);
+    const feed = get_feed(page - 1);
     res.render('home', { feed: feed, page: page, max_page: get_max_page() });
 })
 
@@ -114,11 +103,11 @@ function get_max_page() {
     return Math.ceil(stmt.get().count / posts_per_page);
 }
 
-function get_feed(page, root) {
+function get_feed(page) {
     const posts = sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC LIMIT " + posts_per_page + " OFFSET " + (page * posts_per_page));
     var feed = [];
     for (let post of posts) {
-        feed.push(parse_post(post, root));
+        feed.push(parse_post(post));
     }
     return feed;
 }
@@ -127,7 +116,7 @@ function get_author_path(name) {
     return name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
 }
 
-function parse_post(post, root) {
+function parse_post(post) {
     const replies = sqlite.queryall(sqlite.db, "posts", { replying_to: post.path }, "ORDER BY timestamp DESC");
     var reply_posts = [];
     for (let reply of replies) {
@@ -171,8 +160,8 @@ function parse_post(post, root) {
         date_informal: date,
         author: post.author,
         author_path: post.author_path,
-        preview_body: parse_markdown(post.body.split("\r\n---\r\n")[0], root),
-        body: parse_markdown(post.body, root),
+        preview_body: parse_markdown(post.body.split("\r\n---\r\n")[0]),
+        body: parse_markdown(post.body),
         path: post.path,
         replies: reply_posts,
         reply_count: replies.length,
@@ -191,7 +180,7 @@ function parse_post_minimal(post) {
     }
 }
 
-function parse_markdown(markdown, root) {
+function parse_markdown(markdown) {
     markdown = markdown.replace(/(.)\r\n(?!\r\n)/g, '$1  \r\n');
     markdown = markdown.replaceAll("> ", "&gt; ");
 
@@ -232,7 +221,7 @@ function parse_markdown(markdown, root) {
 
             let element = `<div class='${tag} block' data-type='${tag}'>`;
 
-            src = root + src;
+            src = '/' + src;
 
             switch (tag) {
                 case "image":

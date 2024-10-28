@@ -33,8 +33,12 @@ details summary {
 dialog {
     border: 2px dotted var(--theme-color);
     color: var(--theme-color);
-    padding: 3rem;
+    padding: 1em;
+    max-width: 15em;
     text-align: center;
+}
+dialog::backdrop {
+    background: rgba(255, 255, 255, .5);
 }
 
 input, textarea, button {
