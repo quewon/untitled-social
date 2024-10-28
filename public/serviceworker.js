@@ -6,7 +6,7 @@ const dynamic_cache_limit = 30;
 
 const static_assets = [
     '/new',
-    '/fallback.html', // <-- make sure it's up to date!
+    '/fallback.html', // <-- make sure it looks like the other pages!
     '/manifest.json',
 
     '/css/global.css',
