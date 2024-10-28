@@ -100,16 +100,23 @@ async function upload_post() {
     var res = await fetch('/publish', {
         method: 'POST',
         body: form
+    })
+    .catch(() => {
+        uploading_post = false;
     });
-    var json = await res.json();
+
+    var json;
+    if (uploading_post) {
+        json = await res.json();
+    }
     
     uploading_post = false;
     upload_dialog.close();
     
     if (json && json.path) {
         location.href = '/' + json.path;
-    } else {
-        alert("error? try again!");
+    } else if (!json) {
+        alert("you're offline. try again later!");
     }
 }
 
