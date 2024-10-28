@@ -88,8 +88,6 @@ async function upload_post() {
     upload_dialog.showModal();
     uploading_post = true;
 
-    console.log("uploading files...");
-
     await upload_all_files();
 
     if (!uploading_post) return;
@@ -280,6 +278,7 @@ async function upload_all_files() {
             if (block.classList.contains("upload-failed")) {
                 if (!counted_failed_upload) {
                     failed_upload_count++;
+                    console.log(failed_upload_count);
                     counted_failed_upload = true;
 
                     if (failed_upload_count > 3) {
@@ -292,15 +291,12 @@ async function upload_all_files() {
 
                 block.classList.remove("upload-failed");
             }
-            if (!block.classList.contains("upload-complete")) {
-                let file = file_of_objecturl[block.dataset.src];
-                await upload_file(file, get_file_block_src_element(block), block);
+            if (!block.classList.contains("upload-complete") && !block.classList.contains("saving")) {
+                await upload_file(file_of_objecturl[block.dataset.src], block);
             }
         }
 
         await wait(500);
-
-        console.log(failed_upload_count);
     }
 }
 
@@ -308,7 +304,7 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function upload_file(file, src_element, block) {
+async function upload_file(file, block) {
     var form = new FormData();
     form.append("file", file);
 
@@ -320,7 +316,6 @@ async function upload_file(file, src_element, block) {
 
     if (json && json.path) {
         block.dataset.src = json.path;
-        if (src_element) src_element.src = json.path;
         if (block) block.classList.add("upload-complete");
     } else {
         if (block) block.classList.add("upload-failed");
@@ -385,7 +380,7 @@ function start_recording(block) {
                         if (recorder.mimeType.trim() == '') {
                             extension = ".webm";
                         } else {
-                            extension = "." + recorder.mimeType.split('/')[1];
+                            extension = "." + recorder.mimeType.split('/')[1].split(';')[0];
                         }
                         break;
                 }
@@ -452,6 +447,8 @@ function setup_canvas(block) {
     pencil.onclick();
 
     canvas.onmousedown = canvas.ontouchstart = (e) => {
+        if (block.classList.contains("upload-complete")) return;
+
         mousedown = true;
         canvas.classList.add("drawing");
 
@@ -461,7 +458,15 @@ function setup_canvas(block) {
         let y = touch.pageY - rect.top - document.documentElement.scrollTop;
         draw(x, y);
     }
-    canvas.onmouseup = canvas.onmouseleave = canvas.ontouchend = () => {
+    
+    document.addEventListener("mouseup", drawend);
+    window.addEventListener("blur", drawend);
+    canvas.ontouchend = drawend;
+    
+    function drawend() {
+        canvas.classList.remove("drawing");
+        if (block.classList.contains("upload-complete")) return;
+
         if (prev_point) {
             let x = prev_point.x;
             let y = prev_point.y;
@@ -471,14 +476,18 @@ function setup_canvas(block) {
 
         mousedown = false;
         prev_point = null;
-        canvas.classList.remove("drawing");
 
         // turn canvas into blob
+        block.classList.add("saving");
         canvas.toBlob((blob) => {
+            if (block.classList.contains("upload-complete")) return;
+            if (block.dataset.src in file_of_objecturl)
+                delete file_of_objecturl[block.dataset.src];
             const url = URL.createObjectURL(blob);
             file_of_objecturl[url] = new File([blob], "doodle");
             block.dataset.src = url;
         })
+        block.classList.remove("saving");
     }
     document.addEventListener("mousemove", (e) => {
         if (mousedown) {

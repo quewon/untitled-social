@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const compression = require('compression');
 const marked = require('marked');
 const sqlite = require('./sqlite.js');
 
@@ -15,6 +16,7 @@ const max_file_size = 1000 * 1000 * 10; //10mb
 
 //
 
+app.use(compression({ level: 1 }));
 app.use('/media', express.static(path.join(__dirname, '../media')));
 app.use('/', express.static(path.join(__dirname, '../public')));
     // use form data

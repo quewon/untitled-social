@@ -70,7 +70,7 @@ function treat_audio(block) {
             <img class="play-icon" src="/res/play.svg" title="play" alt="play">
             <img class="pause-icon" src="/res/pause.svg" title="pause" alt="pause">
         </a>
-        <input type="range" class="slider" max="100" value="0">
+        <input type="range" class="slider" min="0" max="100" value="0">
         <div class="time">0:00 / 0:00</div>
         <a class="download-button" href="${audio.querySelector('source').src}"><img src="/res/download.svg" title="download" alt="download"></a>
     `;
@@ -92,21 +92,26 @@ function treat_audio(block) {
     var seeking = false;
 
     var time_element = controls.querySelector(".time");
-    audio.addEventListener("timeupdate", () => {
-        if (!seeking) slider.value = (audio.currentTime / audio.duration) * 100;
-        time_element.textContent = get_audio_time_string(audio.currentTime) + " / " + get_audio_time_string(audio.duration);
-    })
+    audio.ontimeupdate = audio.onloadedmetadata = audio.ondurationchange = () => {
+        if (!seeking) {
+            if (audio.duration == Infinity) {
+                slider.value = 0;
+            } else if (!isNaN(audio.duration)) {
+                slider.value = (audio.currentTime / audio.duration) * 100;
+            }
+        }
+        time_element.textContent = get_audio_time_string(audio.currentTime) + " / " + get_audio_time_string(audio.duration == Infinity ? 0 : audio.duration);
+    };
 
     var slider = controls.querySelector(".slider");
     slider.onmousedown = slider.ontouchstart = () => { seeking = true; }
     slider.onmouseup = slider.ontouchend = () => { seeking = false; }
     slider.onchange = () => {
-        audio.currentTime = audio.duration * (slider.value / 100);
+        audio.currentTime = audio.duration * (slider.value / 100) || 0;
         time_element.textContent = get_audio_time_string(audio.currentTime) + " / " + get_audio_time_string(audio.duration);
     }
 
     audio.load();
-    audio.onloadeddata = slider.onchange;
 
     audio.onended = () => {
         play_button.className = "play-button paused";
