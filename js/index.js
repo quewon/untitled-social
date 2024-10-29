@@ -183,7 +183,6 @@ function parse_post_minimal(post) {
 }
 
 function parse_markdown(markdown) {
-    markdown = markdown.replace(/(.)\r\n(?!\r\n)/g, '$1  \r\n');
     markdown = markdown.replaceAll("> ", "&gt; ");
 
     // search for albums
@@ -191,7 +190,7 @@ function parse_markdown(markdown) {
     let index = markdown.indexOf(search);
     while (index != -1) {
         let split = markdown.split(search);
-        let split2 = split[1].split(')\n)');
+        let split2 = split[1].split(')\r\n)');
         let in_between = split2[0].split(')\r\n)')[0].slice(3);
         let before = split[0];
         let after = 
@@ -244,6 +243,8 @@ function parse_markdown(markdown) {
             index = markdown.indexOf(search);
         }
     }
+    
+    markdown = markdown.replace(/(.)\r\n(?!\r\n)/g, '$1  \r\n');
 
     return marked.parse(markdown);
 }
