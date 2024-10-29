@@ -60,7 +60,7 @@ self.addEventListener('activate', (e) => {
 })
 
 self.addEventListener('fetch', (e) => {
-    const prioritize_cached = e.request.url.includes('media/') || e.request.url.includes('res/') || static_assets.includes(e.request.url);
+    const prioritize_cached = e.request.url.includes('media/') || e.request.url.includes('res/') || static_assets.includes(e.request.url.replace(self.location.origin, ''));
 
     e.respondWith(
         caches.match(e.request).then(cacheRes => {
