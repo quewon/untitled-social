@@ -60,17 +60,21 @@ self.addEventListener('activate', (e) => {
 })
 
 self.addEventListener('fetch', (e) => {
-    const prioritize_cached = e.request.url.includes('media/') || e.request.url.includes('res/') || static_assets.includes(e.request.url.replace(self.location.origin, ''));
+    const is_static = static_assets.includes(e.request.url.replace(self.location.origin, ''));
+    const prioritize_cached = e.request.url.includes('media/') || e.request.url.includes('res/') || is_static;
 
     e.respondWith(
         caches.match(e.request).then(cacheRes => {
             if (prioritize_cached) {
                 return cacheRes || fetch(e.request).then(fetchRes => {
-                    return caches.open(dynamic_cache_name).then(cache => {
+                    return caches.open(is_static ? static_cache_name : dynamic_cache_name).then(cache => {
                         cache.put(e.request.url, fetchRes.clone());
-                        limit_cache_size(dynamic_cache_name, dynamic_cache_limit);
+                        if (is_static) limit_cache_size(dynamic_cache_name, dynamic_cache_limit);
                         return fetchRes;
                     })
+                })
+                .catch((err) => {
+                    return err;
                 })
             } else {
                 return fetch(e.request).then(fetchRes => {
@@ -84,9 +88,12 @@ self.addEventListener('fetch', (e) => {
                     return cacheRes || caches.match('/fallback.html')
                 })
             }
-        }).catch(() => {
-            if (!e.request.url.includes('media/') && !e.request.url.includes('res/'))
+        }).catch((err) => {
+            if (!e.request.url.includes('media/') && !e.request.url.includes('res/')) {
                 return caches.match('/fallback.html')
+            } else {
+                return err;
+            }
         })
     )
 })

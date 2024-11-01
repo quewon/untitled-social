@@ -37,8 +37,11 @@ table .flex > *:last-child {
 
 .content {
     background: var(--post-bg);
-    border: 1px solid var(--post-border);
     padding: 1em;
+
+    box-shadow: 0 0 5px var(--post-border);
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 /* blocks */

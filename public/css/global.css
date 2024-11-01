@@ -5,9 +5,9 @@
 
     --theme-color: #4f8ac9;
 
-    --post-bg: rgb(250, 250, 250);
-    --post-border: black;
+    --post-bg: white;
     --album-bg: black;
+    --post-border: rgba(0, 0, 0, .2);
 }
 
 body, html {

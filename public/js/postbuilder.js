@@ -97,26 +97,20 @@ async function upload_post() {
     form.append("post", post_to_markdown());
     form.append("replying_to", replying_to);
 
-    var res = await fetch('/publish', {
+    var json = await fetch('/publish', {
         method: 'POST',
         body: form
     })
-    .catch(() => {
-        uploading_post = false;
-    });
+    .then((res) => res.json())
+    .catch((err) => console.log(err))
 
-    var json;
-    if (uploading_post) {
-        json = await res.json();
-    }
-    
     uploading_post = false;
     upload_dialog.close();
     
     if (json && json.path) {
         location.href = '/' + json.path;
-    } else if (!json) {
-        alert("you're offline. try again later!");
+    } else {
+        alert("you're offline (or the server is). try again later!");
     }
 }
 
@@ -295,8 +289,6 @@ async function upload_all_files() {
                         return;
                     }
                 }
-
-                block.classList.remove("upload-failed");
             }
             if (!block.classList.contains("upload-complete") && !block.classList.contains("saving")) {
                 await upload_file(file_of_objecturl[block.dataset.src], block);
@@ -315,15 +307,19 @@ async function upload_file(file, block) {
     var form = new FormData();
     form.append("file", file);
 
-    var res = await fetch('/upload', {
+    var json = await fetch('/upload', {
         method: 'POST',
         body: form
-    });
-    var json = await res.json();
+    })
+    .then((res) => res.json())
+    .catch((err) => console.log(err))
 
     if (json && json.path) {
         block.dataset.src = json.path;
-        if (block) block.classList.add("upload-complete");
+        if (block) {
+            block.classList.remove("upload-failed");
+            block.classList.add("upload-complete");
+        }
     } else {
         if (block) block.classList.add("upload-failed");
 
