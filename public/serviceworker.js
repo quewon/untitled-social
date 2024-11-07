@@ -5,8 +5,8 @@ const dynamic_cache_name = 'site-dynamic-v1';
 const dynamic_cache_limit = 30;
 
 const static_assets = [
-    '/new',
     '/fallback.html', // <-- make sure it looks like the other pages!
+    '/new',
     '/manifest.json',
 
     '/css/global.css',

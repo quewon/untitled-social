@@ -6,22 +6,6 @@ const compression = require('compression');
 const marked = require('marked');
 const sqlite = require('./sqlite.js');
 
-const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        if (!fs.existsSync('media'))
-            fs.mkdirSync('media');
-        cb(null, 'media');
-    },
-    filename: (req, file, cb) => {
-        cb(null, nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + file.originalname);
-    }
-})
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: max_file_size }
-}).single('file');
-
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -42,6 +26,26 @@ app.use('/', express.static(path.join(__dirname, '../public')));
     // ejs
     app.set('view engine', 'ejs');
     app.set('views', path.join(__dirname, '../public/views'));
+
+// multer
+
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        if (!fs.existsSync('media'))
+            fs.mkdirSync('media');
+        cb(null, 'media');
+    },
+    filename: (req, file, cb) => {
+        cb(null, nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + file.originalname);
+    }
+})
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: max_file_size }
+}).single('file');
+
+// routing
 
 app.get('/', (req, res) => {
     res.render('home', { feed: get_feed(0), page: 1, max_page: get_max_page() });
@@ -130,6 +134,58 @@ function get_feed(page) {
     }
     return feed;
 }
+
+// post
+
+app.post('/upload', (req, res) => {
+    upload(req, res, err => {
+        if (err) {
+            if (err instanceof multer.MulterError) {
+                res.send({
+                    message: err.message
+                })
+            }
+        } else {
+            try {
+                res.send({
+                    message: 'success',
+                    path: req.file.path
+                })
+            }
+            catch {
+                // should not happen
+                res.send();
+            }
+        }
+    })
+});
+
+app.post('/publish', multer().none(), (req, res) => {
+    var replying_to = req.body.replying_to.trim();
+    if (replying_to == "") {
+        replying_to = null;
+    }
+
+    var name = req.body.name.trim();
+    name = name == "" ? "anonymous" : name;
+
+    const body = req.body.post.trim();
+    const path = get_author_path(name) + '/' + nanoid(8);
+    
+    sqlite.insert(sqlite.db, "posts", {
+        author: name,
+        author_path: get_author_path(name),
+        body: body,
+        timestamp: create_timestamp(),
+        path: path,
+        replying_to: replying_to
+    })
+
+    res.send({
+        message: "post received!",
+        path: 'posts/' + path
+    })
+});
 
 function get_author_path(name) {
     return name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
@@ -299,58 +355,6 @@ function nanoid(e=21) {
         t += a[63 & r[n]];
     return t;
 };
-
-// upload post
-
-app.post('/upload', (req, res) => {
-    upload(req, res, err => {
-        if (err) {
-            if (err instanceof multer.MulterError) {
-                res.send({
-                    message: err.message
-                })
-            }
-        } else {
-            try {
-                res.send({
-                    message: 'success',
-                    path: req.file.path
-                })
-            }
-            catch {
-                // should not happen
-                res.send();
-            }
-        }
-    })
-});
-
-app.post('/publish', multer().none(), (req, res) => {
-    var replying_to = req.body.replying_to.trim();
-    if (replying_to == "") {
-        replying_to = null;
-    }
-
-    var name = req.body.name.trim();
-    name = name == "" ? "anonymous" : name;
-
-    const body = req.body.post.trim();
-    const path = get_author_path(name) + '/' + nanoid(8);
-    
-    sqlite.insert(sqlite.db, "posts", {
-        author: name,
-        author_path: get_author_path(name),
-        body: body,
-        timestamp: create_timestamp(),
-        path: path,
-        replying_to: replying_to
-    })
-
-    res.send({
-        message: "post received!",
-        path: 'posts/' + path
-    })
-});
 
 app.listen(port, () => {
     console.log(`server listening on port ${port}.`);
