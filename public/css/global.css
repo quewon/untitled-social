@@ -3,7 +3,7 @@
     --max-post-width: 30rem;
     --max-img-height: 30rem;
 
-    --theme-color: #4f8ac9;
+    --theme-color: #076ad3;
 
     --post-bg: white;
     --album-bg: black;
@@ -24,6 +24,11 @@ body, html {
 
 .hidden {
     display: none;
+}
+
+img.icon {
+    height: 1em;
+    vertical-align: middle;
 }
 
 details summary {
@@ -157,6 +162,7 @@ main {
 /*  */
 
 header {
+    background: var(--post-bg);
     padding: .5em .75em;
     border-bottom: 1px dotted var(--theme-color);
 
@@ -181,12 +187,12 @@ header > .grow {
 }
 
 footer {
+    background: var(--post-bg);
     border-top: 1px dotted var(--theme-color);
     padding: .75em;
 }
 footer a {
     font-family: monospace;
-    font-size: 1rem;
 }
 footer pre {
     margin: 0;

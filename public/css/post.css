@@ -2,6 +2,7 @@
     width: var(--max-post-width);
     word-break: break-word;
     border: 1px solid var(--post-border);
+    background: var(--post-bg);
 }
 
 .post table {
@@ -40,7 +41,6 @@ table .flex > *:last-child {
 }
 
 .content {
-    background: var(--post-bg);
     padding: 1em;
 
     margin-top: 5px;
@@ -77,10 +77,8 @@ img, video {
     width: 100%;
 }
 
-.audio {
-    background: var(--theme-color);
-}
 .audio .controls {
+    background: var(--theme-color);
     display: flex;
     gap: 1.5em;
     font-family: monospace;

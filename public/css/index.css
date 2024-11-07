@@ -1,4 +1,5 @@
 .indexed-post {
+    background: var(--post-bg);
     border: 1px solid var(--post-border);
     padding: 2px 1em;
     display: flex;

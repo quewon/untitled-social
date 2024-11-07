@@ -93,6 +93,11 @@ input[type="file"] {
     box-sizing: border-box;
 }
 
+#post-name,
+#post-builder .block {
+    background: var(--post-bg);
+}
+
 .buttonbar {
     margin-top: .25rem;
     display: flex;
@@ -166,10 +171,11 @@ textarea {
     align-items: center;
 }
 .rec img {
-    height: 10em;
+    height: 100px;
 }
 
 .rec.recording .wrapper {
+    background: #ffeff2;
     border-color: red;
 }
 .rec .wrapper button {
