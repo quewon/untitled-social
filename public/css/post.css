@@ -17,6 +17,7 @@
     padding-left: .5em;
     padding-right: .5em;
     white-space: nowrap;
+    vertical-align: top;
 }
 .post table td:nth-child(2) {
     white-space: wrap;
@@ -42,9 +43,6 @@ table .flex > *:last-child {
 
 .content {
     padding: 1em;
-
-    margin-top: 5px;
-    margin-bottom: 5px;
 }
 
 /* blocks */
@@ -70,7 +68,6 @@ table .flex > *:last-child {
 }
 img, video {
     max-width: 100%;
-    max-height: var(--max-img-height);
 }
 
 .audio audio {
