@@ -18,6 +18,7 @@ const static_assets = [
     '/js/app.js',
     '/js/post.js',
     '/js/postbuilder.js',
+    '/js/lib/heic2any.min.js',
 
     '/res/icons/32.png',
     '/res/download.svg',

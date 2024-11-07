@@ -165,8 +165,8 @@ function get_file_block_src_element(block) {
 function add_files(file_block, files) {
     var new_blocks = [];
 
-    [...files].forEach(file => {
-        var block = add_file(file_block, file);
+    [...files].forEach(async file => {
+        var block = await add_file(file_block, file);
         if (block) {
             file_block = block;
             new_blocks.push(block);
@@ -189,7 +189,7 @@ function add_files(file_block, files) {
     }
 }
 
-function add_file(file_block, file) {
+async function add_file(file_block, file) {
     if (file.size > max_file_size) {
         alert("File too large :(\n(max file size: 10 MB)");
         file_block.after(add_post_block('upload'));
@@ -208,6 +208,14 @@ function add_file(file_block, file) {
             } else {
                 file_block.after(block);
             }
+        }
+
+        if (file.type == 'image/heic') {
+            var result = await heic2any({
+                blob: file,
+                toType: 'image/jpeg'
+            });
+            file = new File([result], file.name.split('.')[0] + ".jpg");
         }
 
         var object_url = URL.createObjectURL(file);
@@ -290,7 +298,7 @@ async function upload_all_files() {
                     }
                 }
             }
-            if (!block.classList.contains("upload-complete") && !block.classList.contains("saving")) {
+            if (block.dataset.src && !block.classList.contains("upload-complete") && !block.classList.contains("saving")) {
                 await upload_file(file_of_objecturl[block.dataset.src], block);
             }
         }
@@ -489,8 +497,8 @@ function setup_canvas(block) {
             const url = URL.createObjectURL(blob);
             file_of_objecturl[url] = new File([blob], "doodle");
             block.dataset.src = url;
+            block.classList.remove("saving");
         })
-        block.classList.remove("saving");
     }
     document.addEventListener("mousemove", e => {
         if (mousedown) {
