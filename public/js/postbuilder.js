@@ -126,7 +126,7 @@ function drop(file_block, element, e) {
 
     var files = [];
     if (e.dataTransfer.items) {
-            [...e.dataTransfer.items].forEach((item) => {
+            [...e.dataTransfer.items].forEach(item => {
                 if (item.kind === "file") {
                     const file = item.getAsFile();
                     files.push(file);
@@ -165,7 +165,7 @@ function get_file_block_src_element(block) {
 function add_files(file_block, files) {
     var new_blocks = [];
 
-    [...files].forEach((file) => {
+    [...files].forEach(file => {
         var block = add_file(file_block, file);
         if (block) {
             file_block = block;
@@ -217,10 +217,10 @@ function add_file(file_block, file) {
             case "text":
                 var textarea = block.querySelector("textarea");
                 filereader.readAsText(file, "UTF-8");
-                filereader.onload = (e) => {
+                filereader.onload = e => {
                     textarea.value = e.target.result;
                 }
-                filereader.onerror = (e) => {
+                filereader.onerror = () => {
                     textarea.value = "error reading file";
                 }
                 break;
@@ -348,7 +348,7 @@ function start_recording(block) {
     if (navigator.mediaDevices.getUserMedia) {
         let chunks = [];
         let time = 0;
-        let onSuccess = (stream) => {
+        let onSuccess = stream => {
             const recorder = new MediaRecorder(stream);
             block.classList.add("recording");
             recorder.start();
@@ -363,7 +363,7 @@ function start_recording(block) {
                 block.classList.remove("recording");
             }
 
-            recorder.onstop = (e) => {
+            recorder.onstop = () => {
                 clearInterval(interval);
 
                 // create block
@@ -397,12 +397,12 @@ function start_recording(block) {
                 source.type = recorder.mimeType;
             }
 
-            recorder.ondataavailable = (e) => {
+            recorder.ondataavailable = e => {
                 chunks.push(e.data);
             }
         }
 
-        let onError = (error) => {
+        let onError = error => {
             console.log(error);
             alert("error occured while recording :(");
             block.remove();
@@ -449,7 +449,7 @@ function setup_canvas(block) {
 
     pencil.onclick();
 
-    canvas.onmousedown = canvas.ontouchstart = (e) => {
+    canvas.onmousedown = canvas.ontouchstart = e => {
         if (block.classList.contains("upload-complete")) return;
 
         mousedown = true;
@@ -482,7 +482,7 @@ function setup_canvas(block) {
 
         // turn canvas into blob
         block.classList.add("saving");
-        canvas.toBlob((blob) => {
+        canvas.toBlob(blob => {
             if (block.classList.contains("upload-complete")) return;
             if (block.dataset.src in file_of_objecturl)
                 delete file_of_objecturl[block.dataset.src];
@@ -492,7 +492,7 @@ function setup_canvas(block) {
         })
         block.classList.remove("saving");
     }
-    document.addEventListener("mousemove", (e) => {
+    document.addEventListener("mousemove", e => {
         if (mousedown) {
             let rect = canvas.getBoundingClientRect();
             let x = e.pageX - rect.left;
@@ -500,7 +500,7 @@ function setup_canvas(block) {
             draw(x, y);
         }
     })
-    canvas.addEventListener("touchmove", (e) => {
+    canvas.addEventListener("touchmove", e => {
         if (mousedown) {
             let rect = canvas.getBoundingClientRect();
             let x = e.touches[0].pageX - rect.left;
@@ -525,7 +525,7 @@ function setup_canvas(block) {
         prev_point = { x: x, y: y };
     }
 
-    canvas.addEventListener("contextmenu", (e) => {
+    canvas.addEventListener("contextmenu", e => {
         e.preventDefault();
     })
 }

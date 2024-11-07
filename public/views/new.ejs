@@ -96,7 +96,7 @@
                 <div class="post">
                     <table>
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <% if (replying_to.body == '') { %>
                                     replying to
                                     <a href="/posts/<%= replying_to.path %>">a shout</a>
@@ -113,8 +113,8 @@
                         <% if (replying_to.replying_to) { %>
                             <tr>
                                 <td>re:</td>
-                                <td>
-                                    <a href="/posts/<%= replying_to.replying_to.path %>"><%= replying_to.replying_to.title %></a>
+                                <td class="flex">
+                                    <a class="grow" href="/posts/<%= replying_to.replying_to.path %>"><%= replying_to.replying_to.title %></a>
                                     <span>by <a href="/posts/<%= replying_to.replying_to.author_path %>"><%= replying_to.replying_to.author %></a></span>
                                 </td>
                             </tr>

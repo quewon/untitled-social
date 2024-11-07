@@ -31,7 +31,7 @@ details summary {
 }
 
 dialog {
-    border: 2px dotted var(--theme-color);
+    border: 1px dotted var(--theme-color);
     color: var(--theme-color);
     padding: 1em;
     max-width: 15em;
@@ -138,10 +138,10 @@ input[type="range"]::-moz-range-progress {
 /* layout */
 
 main {
-    padding: 2em 1em;
+    padding: .75em .75em;
     display: flex;
     flex-direction: column;
-    gap: 3em;
+    gap: .75em;
 }
 
 .posts-list {
@@ -157,8 +157,8 @@ main {
 /*  */
 
 header {
-    padding: 1rem;
-    border-bottom: 2px dotted var(--theme-color);
+    padding: .5em .75em;
+    border-bottom: 1px dotted var(--theme-color);
 
     display: flex;
     gap: .5em 2em;
@@ -181,8 +181,8 @@ header > .grow {
 }
 
 footer {
-    border-top: 2px dotted var(--theme-color);
-    padding: 1em;
+    border-top: 1px dotted var(--theme-color);
+    padding: .75em;
 }
 footer a {
     font-family: monospace;

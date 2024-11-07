@@ -21,11 +21,6 @@ if (!fs.existsSync('db/db.db')) {
             "path"	TEXT,
             "replying_to" TEXT,
             PRIMARY KEY("post_id")
-        );
-        CREATE TABLE "temp_media" (
-            "path"	TEXT,
-            "post_id"	INTEGER,
-            "confirmed"	INTEGER
         )
     `);
 } else {

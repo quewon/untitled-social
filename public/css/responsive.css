@@ -1,7 +1,4 @@
 @media only screen and (max-width: 767px) {
-    main {
-        padding: 2em 0;
-    }
     main, nav {
         text-align: center;
     }
@@ -14,16 +11,6 @@
     .post, .posts-list {
         max-width: unset;
         width: 100% !important;
-    }
-    .posts-list {
-        padding-left: .5em;
-        padding-right: .5em;
-    }
-
-    .post table {
-        margin-left: .5em;
-        margin-right: .5em;
-        width: calc(100% - 1em);
     }
 }
 

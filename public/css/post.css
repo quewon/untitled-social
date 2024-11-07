@@ -1,11 +1,15 @@
 .post {
     width: var(--max-post-width);
     word-break: break-word;
+    border: 1px solid var(--post-border);
 }
 
 .post table {
     width: 100%;
     font-family: monospace;
+    margin-left: .5em;
+    margin-right: .5em;
+    width: calc(100% - 1em);
 }
 .post table td {
     padding: 0;
@@ -39,7 +43,6 @@ table .flex > *:last-child {
     background: var(--post-bg);
     padding: 1em;
 
-    box-shadow: 0 0 5px var(--post-border);
     margin-top: 5px;
     margin-bottom: 5px;
 }

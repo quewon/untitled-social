@@ -2,8 +2,25 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const compression = require('compression');
+
 const marked = require('marked');
 const sqlite = require('./sqlite.js');
+
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        if (!fs.existsSync('media'))
+            fs.mkdirSync('media');
+        cb(null, 'media');
+    },
+    filename: (req, file, cb) => {
+        cb(null, nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + file.originalname);
+    }
+})
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: max_file_size }
+}).single('file');
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -284,24 +301,9 @@ function nanoid(e=21) {
 };
 
 // upload post
-const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        if (!fs.existsSync('media'))
-            fs.mkdirSync('media');
-        cb(null, 'media');
-    },
-    filename: (req, file, cb) => {
-        cb(null, nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + file.originalname);
-    }
-})
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: max_file_size }
-}).single('file');
 
 app.post('/upload', (req, res) => {
-    upload(req, res, (err) => {
+    upload(req, res, err => {
         if (err) {
             if (err instanceof multer.MulterError) {
                 res.send({
@@ -316,6 +318,7 @@ app.post('/upload', (req, res) => {
                 })
             }
             catch {
+                // should not happen
                 res.send();
             }
         }
