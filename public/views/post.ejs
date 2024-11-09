@@ -20,12 +20,12 @@
             <table>
                 <tr>
                     <td>
-                        <a onclick="history.back()">
+                        <a tabindex="0" onclick="history.back()">
                             &lt;\--
                         </a>
                     </td>
                     <td class="flex">
-                        <span class="grow">from <a href="/posts/<%= author_path %>"><em><%= author %></em></a> · <%= date_informal %></span>
+                        <span class="grow">from <a href="/posts/<%= author_path %>"><em><%= author %></em></a> · <%= date_relative %></span>
                         <a href="/reply/<%= path %>">reply</a>
                     </td>
                 </tr>

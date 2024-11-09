@@ -25,11 +25,6 @@ body, html {
     display: none;
 }
 
-img.icon {
-    height: 1em;
-    vertical-align: middle;
-}
-
 details summary {
     cursor: pointer;
 }
@@ -109,6 +104,26 @@ input[type="range"] {
     background: transparent;
     cursor: pointer;
     width: 100%;
+}
+input[type="range"]:disabled {
+    cursor: default;
+}
+
+.icon-button {
+    border: none;
+    padding: 0;
+    flex-shrink: 0;
+    transition: scale 100ms;
+}
+.icon-button:hover, .icon-button:active {
+    background: transparent;
+}
+.icon-button img {
+    height: 1em;
+    vertical-align: middle;
+}
+.icon-button:active {
+    scale: .85;
 }
 
 /* layout */

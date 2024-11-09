@@ -66,55 +66,62 @@ function treat_audio(block) {
     var controls = document.createElement("div");
     controls.className = "controls";
     controls.innerHTML = `
-        <a class="play-button paused">
-            <img class="play-icon" src="/res/play.svg" title="play" alt="play">
-            <img class="pause-icon" src="/res/pause.svg" title="pause" alt="pause">
-        </a>
-        <input type="range" class="slider" min="0" max="100" value="0">
+        <button class="play-button icon-button paused">
+            <img class="play-icon" src="/res/play.svg" title="play" alt="play" draggable="false">
+            <img class="pause-icon" src="/res/pause.svg" title="pause" alt="pause" draggable="false">
+        </button>
+        <input type="range" min="0" max="100" value="0" disabled="true">
         <div class="time">0:00 / 0:00</div>
-        <a class="download-button" href="${audio.querySelector('source').src}"><img src="/res/download.svg" title="download" alt="download"></a>
+        <a class="download-button icon-button" href="${audio.querySelector('source').src}"><img src="/res/download.svg" title="download" alt="download" draggable="false"></a>
     `;
 
     audio.classList.add("hidden");
-    block.appendChild(controls);
+    block.prepend(controls);
 
     var play_button = controls.querySelector(".play-button");
     play_button.onclick = () => {
-        if (audio.paused) {
+        if (play_button.classList.contains("paused")) {
+            if (audio.currentTime >= audio.duration) {
+                audio.pause();
+                audio.currentTime = 0.0001;
+            }
             audio.play();
-            play_button.className = "play-button playing";
         } else {
             audio.pause();
-            play_button.className = "play-button paused";
         }
+    }
+
+    audio.onplay = () => {
+        play_button.classList.remove("paused");
+        play_button.classList.add("playing");
+    }
+
+    audio.onended = audio.onpause = () => {
+        play_button.classList.add("paused");
+        play_button.classList.remove("playing");
     }
 
     var seeking = false;
 
     var time_element = controls.querySelector(".time");
     audio.ontimeupdate = audio.onloadedmetadata = audio.ondurationchange = () => {
-        if (!seeking) {
+        if (!isNaN(audio.duration) && audio.duration != Infinity && audio.duration > 0.0001) slider.disabled = false;
+        if (play_button.classList.contains("playing")) {
             if (audio.duration == Infinity) {
                 slider.value = 0;
-            } else if (!isNaN(audio.duration)) {
+            } else if (!isNaN(audio.duration) && audio.duration > 0.0001 && !seeking) {
                 slider.value = (audio.currentTime / audio.duration) * 100;
             }
         }
         time_element.textContent = get_audio_time_string(audio.currentTime) + " / " + get_audio_time_string(audio.duration == Infinity ? 0 : audio.duration);
     };
 
-    var slider = controls.querySelector(".slider");
+    var slider = controls.querySelector("input[type='range']");
     slider.onmousedown = slider.ontouchstart = () => { seeking = true; }
     slider.onmouseup = slider.ontouchend = () => { seeking = false; }
     slider.onchange = () => {
         audio.currentTime = audio.duration * (slider.value / 100) || 0;
         time_element.textContent = get_audio_time_string(audio.currentTime) + " / " + get_audio_time_string(audio.duration);
-    }
-
-    audio.load();
-
-    audio.onended = () => {
-        play_button.className = "play-button paused";
     }
 }
 

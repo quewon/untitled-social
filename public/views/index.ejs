@@ -16,6 +16,8 @@
 
     <main>
         <div class="posts-list">
+            <div><%- title %> (<%= posts.length %>)</div>
+            
             <% for (let i=0; i<posts.length; i++) { %>
                 <% let post = posts[i] %>
     

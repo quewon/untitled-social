@@ -85,12 +85,6 @@ img, video {
     padding: 1.5em;
     box-sizing: border-box;
 }
-.audio .controls a {
-    flex-shrink: 0;
-}
-.audio .controls a:hover, .audio .controls a:active {
-    background: transparent;
-}
 .content > .audio:last-child .controls {
     border-bottom: none;
 }
@@ -102,11 +96,11 @@ img, video {
 .audio div {
     white-space: nowrap;
 }
-.audio img {
+.audio .icon-button img {
     height: 1.5em;
     width: 2em;
 }
-.play-button img {
+.icon-button.play-button img {
     height: 1.2em;
     display: none;
 }

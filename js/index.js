@@ -60,7 +60,7 @@ app.get('/posts', (req, res) => {
         feed.push(parse_post_minimal(post));
     }
 
-    res.render('index', { posts: feed });
+    res.render('index', { title: "all posts", posts: feed });
 })
 
 app.get('/posts/:author', (req, res) => {
@@ -73,7 +73,7 @@ app.get('/posts/:author', (req, res) => {
         }
     }
 
-    res.render('index', { posts: feed });
+    res.render('index', { title: `posts by <em>${req.params.author}</em>`, posts: feed });
 })
 
 app.get('/posts/:author/:id', (req, res) => {
@@ -240,42 +240,11 @@ function parse_post(post) {
         reply_posts.push(parse_post_minimal(reply));
     }
 
-    var date;
-    var today = create_timestamp().split(" ")[0];
-    var post_day = post.timestamp.split(" ")[0];
-
-    var ptime = post.timestamp.split(" ")[1].split(":");
-    var hour = ptime[0] > 12 ? ptime[0] - 12 : ptime[0];
-    if (hour[0] == "0") hour = hour.substring(1);
-    var ampm = ptime[0] > 12 ? "pm" : "am";
-
-    if (today == post_day) {
-        date = hour + ":" + ptime[1] + ampm;
-    } else {
-        var ts = today.split("-");
-        var ps = post_day.split("-");
-
-        if (ts[0] == ps[0]) {
-            if (Number(ts[2]) - Number(ps[2]) == 1) {
-                date = "yesterday";
-            } else {
-                date = ps[1] + "/" + ps[2];
-            }
-        } else {
-            date = post_day.replaceAll("-", "/");
-        }
-        
-        var time = hour +  ampm;
-        if (time == "12am") time = "midnight";
-
-        date = time + ", " + date;
-    }
-
     return {
-        title: get_post_title(post.body),
+        title: get_post_title(post),
         timestamp: post.timestamp,
-        date: post_day.replaceAll("-", "/"),
-        date_informal: date,
+        date: post.timestamp.split(" ")[0].replaceAll("-", "/"),
+        date_relative: get_relative_date(post.timestamp),
         author: post.author,
         author_path: post.author_path,
         preview_body: get_body_preview(post.body),
@@ -289,9 +258,10 @@ function parse_post(post) {
 
 function parse_post_minimal(post) {
     return {
-        title: get_post_title(post.body),
+        title: get_post_title(post),
         timestamp: post.timestamp,
         date: post.timestamp.split(" ")[0].replaceAll("-", "/"),
+        date_relative: get_relative_date(post.timestamp),
         author: post.author,
         author_path: post.author_path,
         path: post.path
@@ -345,7 +315,7 @@ function parse_markdown(markdown) {
                     element += `<img src='${src}'>`;
                     break;
                 case "audio":
-                    element += `<audio controls><source src='${src}'></audio>`;
+                    element += `<audio controls preload="metadata"><source src='${src}'></audio>`;
                     break;
                 case "video":
                     element += `<video controls><source src='${src}'></video>`;
@@ -365,11 +335,16 @@ function parse_markdown(markdown) {
     return marked.parse(markdown);
 }
 
-function get_post_title(body) {
-    var title = body.split("\n")[0];
+function get_post_title(post) {
+    var title = post.body.split("\n")[0];
     if (title != "") {
         title = title.substring(0, max_title_length);
     }
+
+    if (title.includes("![album](")) title = "[album]";
+    else if (title.includes("![image]")) title = "[image]";
+    else if (title.includes("![audio]")) title = "[audio]";
+
     return title.trim();
 }
 
@@ -387,6 +362,41 @@ function create_timestamp() {
     var sec = format_number(date.getSeconds());
 
     return date.getFullYear() + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec
+}
+
+function get_relative_date(timestamp) {
+    var date;
+    var today = create_timestamp().split(" ")[0];
+    var post_day = timestamp.split(" ")[0];
+
+    var ptime = timestamp.split(" ")[1].split(":");
+    var hour = ptime[0] > 12 ? ptime[0] - 12 : ptime[0];
+    if (hour[0] == "0") hour = hour.substring(1);
+    var ampm = ptime[0] > 12 ? "pm" : "am";
+
+    if (today == post_day) {
+        date = hour + ":" + ptime[1] + ampm;
+    } else {
+        var ts = today.split("-");
+        var ps = post_day.split("-");
+
+        if (ts[0] == ps[0]) {
+            if (Number(ts[2]) - Number(ps[2]) == 1) {
+                date = "yesterday";
+            } else {
+                date = ps[1] + "/" + ps[2];
+            }
+        } else {
+            date = post_day.replaceAll("-", "/");
+        }
+        
+        var time = hour +  ampm;
+        if (time == "12am") time = "midnight";
+
+        date = time + ", " + date;
+    }
+
+    return date;
 }
 
 function format_number(n) {

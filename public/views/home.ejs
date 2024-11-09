@@ -30,10 +30,10 @@
                     <table>
                         <tr>
                             <td>
-                                <a class="share-anchor" href="/posts/<%= post.path %>" title="go to post">--\></a>
+                                <a class="share-anchor" href="/posts/<%= post.path %>" title="go to post">--/></a>
                             </td>
                             <td class="flex">
-                                <span class="grow">from <a href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span title="<%= post.timestamp %>"><%= post.date_informal %></span></span>
+                                <span class="grow">from <a href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span title="<%= post.timestamp %>"><%= post.date_relative %></span></span>
                                 <a href="/reply/<%= post.path %>">reply</a>
                             </td>
                         </tr>
@@ -41,7 +41,12 @@
                             <tr>
                                 <td>re:</td>
                                 <td class="flex">
-                                    <a class="grow" href="/posts/<%= post.replying_to.path %>"><%= post.replying_to.title %></a>
+                                    <a class="grow" href="/posts/<%= post.replying_to.path %>">
+                                        <%= post.replying_to.title %>
+                                        <% if (post.replying_to.title == "[album]" || post.replying_to.title == "[image]" || post.replying_to.title == "[audio]") { %>
+                                            · <%= post.replying_to.date_relative %>
+                                        <% } %>
+                                    </a>
                                     <span>by <a href="/posts/<%= post.replying_to.author_path %>"><%= post.replying_to.author %></a></span>
                                 </td>
                             </tr>
@@ -86,20 +91,20 @@
         <footer>
             <nav>
                 <% if (page > 1) { %>
-                    <a href="/page/<%= Number(page) - 1%>">&lt;--</a>
+                    <a href="/page/<%= Number(page) - 1%>"><···</a>
                 <% } else { %>
                     <pre>   </pre>
                 <% } %>
                 <%= page %>
                 <% if (page < max_page) { %>
-                    <a href="/page/<%= Number(page) + 1 %>">--&gt;</a>
+                    <a href="/page/<%= Number(page) + 1 %>">···></a>
                 <% } else { %>
                     <pre>   </pre>
                 <% } %>
             </nav>
 
             <div>
-                <a onclick="subscribe()">get notifications</a>
+                <a tabindex="0" onclick="subscribe()">get notifications</a>
             </div>
         </footer>
     </div>

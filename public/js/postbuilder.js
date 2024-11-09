@@ -321,9 +321,20 @@ function start_recording(block) {
         let chunks = [];
         let time = 0;
         let onSuccess = stream => {
-            const recorder = new MediaRecorder(stream);
+            let mimeType;
+            if (MediaRecorder.isTypeSupported('audio/mpeg')) {
+                mimeType = 'audio/mpeg';
+            } else if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+                mimeType = 'audio/webm;codecs=opus'
+            } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+                mimeType = 'audio/webm';
+            }
+
+            const recorder = new MediaRecorder(stream, { mimeType: mimeType });
             block.classList.add("recording");
             recorder.start();
+
+            stop_button.focus();
 
             var interval = setInterval(() => {
                 time += 1;
