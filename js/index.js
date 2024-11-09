@@ -367,71 +367,74 @@ function create_timestamp() {
 function get_relative_date(timestamp) {
     var date;
 
-    var now = create_timestamp().split(" ");
-    timestamp = timestamp.split(" ");
+    var current_date = new Date();
+    var post_date = new Date();
 
-    var today = now[0];
-    var post_day = timestamp[0];
+    let a = timestamp.split(" ");
+    let tdate = a[0].split("-");
+    let ttime = a[1].split(":");
+    post_date.setFullYear(tdate[0]);
+    post_date.setMonth(Number(tdate[1]) - 1);
+    post_date.setDate(tdate[2]);
+    post_date.setHours(ttime[0]);
+    post_date.setMinutes(ttime[1]);
+    post_date.setSeconds(ttime[2]);
 
-    var ttime = now[1].split(":");
-    var ptime = timestamp[1].split(":");
+    var ampm_time = 
+        (Number(ttime[0]) > 12 ? Number(ttime[0]) - 12 : Number(ttime[0])) +
+        (Number(ttime[0]) > 12 ? "pm" : "am");
+    if (ampm_time == "12am") ampm_time = "midnight";
 
-    var hour = Number(ptime[0]) > 12 ? Number(ptime[0]) - 12 : Number(ptime[0]);
-    var ampm = Number(ptime[0]) > 12 ? "pm" : "am";
-    var time = hour + ampm;
-    if (time == "12am") time = "midnight";
+    let current_year = current_date.getFullYear();
+    if (current_year == tdate[0]) {
+        if (current_date.getMonth() == post_date.getMonth()) {
+            let current_day = current_date.getDate();
+            if (current_day == tdate[2]) {
+                var seconds_elapsed = (current_date - post_date) / 1000;
+                var minutes_elapsed = seconds_elapsed / 60;
+                var hours_elapsed = minutes_elapsed / 60;
 
-    if (today == post_day) {
-        if (ttime[0] == ptime[0]) { // same hour
-            if (ttime[1] == ptime[1]) { // same minute
-                let seconds_passed = Number(ttime[2]) - Number(ptime[2]);
-                if (seconds_passed <= 5) {
-                    date = "now"
+                if (hours_elapsed < 1) {
+                    if (minutes_elapsed < 1) {
+                        if (seconds_elapsed < 5) {
+                            date = "now"
+                        } else {
+                            date = Math.floor(seconds_elapsed) + " seconds ago"
+                        }
+                    } else {
+                        if (minutes_elapsed < 2) {
+                            date = "a minute ago";
+                        } else {
+                            date = Math.floor(minutes_elapsed) + " minutes ago";
+                        }
+                    }
                 } else {
-                    date = seconds_passed + " seconds ago"
+                    if (hours_elapsed < 2) {
+                        date = "an hour ago";
+                    } else {
+                        date = ampm_time;
+                    }
                 }
             } else {
-                let minutes_passed = Number(ttime[1]) - Number(ptime[1]);
-                if (minutes_passed == 1) {
-                    date = "a minute ago";
+                var days_passed = current_day - Number(tdate[2]);
+                if (days_passed == 1) {
+                    date = ampm_time + ", yesterday";
+                } else if (days_passed < 7) {
+                    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                    date = ampm_time + ", " + weekdays[post_date.getDay()];
                 } else {
-                    date = minutes_passed + " minutes ago";
+                    date = ampm_time + ", " + days_passed + " days ago";
                 }
             }
         } else {
-            let hours_passed = Number(ttime[0]) - Number(ptime[0]);
-            if (hours_passed == 1) {
-                date = "an hour ago";
-            } else {
-                date = time;
-            }
+            date = tdate[1] + "/" + tdate[2];
         }
     } else {
-        var ts = today.split("-");
-        var ps = post_day.split("-");
-
-        if (ts[0] == ps[0]) {
-            if (ts[1] == ps[1]) {
-                let days_passed = Number(ts[2]) - Number(ps[2]);
-                if (days_passed == 1) {
-                    date = time + ", yesterday";
-                } else if (days_passed < 7) {
-                    var post_date = new Date(new Date() - 1000 * 60 * 60 * 24 * days_passed);
-                    let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                    date = time + ", " + weekdays[post_date.getDay()];
-                } else {
-                    date = time + ", " + days_passed + " days ago";
-                }
-            } else {
-                date = ps[1] + "/" + ps[2];
-            }
+        var years_passed = current_year - tdate[0];
+        if (years_passed == 1) {
+            date = "last year";
         } else {
-            let years_passed = Number(ts[0]) - Number(ps[0]);
-            if (years_passed == 1) {
-                date = "last year";
-            } else {
-                date = years_passed + " years ago";
-            }
+            date = years_passed + " years ago";
         }
     }
 

@@ -17,6 +17,7 @@ exports.send = (subscription, title, body, url) => {
             url: url
         })
     )
+    .catch(err => console.log(err))
 }
 
 exports.broadcast = (title, body, url) => {

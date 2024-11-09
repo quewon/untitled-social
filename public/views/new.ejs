@@ -19,9 +19,12 @@
     <main>
         <div>
             <label>name</label><br>
-            <input autofocus type="text" placeholder="anonymous" id="post-name">
+            <div>
+                <input autofocus type="text" placeholder="anonymous" id="post-name">
+            </div>
+            <div class="previous-name-tooltip hidden"><small>leave blank to use previous name</small></div>
 
-            <br><br>
+            <br>
 
             <label>post</label><br>
             <div id="post-builder"></div>
@@ -34,7 +37,7 @@
                 <button onclick="add_post_block('rec')" alt="record audio" title="record audio">record</button>
                 <button onclick="add_post_block('draw')" alt="doodle something" title="doodle something">doodle</button>
                 <span class="grow"></span>
-                <button class="post-button" onclick="confirm_dialog.showModal()">post!</button>
+                <button class="post-button" onclick="confirm_dialog.showModal()">post</button>
             </div>
 
             <p>
@@ -202,7 +205,7 @@
         posts can't be deleted or edited, so make sure everything looks good!<br>
         <br>
         <button class="dialog-close-button" onclick="this.parentElement.close()">cancel</button>
-        <button onclick="this.parentElement.close(); upload_post()">ready!</button>
+        <button onclick="this.parentElement.close(); upload_post()">post!</button>
     </dialog>
 
     <dialog id="upload-dialog">
