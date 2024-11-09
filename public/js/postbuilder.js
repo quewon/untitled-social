@@ -3,7 +3,6 @@ const max_file_size = 1000 * 1000 * 10;
 const replying_to = document.getElementById("replying_to").textContent;
 
 const block_templates = {
-    upload: document.getElementById("upload-block-template"),
     rec: document.getElementById("rec-block-template"),
     draw: document.getElementById("draw-block-template"),
 
@@ -114,34 +113,6 @@ async function upload_post() {
     }
 }
 
-// file blocks
-
-function dragover(element, e) {
-    element.classList.add('dragover');
-    e.preventDefault();
-}
-
-function drop(file_block, element, e) {
-    if (element) element.classList.remove('dragover');
-
-    var files = [];
-    if (e.dataTransfer.items) {
-            [...e.dataTransfer.items].forEach(item => {
-                if (item.kind === "file") {
-                    const file = item.getAsFile();
-                    files.push(file);
-                }
-            })
-    } else {
-        files = e.dataTransfer.files;
-    }
-
-    add_files(file_block, files);
-
-    e.preventDefault();
-    e.stopPropagation();
-}
-
 var filereader = new FileReader();
 
 function get_file_block_src_element(block) {
@@ -162,22 +133,23 @@ function get_file_block_src_element(block) {
     return null;
 }
 
-function add_files(file_block, files) {
+async function add_files(files) {
     var new_blocks = [];
+    var files = [...files];
 
-    [...files].forEach(async file => {
-        var block = await add_file(file_block, file);
+    post_builder.classList.add("adding-files");
+
+    for (let file of files) {
+        var block = await add_file(file);
         if (block) {
-            file_block = block;
             new_blocks.push(block);
         }
-    });
+    }
 
     if (new_blocks.length > 1) {
         // create album
         var album = add_post_block('album');
         var slides = album.querySelector(".slides");
-        file_block.after(album);
 
         for (let block of new_blocks) {
             block.classList.remove("block");
@@ -187,13 +159,13 @@ function add_files(file_block, files) {
 
         treat_album(album);
     }
+
+    post_builder.classList.remove("adding-files");
 }
 
-async function add_file(file_block, file) {
+async function add_file(file) {
     if (file.size > max_file_size) {
         alert("File too large :(\n(max file size: 10 MB)");
-        file_block.after(add_post_block('upload'));
-        file_block.remove();
         return;
     }
 
@@ -201,14 +173,6 @@ async function add_file(file_block, file) {
 
     if (block_templates[type]) {
         var block = add_post_block(type);
-
-        if (file_block) {
-            if (file_block.dataset.type == "upload") {
-                file_block.replaceWith(block);
-            } else {
-                file_block.after(block);
-            }
-        }
 
         if (file.type == 'image/heic') {
             var result = await heic2any({
@@ -278,7 +242,7 @@ async function upload_all_files() {
 
     var failed_upload_count = 0;
     
-    while (!all_files_uploaded()) {
+    while (!all_files_uploaded() && !post_builder.classList.contains("adding-files")) {
         var counted_failed_upload = false;
 
         // attempt to re-upload failed uploads

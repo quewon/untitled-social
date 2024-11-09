@@ -119,6 +119,6 @@ self.addEventListener('push', e => {
 })
 
 self.addEventListener('notificationclick', e => {
-    const url = e.notification.data.url? e.notification.data.url : self.location.origin;
+    const url = e.notification.data.url ? e.notification.data.url : self.location.origin;
     clients.openWindow(url);
 })

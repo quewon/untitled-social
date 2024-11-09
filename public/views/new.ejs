@@ -29,17 +29,18 @@
             <div class="buttonbar">
                 <span>+</span>
                 <button onclick="add_post_block('text')" alt="add text block" title="add text block">text</button>
-                <button onclick="add_post_block('upload')" alt="add files" title="add files">file(s)</button>
+                <button onclick="this.nextElementSibling.click()" alt="add media file(s)" title="add media file(s)">media</button>
+                    <input type="file" name="file" multiple="multiple" onchange="add_files(this.files)">
                 <button onclick="add_post_block('rec')" alt="record audio" title="record audio">record</button>
-                <button onclick="add_post_block('draw')" alt="add doodle" title="add doodle">doodle</button>
+                <button onclick="add_post_block('draw')" alt="doodle something" title="doodle something">doodle</button>
                 <span class="grow"></span>
-                <button onclick="confirm_dialog.showModal()">post!</button>
+                <button class="post-button" onclick="confirm_dialog.showModal()">post!</button>
             </div>
 
             <p>
                 <details>
                     <summary>formatting tips</summary>
-                    <p>hello. here are some ways to spice up your text, if you want to. (this website uses a modified version of markdown formatting.)</p>
+                    <p>hello. here are some ways to spice up your text.</p>
                     <table>
                         <tr>
                             <th>STYLE</th>
@@ -77,9 +78,14 @@
                             <td><h2>heading 2</h2></td>
                         </tr>
                         <tr>
+                            <th>heading 3</th>
+                            <td>### heading 3</td>
+                            <td><h3>heading 3</h3></td>
+                        </tr>
+                        <tr>
                             <th>link</th>
                             <td>[link](https://website.com)</td>
-                            <td><a href="/">link</a></td>
+                            <td><a>link</a></td>
                         </tr>
                         <tr>
                             <th>read more...</th>
@@ -133,23 +139,6 @@
     <template id="text-block-template">
         <div class="text block" data-type="text">
             <textarea oninput="this.style.height=''; this.style.height=this.scrollHeight+'px'" placeholder="write here"></textarea>
-            <%- include('fragments/post-options.ejs') %>
-        </div>
-    </template>
-
-    <template id="upload-block-template">
-        <div class="upload block" data-type="upload">
-            <div class="drop-zone" 
-                ondrop="drop(this.parentElement, this, event)" 
-                ondragover="dragover(this, event)" 
-                ondragleave="this.classList.remove('dragover')"
-            >
-                <div class="center">
-                    drop file(s) here to upload<br>
-                    or <button onclick="this.nextElementSibling.click()">browse</button>
-                        <input type="file" name="file" multiple="multiple" onchange="add_files(this.parentElement.parentElement.parentElement, this.files)">
-                </div>
-            </div>
             <%- include('fragments/post-options.ejs') %>
         </div>
     </template>

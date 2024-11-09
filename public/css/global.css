@@ -78,21 +78,6 @@ em {
     color: white;
 }
 
-button, input[type="button"], input[type="submit"] {
-    border: 1px solid black;
-    padding: .5em;
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    cursor: pointer;
-    background: transparent;
-}
-button:hover, button:active,
-input[type="submit"]:hover, input[type="submit"]:active,
-input[type="button"]:hover, input[type="button"]:active {
-    background: lightgray;
-    text-decoration: none;
-}
-
 dialog button {
     color: var(--theme-color);
     border-color: var(--theme-color);
@@ -102,48 +87,28 @@ dialog button:hover {
     color: white;
 }
 
-/*Range Reset*/
+button, input[type="button"], input[type="submit"], .dialog-close-button {
+    border: 1px solid black;
+    color: black;
+    padding: .5em;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: pointer;
+    background: transparent;
+}
+button:hover, button:active,
+input[type="submit"]:hover, input[type="submit"]:active,
+input[type="button"]:hover, input[type="button"]:active,
+.dialog-close-button:hover, .dialog-close-button:active {
+    background: lightgray;
+    color: black;
+    text-decoration: none;
+}
+
 input[type="range"] {
     background: transparent;
     cursor: pointer;
     width: 100%;
-}
-
-input[type="range"]:focus {
-    outline: none;
-}
-
-/* slider track */
-input[type="range"]::-webkit-slider-runnable-track,
-input[type="range"]::-moz-range-track,
-input[type="range"]::-moz-range-progress {
-    background-color: black;
-    border-radius: 0.5rem;
-    height: 0.5rem;  
-}
-
-input[type="range"]::-moz-range-thumb {
-    border: none; /*Removes extra border that FF applies*/
-    border-radius: 0; /*Removes default border-radius that FF applies*/
-}
-
-input[type="range"]::-webkit-slider-thumb,
-input[type="range"]::-moz-range-thumb {
-    background: white;
-    height: 1rem;
-    width: 1rem;
-    border-radius: 50%;
-}
-
-input[type="range"]:focus::-webkit-slider-thumb,
-input[type="range"]:focus::-moz-range-thumb {
-    border: none;
-    outline: 2px dotted white;
-    outline-offset: 2px;
-}
-
-input[type="range"]::-moz-range-progress {
-    background-color: lightgray;
 }
 
 /* layout */

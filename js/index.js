@@ -246,6 +246,7 @@ function parse_post(post) {
 
     var ptime = post.timestamp.split(" ")[1].split(":");
     var hour = ptime[0] > 12 ? ptime[0] - 12 : ptime[0];
+    if (hour[0] == "0") hour = hour.substring(1);
     var ampm = ptime[0] > 12 ? "pm" : "am";
 
     if (today == post_day) {

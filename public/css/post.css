@@ -117,9 +117,6 @@ img, video {
 
 /* album block */
 
-.album {
-    background: var(--album-bg);
-}
 .slides-wrapper {
     overflow-x: scroll;
     scroll-snap-type: x mandatory;

@@ -45,20 +45,7 @@ details tr:first-child th:last-child {
     max-width: var(--max-post-width);
 }
 
-main a {
-    color: black;
-    border-color: black;
-}
-main a:hover, main a:active {
-    background-color: lightgray;
-}
-
-.dialog-close-button {
-    border-color: black;
-    color: black;
-}
-
-label, .replying-to, .options, .buttonbar, .drop-zone {
+label, .replying-to, .options, .buttonbar {
     font-family: monospace;
 }
 
@@ -104,6 +91,14 @@ input[type="file"] {
     max-width: var(--max-post-width);
     align-items: center;
 }
+.post-button {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+.post-button:hover, .post-button:active {
+    background: var(--theme-color);
+    color: white;
+}
 
 .block .options {
     position: absolute;
@@ -141,19 +136,6 @@ textarea {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-}
-.file-upload-form input[type="button"] {
-    margin-top: .25em;
-}
-.drop-zone {
-    width: 100%;
-    height: 6em;
-    border: 1px dotted black;
-    position: relative;
-    box-sizing: border-box;
-}
-.drop-zone.dragover {
-    border-style: solid;
 }
 
 /* record block */
@@ -221,6 +203,7 @@ textarea {
 }
 .draw .buttons button.selected {
     border-style: solid;
+    background: lightyellow;
 }
 
 .draw.upload-complete .buttons {
