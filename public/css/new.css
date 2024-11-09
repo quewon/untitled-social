@@ -45,12 +45,11 @@ details tr:first-child th:last-child {
     max-width: var(--max-post-width);
 }
 
-main > div:first-child button, main a {
+main a {
     color: black;
     border-color: black;
 }
-main a:hover, main a:active,
-main > div:first-child button:hover, main > div:first-child button:active {
+main a:hover, main a:active {
     background-color: lightgray;
 }
 

@@ -5,6 +5,7 @@ const compression = require('compression');
 
 const marked = require('marked');
 const sqlite = require('./sqlite.js');
+const push = require('./push.js');
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -78,6 +79,7 @@ app.get('/posts/:author', (req, res) => {
 app.get('/posts/:author/:id', (req, res) => {
     const path = req.params.author + '/' + req.params.id;
     const post = sqlite.query(sqlite.db, "posts", { path: path });
+
     if (post) {
         res.render('post', parse_post(post));
     } else {
@@ -144,48 +146,88 @@ app.post('/upload', (req, res) => {
                 res.send({
                     message: err.message
                 })
+            } else {
+                res.send({ message: "error" })
             }
         } else {
-            try {
-                res.send({
-                    message: 'success',
-                    path: req.file.path
-                })
-            }
-            catch {
-                // should not happen
-                res.send();
-            }
+            res.send({
+                message: "success",
+                path: req.file.path
+            })
         }
     })
 });
 
 app.post('/publish', multer().none(), (req, res) => {
-    var replying_to = req.body.replying_to.trim();
-    if (replying_to == "") {
-        replying_to = null;
+    try {
+        var replying_to = req.body.replying_to.trim();
+        if (replying_to == "") {
+            replying_to = null;
+        }
+
+        var name = req.body.name.trim();
+        name = name == "" ? "anonymous" : name;
+
+        const body = req.body.post.trim();
+        const path = get_author_path(name) + '/' + nanoid(8);
+        
+        sqlite.insert(sqlite.db, "posts", {
+            author: name,
+            author_path: get_author_path(name),
+            body: body,
+            timestamp: create_timestamp(),
+            path: path,
+            replying_to: replying_to
+        });
+
+        if (replying_to) {
+            const reply_author = sqlite.query(sqlite.db, "posts", { path: replying_to }).author;
+            push.broadcast(author, "replied to " + reply_author + "'s post.", '/'+path);
+        } else {
+            push.broadcast(author, "wrote a new post.", '/'+path);
+        }
+
+        res.send({
+            message: "post published!",
+            path: 'posts/' + path
+        })
     }
-
-    var name = req.body.name.trim();
-    name = name == "" ? "anonymous" : name;
-
-    const body = req.body.post.trim();
-    const path = get_author_path(name) + '/' + nanoid(8);
-    
-    sqlite.insert(sqlite.db, "posts", {
-        author: name,
-        author_path: get_author_path(name),
-        body: body,
-        timestamp: create_timestamp(),
-        path: path,
-        replying_to: replying_to
-    })
-
-    res.send({
-        message: "post received!",
-        path: 'posts/' + path
-    })
+    catch (error) {
+        console.log(error);
+        res.send({ message: "error" });
+    }
 });
+
+app.post('/subscribe', multer().none(), (req, res) => {
+    try {
+        var sub = JSON.parse(req.body.data);
+        var sub_exists = sqlite.query(sqlite.db, "subscriptions", { endpoint: sub.endpoint });
+
+        if (sub_exists) {
+            sqlite.update(sqlite.db, "subscriptions", { endpoint: sub.endpoint }, {
+                timestamp: create_timestamp()
+            })
+
+            push.send(sub, "notifications already enabled.", "to turn them off, consult your site or app settings.");
+        } else {
+            sqlite.insert(sqlite.db, "subscriptions", {
+                timestamp: create_timestamp(),
+                json: req.body.data,
+                endpoint: sub.endpoint
+            })
+
+            push.send(sub, "notifications enabled!", "to turn them off, consult your site or app settings.");
+        }
+
+        res.send({
+            message: "subscription successful"
+        })
+    }
+    catch (error) {
+        console.log(error);
+        res.send({ message: "error" });
+    }
+})
 
 function get_author_path(name) {
     return name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
@@ -235,7 +277,7 @@ function parse_post(post) {
         date_informal: date,
         author: post.author,
         author_path: post.author_path,
-        preview_body: parse_markdown(post.body.split("\r\n---\r\n")[0]),
+        preview_body: get_body_preview(post.body),
         body: parse_markdown(post.body),
         path: post.path,
         replies: reply_posts,
@@ -328,6 +370,10 @@ function get_post_title(body) {
         title = title.substring(0, max_title_length);
     }
     return title.trim();
+}
+
+function get_body_preview(body) {
+    return parse_markdown(body.split("\r\n---\r\n")[0])
 }
 
 function create_timestamp() {

@@ -79,9 +79,8 @@ em {
 }
 
 button, input[type="button"], input[type="submit"] {
-    border: 1px solid var(--theme-color);
+    border: 1px solid black;
     padding: .5em;
-    color: var(--theme-color);
     text-decoration: underline;
     text-decoration-style: dotted;
     cursor: pointer;
@@ -90,9 +89,17 @@ button, input[type="button"], input[type="submit"] {
 button:hover, button:active,
 input[type="submit"]:hover, input[type="submit"]:active,
 input[type="button"]:hover, input[type="button"]:active {
+    background: lightgray;
+    text-decoration: none;
+}
+
+dialog button {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+dialog button:hover {
     background: var(--theme-color);
     color: white;
-    text-decoration: none;
 }
 
 /*Range Reset*/
@@ -189,14 +196,22 @@ footer {
     background: var(--post-bg);
     border-top: 1px dotted var(--theme-color);
     padding: .75em;
-}
-footer a {
-    font-family: monospace;
-}
-footer pre {
-    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
 }
 nav {
     display: flex;
     gap: 2em;
+}
+nav pre {
+    margin: 0;
+}
+nav a {
+    font-family: monospace;
+}
+footer > div {
+    display: flex;
+    justify-content: end;
 }

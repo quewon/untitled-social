@@ -21,7 +21,14 @@ if (!fs.existsSync('db/db.db')) {
             "path"	TEXT,
             "replying_to" TEXT,
             PRIMARY KEY("post_id")
-        )
+        );
+        CREATE TABLE "subscriptions" (
+            "subscription_id"	INTEGER,
+            "timestamp"	TEXT,
+            "json"	TEXT,
+            "endpoint"	TEXT,
+            PRIMARY KEY("subscription_id")
+        );
     `);
 } else {
     db = new Database('db/db.db');

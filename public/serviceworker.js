@@ -6,8 +6,9 @@ const dynamic_cache_limit = 30;
 
 const static_assets = [
     '/fallback.html', // <-- make sure it looks like the other pages!
-    '/new',
     '/manifest.json',
+
+    '/new',
 
     '/css/global.css',
     '/css/index.css',
@@ -21,6 +22,7 @@ const static_assets = [
     '/js/lib/heic2any.min.js',
 
     '/res/icons/32.png',
+    '/res/icons/512.png',
     '/res/download.svg',
     '/res/eraser.png',
     '/res/microphone.png',
@@ -41,7 +43,7 @@ function limit_cache_size(name, size) {
     })
 }
 
-self.addEventListener('install', (e) => {
+self.addEventListener('install', e => {
     e.waitUntil(
         caches.open(static_cache_name).then((cache) => {
             cache.addAll(static_assets);
@@ -49,9 +51,9 @@ self.addEventListener('install', (e) => {
     )
 })
 
-self.addEventListener('activate', (e) => {
+self.addEventListener('activate', e => {
     e.waitUntil(
-        caches.keys().then((keys) => {
+        caches.keys().then(keys => {
             return Promise.all(
                 keys.filter(key => key !== static_cache_name && key !== dynamic_cache_name)
                 .map(key => caches.delete(key))
@@ -60,7 +62,7 @@ self.addEventListener('activate', (e) => {
     )
 })
 
-self.addEventListener('fetch', (e) => {
+self.addEventListener('fetch', e => {
     const is_static = static_assets.includes(e.request.url.replace(self.location.origin, ''));
     const prioritize_cached = e.request.url.includes('media/') || e.request.url.includes('res/') || is_static;
 
@@ -97,4 +99,26 @@ self.addEventListener('fetch', (e) => {
             }
         })
     )
+})
+
+// push
+
+self.addEventListener('push', e => {
+    const data = e.data?.json() ?? {};
+    const title = data.title;
+    const body = data.body;
+
+    self.registration.showNotification(title, {
+        body: body,
+        icon: '/res/icons/512.png',
+        silent: true,
+        data: {
+            url: data.url ? self.location.origin + data.url : null
+        }
+    });
+})
+
+self.addEventListener('notificationclick', e => {
+    const url = e.notification.data.url? e.notification.data.url : self.location.origin;
+    clients.openWindow(url);
 })

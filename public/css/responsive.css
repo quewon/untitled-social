@@ -1,5 +1,5 @@
 @media only screen and (max-width: 767px) {
-    main, nav {
+    main, footer {
         text-align: center;
     }
     nav {
@@ -7,6 +7,9 @@
     }
     main > div {
         text-align: left;
+    }
+    footer > div {
+        justify-content: center;
     }
     .post, .posts-list {
         max-width: unset;
