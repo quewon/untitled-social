@@ -75,7 +75,7 @@ img, video {
 }
 
 .audio .controls {
-    background: var(--theme-color);
+    border: 1px solid var(--post-border);
     display: flex;
     gap: 1.5em;
     font-family: monospace;
@@ -84,7 +84,20 @@ img, video {
     height: 5em;
     padding: 1.5em;
     box-sizing: border-box;
-    color: white;
+}
+.audio .controls a {
+    flex-shrink: 0;
+}
+.audio .controls a:hover, .audio .controls a:active {
+    background: transparent;
+}
+.content > .audio:last-child .controls {
+    border-bottom: none;
+}
+.content > .audio .controls {
+    border-left: none;
+    border-right: none;
+    height: unset;
 }
 .audio div {
     white-space: nowrap;
@@ -94,6 +107,7 @@ img, video {
     width: 2em;
 }
 .play-button img {
+    height: 1.2em;
     display: none;
 }
 .play-button.playing .pause-icon,

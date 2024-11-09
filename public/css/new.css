@@ -121,6 +121,7 @@ input[type="file"] {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
 }
 
 textarea {
@@ -170,7 +171,9 @@ textarea {
     align-items: center;
 }
 .rec img {
-    height: 100px;
+    position: absolute;
+    left: 1em;
+    height: calc(100% - 1em);
 }
 
 .rec.recording .wrapper {
@@ -211,7 +214,7 @@ textarea {
 .draw .buttons button {
     background: white;
     border: 1px dotted black;
-    width: 5em;
+    width: 4.5em;
 }
 .draw .buttons button img {
     vertical-align: middle;
