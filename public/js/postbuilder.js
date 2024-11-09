@@ -83,6 +83,12 @@ const confirm_dialog = document.getElementById("confirm-dialog");
 const upload_dialog = document.getElementById("upload-dialog");
 const post_name = document.getElementById("post-name");
 
+const stored_name = localStorage.getItem("name");
+if (stored_name) {
+    post_name.placeholder = stored_name;
+    document.querySelector(".previous-name-tooltip").classList.remove("hidden");
+}
+
 async function upload_post() {
     upload_dialog.showModal();
     uploading_post = true;
@@ -90,6 +96,12 @@ async function upload_post() {
     await upload_all_files();
 
     if (!uploading_post) return;
+
+    if (post_name.value.trim() == "") {
+        post_name.value = stored_name;
+    } else {
+        localStorage.setItem("name", post_name.value);
+    }
 
     var form = new FormData();
     form.append("name", post_name.value);
