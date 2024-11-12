@@ -97,11 +97,7 @@ async function upload_post() {
 
     if (!uploading_post) return;
 
-    if (post_name.value.trim() == "") {
-        post_name.value = stored_name;
-    } else {
-        localStorage.setItem("name", post_name.value);
-    }
+    if (post_name.value.trim() == "") post_name.value = stored_name;
 
     var form = new FormData();
     form.append("name", post_name.value);
@@ -119,6 +115,7 @@ async function upload_post() {
     upload_dialog.close();
     
     if (json && json.path) {
+        localStorage.setItem("name", post_name.value);
         location.href = '/' + json.path;
     } else {
         alert("you're offline (or the server is). try again later!");
