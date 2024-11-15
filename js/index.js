@@ -182,9 +182,9 @@ app.post('/publish', multer().none(), (req, res) => {
 
         if (replying_to) {
             const reply_author = sqlite.query(sqlite.db, "posts", { path: replying_to }).author;
-            push.broadcast(name, "replied to " + reply_author + "'s post.", '/'+path);
+            push.broadcast(name, "replied to " + reply_author + "'s post.", '/posts/'+path);
         } else {
-            push.broadcast(name, "wrote a new post.", '/'+path);
+            push.broadcast(name, "wrote a new post.", '/posts/'+path);
         }
 
         res.send({
