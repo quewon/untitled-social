@@ -7,7 +7,7 @@ const marked = require('marked');
 const sqlite = require('./sqlite.js');
 const push = require('./push.js');
 
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT) || 8080;
 const app = express();
 
 // settings
@@ -182,9 +182,9 @@ app.post('/publish', multer().none(), (req, res) => {
 
         if (replying_to) {
             const reply_author = sqlite.query(sqlite.db, "posts", { path: replying_to }).author;
-            push.broadcast(name, "replied to " + reply_author + "'s post.", '/posts/'+path);
+            push.broadcast(`${name} replied to ${reply_author}'s post.`, null, '/posts/'+path);
         } else {
-            push.broadcast(name, "wrote a new post.", '/posts/'+path);
+            push.broadcast(`${name} wrote a new post.`, null, '/posts/'+path);
         }
 
         res.send({
