@@ -200,16 +200,6 @@ async function add_file(file) {
         var element_with_src;
 
         switch (type) {
-            case "text":
-                var textarea = block.querySelector("textarea");
-                filereader.readAsText(file, "UTF-8");
-                filereader.onload = e => {
-                    textarea.value = e.target.result;
-                }
-                filereader.onerror = () => {
-                    textarea.value = "error reading file";
-                }
-                break;
             case "video":
             case "audio":
                 var source = block.querySelector("source");
@@ -217,7 +207,7 @@ async function add_file(file) {
                 source.type = file.type;
                 element_with_src = source;
                 break;
-            default:
+            case "image":
                 element_with_src = get_file_block_src_element(block);
                 element_with_src.src = object_url;
                 break;

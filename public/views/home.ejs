@@ -173,6 +173,7 @@
     if (window.Notification) {
         var subscribe_button = document.getElementById("subscription-anchor");
         subscribe_button.onclick = subscribe;
+        subscribe_button.classList.remove("hidden");
     }
 
     async function subscribe() {
