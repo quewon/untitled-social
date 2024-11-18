@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const B2 = require('backblaze-b2');
 const multer = require('multer');
 

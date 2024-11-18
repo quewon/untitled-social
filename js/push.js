@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const push = require('web-push');
 const sqlite = require('./sqlite.js');
 
