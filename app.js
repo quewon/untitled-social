@@ -24,13 +24,13 @@ update_posts_in_memory();
 //
 
 app.use(compression({ level: 1 }));
-app.use('/', express.static(path.join(__dirname, '../public')));
+app.use('/', express.static(path.join(__dirname, 'public')));
     // use form data
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     // ejs
     app.set('view engine', 'ejs');
-    app.set('views', path.join(__dirname, '../public/views'));
+    app.set('views', path.join(__dirname, 'public/views'));
 
 // routing
 
