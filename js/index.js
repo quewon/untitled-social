@@ -38,6 +38,10 @@ app.get('/', (req, res) => {
     res.render('home', { feed: get_feed(0), page: 1, max_page: get_max_page() });
 })
 
+app.get('/how-to-install', (req, res) => {
+    res.render('how-to-install')
+})
+
 app.get('/posts', (req, res) => {
     var feed = [];
     for (let post of posts_in_memory) {
@@ -160,9 +164,9 @@ app.post('/publish', upload.none, (req, res) => {
 
         if (replying_to) {
             const reply_author = sqlite.query(sqlite.db, "posts", { path: replying_to }).author;
-            push.broadcast(`${name} replied to ${reply_author}'s post.`, null, '/posts/'+path);
+            push.broadcast(`${name} replied to ${reply_author}'s post.`, '/posts/'+path);
         } else {
-            push.broadcast(`${name} wrote a new post.`, null, '/posts/'+path);
+            push.broadcast(`${name} wrote a new post.`, '/posts/'+path);
         }
 
         res.send({

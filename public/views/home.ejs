@@ -17,6 +17,10 @@
             flex-grow: 1;
             overflow-y: scroll;
         }
+
+        footer .flex {
+            gap: 2em;
+        }
     </style>
 </head>
 <body>
@@ -103,8 +107,9 @@
                 <% } %>
             </nav>
 
-            <div>
+            <div class="flex">
                 <a tabindex="0" onclick="subscribe()">get notifications</a>
+                <a id="app-install-anchor" tabindex="0" href="/how-to-install">install on your phone</a>
             </div>
         </footer>
     </div>
@@ -123,12 +128,43 @@
         return check;
     };
 
-    if (window.mobileAndTabletCheck() && navigator.share) {
-        var share_anchors = document.querySelectorAll(".share-anchor");
-        for (let a of share_anchors) {
-            a.onclick = navigator.share({ url: a.href });
-            a.href = "";
+    if (window.mobileAndTabletCheck()) {
+        if (navigator.share) {
+            var share_anchors = document.querySelectorAll(".share-anchor");
+            for (let a of share_anchors) {
+                a.onclick = () => {
+                    navigator.share({ url: a.href })
+                };
+                a.href = "";
+            }
         }
+    }
+
+    //
+
+    var install_prompt;
+    var install_button = document.getElementById("app-install-anchor");
+    
+    window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        install_prompt = e;
+        install_button.textContent = "install app";
+        install_button.href = "";
+        install_button.onclick = install_app;
+    });
+
+    window.addEventListener('appinstalled', disable_install_prompt);
+
+    async function install_app() {
+        if (!install_prompt) return;
+        await install_prompt.prompt();
+        disable_install_prompt();
+    }
+
+    function disable_install_prompt() {
+        install_button.textContent = "install on your phone";
+        install_button.href = "/how-to-install";
+        install_button.onclick = null;
     }
 </script>
 
