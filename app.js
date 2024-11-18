@@ -5,8 +5,8 @@ const path = require('path');
 const compression = require('compression');
 
 const marked = require('marked');
-const sqlite = require('./sqlite.js');
-const push = require('./push.js');
+const sqlite = require('./js/sqlite.js');
+const push = require('./js/push.js');
 
 const port = process.env.PORT || 8080;
 const app = express();
@@ -125,7 +125,7 @@ function get_feed(page) {
 
 // post
 
-const upload = require('./upload.js');
+const upload = require('./js/upload.js');
 
 app.post('/upload', upload.uploadMulter, upload.uploadB2, (req, res) => {
     try {
