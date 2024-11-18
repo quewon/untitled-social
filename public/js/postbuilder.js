@@ -295,28 +295,14 @@ async function upload_file(file, block) {
     .then((res) => res.json())
     .catch((err) => console.log(err))
 
-    if (json && json.path) {
-        block.dataset.src = json.path;
+    if (json && json.url) {
+        block.dataset.src = json.url;
         if (block) {
             block.classList.remove("upload-failed");
             block.classList.add("upload-complete");
         }
     } else {
         if (block) block.classList.add("upload-failed");
-
-        if (json && json.message) {
-            console.error(json.message);
-
-            if (json.message == 'File too large') {
-                alert("File too large :(\n(max file size: 10 MB)");
-                uploading_post = false;
-                upload_dialog.close();
-                if (block) {
-                    block.after(add_post_block('upload'));
-                    block.remove();
-                }
-            }
-        }
     }
 }
 
