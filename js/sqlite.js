@@ -3,11 +3,26 @@ const fs = require('fs');
 var db;
 
 const RESET_DB = false;
+const BACKUP_DB = true;
 
 if (!fs.existsSync('db')) {
     fs.mkdirSync('db');
-} else if (RESET_DB) {
-    if (fs.existsSync('db/db.db')) fs.unlinkSync('db/db.db');
+} else {
+    if (fs.existsSync('db/db.db')) {
+        if (BACKUP_DB) {
+            db = new Database('db/db.db');
+            const date = new Date().toLocaleDateString().replaceAll('/','-');
+            
+            db.backup(`db/backup-${date}.db`)
+            .then(() => {
+                console.log('backup complete!');
+            })
+            .catch((err) => {
+                console.log('backup failed:', err);
+            });
+        }
+        if (RESET_DB) fs.unlinkSync('db/db.db');
+    }
 }
 if (!fs.existsSync('db/db.db')) {
     db = new Database('db/db.db');
