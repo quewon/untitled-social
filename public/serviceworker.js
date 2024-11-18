@@ -1,7 +1,7 @@
 // should be versioned to update cached resources
 
-const static_cache_name = 'site-static-v1-01';
-const dynamic_cache_name = 'site-dynamic-v1-01';
+const static_cache_name = 'site-static-v1-02';
+const dynamic_cache_name = 'site-dynamic-v1-02';
 const dynamic_cache_limit = 30;
 
 const static_assets = [

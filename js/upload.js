@@ -31,7 +31,7 @@ exports.uploadB2 = async (req, res, next) => {
     const file_info = await b2.uploadFile({
         uploadUrl,
         uploadAuthToken: authorizationToken,
-        fileName: nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + req.file.originalname,
+        fileName: nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + req.file.originalname.replace(/[()]/g,'-'),
         data: req.file.buffer
     });
     
