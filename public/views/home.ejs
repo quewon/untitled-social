@@ -132,9 +132,8 @@
         if (navigator.share) {
             var share_anchors = document.querySelectorAll(".share-anchor");
             for (let a of share_anchors) {
-                a.onclick = () => {
-                    navigator.share({ url: a.href })
-                };
+                const url = a.href;
+                a.onclick = () => { navigator.share({ url: url }) };
                 a.href = "";
             }
         }
