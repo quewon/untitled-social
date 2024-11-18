@@ -9,20 +9,28 @@ const vapidKeys = {
 push.setVapidDetails('mailto:quewon.chin@gmail.com', vapidKeys.publicKey, vapidKeys.privateKey);
 
 exports.send = (subscription, title, body, url) => {
-    push.sendNotification(
-        subscription,
-        JSON.stringify({
+    var json;
+
+    if (body) {
+        json = JSON.stringify({
             title: title,
             body: body,
             url: url
         })
-    )
+    } else {
+        json = JSON.stringify({
+            title: title,
+            url: url
+        })
+    }
+
+    push.sendNotification(subscription, json)
     .catch(err => console.log(err))
 }
 
-exports.broadcast = (title, body, url) => {
+exports.broadcast = (title, url) => {
     const subs = sqlite.queryall(sqlite.db, "subscriptions", {});
     for (let sub of subs) {
-        exports.send(JSON.parse(sub.json), title, body, url)
+        exports.send(JSON.parse(sub.json), title, url)
     }
 }
