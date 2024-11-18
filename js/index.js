@@ -221,8 +221,8 @@ function get_author_path(name) {
 
 function parse_post(post) {
     var reply_posts = [];
-    for (let post of posts_in_memory) {
-        if (post.replying_to && post.replying_to == post.path) {
+    for (let reply of posts_in_memory) {
+        if (reply.replying_to && reply.replying_to == post.path) {
             reply_posts.push(parse_post_minimal(reply))
         }
     }
