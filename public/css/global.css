@@ -200,3 +200,7 @@ footer > div {
     display: flex;
     justify-content: end;
 }
+footer .flex {
+    gap: .25em 2em;
+    flex-wrap: wrap;
+}
