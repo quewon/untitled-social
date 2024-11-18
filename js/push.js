@@ -1,12 +1,9 @@
+require('dotenv').config();
+
 const push = require('web-push');
 const sqlite = require('./sqlite.js');
 
-const vapidKeys = {
-    publicKey: 'BL2l-t4IJf73pZL9wd_SJ1SNQJ0wdB84KJ1L9Dzki8-NGRQtJNGmeH5HBWAyQaAPDSkaMU30TSb54aR8EI9lasU',
-    privateKey: 'K3OnJXhpuAFnHXmZ6kANOgmsukAHR7iXU_VjJ-4pTfg'
-};
-
-push.setVapidDetails('mailto:quewon.chin@gmail.com', vapidKeys.publicKey, vapidKeys.privateKey);
+push.setVapidDetails('mailto:' + process.env.ADMIN_EMAIL, process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
 
 exports.send = (subscription, title, body, url) => {
     var json;
