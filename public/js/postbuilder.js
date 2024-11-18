@@ -16,10 +16,12 @@ const media_tags = ['image', 'video', 'audio'];
 
 var file_of_objecturl = {};
 
-// ios safari requires change function to be applied through addEventListener
+// ios safari requires change function to be applied through javascript
 
-const file_input = document.getElementById("file-input");
-document.getElementById("file-input").addEventListener('change', () => { add_files(file_input.files) })
+const file_input = document.querySelector("input[type='file']");
+file_input.onchange = () => {
+    add_files(file_input.files)
+}
 
 // build post
 
@@ -148,7 +150,6 @@ function get_file_block_src_element(block) {
 
 async function add_files(files) {
     var new_blocks = [];
-    var files = [...files];
 
     post_builder.classList.add("adding-files");
 
