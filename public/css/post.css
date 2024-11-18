@@ -67,7 +67,7 @@ table .flex > *:last-child {
     text-align: center;
 }
 img, video {
-    max-width: 100%;
+    width: 100%;
 }
 
 .audio audio {
