@@ -1,5 +1,4 @@
 const max_file_size = 1000 * 1000 * 10;
-
 const replying_to = document.getElementById("replying_to").textContent;
 
 const block_templates = {
@@ -16,6 +15,11 @@ const block_templates = {
 const media_tags = ['image', 'video', 'audio'];
 
 var file_of_objecturl = {};
+
+// ios safari requires change function to be applied through addEventListener
+
+const file_input = document.getElementById("file-input");
+document.getElementById("file-input").addEventListener('change', () => { add_files(file_input.files) })
 
 // build post
 
