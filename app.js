@@ -164,9 +164,9 @@ app.post('/publish', upload.none, (req, res) => {
 
         if (replying_to) {
             const reply_author = sqlite.query(sqlite.db, "posts", { path: replying_to }).author;
-            push.broadcast(`${name} replied to ${reply_author}'s post.`, '/posts/'+path);
+            push.broadcast(`${name} replied to ${reply_author}'s post`, '/posts/'+path);
         } else {
-            push.broadcast(`${name} wrote a new post.`, '/posts/'+path);
+            push.broadcast(`${name} wrote a new post`, '/posts/'+path);
         }
 
         res.send({
@@ -190,7 +190,7 @@ app.post('/subscribe', upload.none, (req, res) => {
                 timestamp: create_timestamp()
             })
 
-            push.send(sub, "notifications already enabled.", "to turn them off, consult your site or app settings.");
+            push.send(sub, "notifications already enabled", "to turn them off, consult your site or app settings.");
         } else {
             sqlite.insert(sqlite.db, "subscriptions", {
                 timestamp: create_timestamp(),
