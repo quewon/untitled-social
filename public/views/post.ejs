@@ -25,7 +25,7 @@
                         </a>
                     </td>
                     <td class="flex">
-                        <span class="grow">from <a href="/posts/<%= author_path %>"><em><%= author %></em></a> · <%= date_relative %></span>
+                        <span class="grow">from <a href="/posts/<%= author_path %>"><em><%= author %></em></a> · <span class="date-relative"><%= timestamp %></span></span>
                         <a href="/reply/<%= path %>">reply</a>
                     </td>
                 </tr>
@@ -57,7 +57,7 @@
                             <%= post.title %>
                         </a>
                         <a style="white-space: pre" href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a>
-                        <span title="<%= post.timestamp %>"><%= post.date %></span>
+                        <span class="date"><%= post.timestamp %></span>
                     </div>
                 <% } %>
             </div>
@@ -67,7 +67,9 @@
 </body>
 
 <script src="/js/post.js"></script>
+<script src="/js/index.js"></script>
 <script>
     treat_posts();
+    treat_index(document.querySelector(".posts-list"));
 </script>
 </html>

@@ -26,7 +26,7 @@
                         <%= post.title %>
                     </a>
                     <a style="white-space: pre" href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a>
-                    <span title="<%= post.timestamp %>"><%= post.date %></span>
+                    <span class="date"><%= post.timestamp %></span>
                 </div>
             <% } %>
         </div>
@@ -37,8 +37,10 @@
     
 </body>
 
+<script src="/js/index.js"></script>
 <script>
-    
+    let list = document.querySelector(".posts-list");
+    if (list) treat_index(list);
 </script>
 
 </html>

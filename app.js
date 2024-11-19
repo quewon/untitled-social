@@ -71,9 +71,7 @@ app.get('/posts/:author/:id', (req, res) => {
     } else {
         res.render('post', {
             title: '?',
-            timestamp: '?',
-            date: '?',
-            date_informal: '?',
+            timestamp: 0,
             author: req.params.author,
             author_path: req.params.author,
             preview_body: 'this post does not exist!',
@@ -230,8 +228,6 @@ function parse_post(post) {
     return {
         title: get_post_title(post),
         timestamp: post.timestamp,
-        date: post.timestamp.split(" ")[0].replaceAll("-", "/"),
-        date_relative: get_relative_date(post.timestamp),
         author: post.author,
         author_path: post.author_path,
         preview_body: get_body_preview(post.body),
@@ -247,8 +243,6 @@ function parse_post_minimal(post) {
     return {
         title: get_post_title(post),
         timestamp: post.timestamp,
-        date: post.timestamp.split(" ")[0].replaceAll("-", "/"),
-        date_relative: get_relative_date(post.timestamp),
         author: post.author,
         author_path: post.author_path,
         path: post.path
@@ -338,97 +332,7 @@ function get_body_preview(body) {
 }
 
 function create_timestamp() {
-    var date = new Date();
-
-    var month = format_number(date.getMonth() + 1);
-    var day = format_number(date.getDate());
-    var hour = format_number(date.getHours());
-    var min = format_number(date.getMinutes());
-    var sec = format_number(date.getSeconds());
-
-    return date.getFullYear() + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec
-}
-
-function get_relative_date(timestamp) {
-    var date;
-
-    var current_date = new Date();
-    var post_date = new Date();
-
-    let a = timestamp.split(" ");
-    let tdate = a[0].split("-");
-    let ttime = a[1].split(":");
-    post_date.setFullYear(tdate[0]);
-    post_date.setMonth(Number(tdate[1]) - 1);
-    post_date.setDate(tdate[2]);
-    post_date.setHours(ttime[0]);
-    post_date.setMinutes(ttime[1]);
-    post_date.setSeconds(ttime[2]);
-
-    var ampm_time = 
-        (Number(ttime[0]) > 12 ? Number(ttime[0]) - 12 : Number(ttime[0])) +
-        (Number(ttime[0]) > 12 ? "pm" : "am");
-    if (ampm_time == "12am") ampm_time = "midnight";
-
-    let current_year = current_date.getFullYear();
-    if (current_year == tdate[0]) {
-        if (current_date.getMonth() == post_date.getMonth()) {
-            let current_day = current_date.getDate();
-            if (current_day == tdate[2]) {
-                var seconds_elapsed = (current_date - post_date) / 1000;
-                var minutes_elapsed = seconds_elapsed / 60;
-                var hours_elapsed = minutes_elapsed / 60;
-
-                if (hours_elapsed < 1) {
-                    if (minutes_elapsed < 1) {
-                        if (seconds_elapsed < 5) {
-                            date = "now"
-                        } else {
-                            date = Math.floor(seconds_elapsed) + " seconds ago"
-                        }
-                    } else {
-                        if (minutes_elapsed < 2) {
-                            date = "a minute ago";
-                        } else {
-                            date = Math.floor(minutes_elapsed) + " minutes ago";
-                        }
-                    }
-                } else {
-                    if (hours_elapsed < 2) {
-                        date = "an hour ago";
-                    } else {
-                        date = ampm_time;
-                    }
-                }
-            } else {
-                var days_passed = current_day - Number(tdate[2]);
-                if (days_passed == 1) {
-                    date = ampm_time + ", yesterday";
-                } else if (days_passed < 7) {
-                    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                    date = ampm_time + ", " + weekdays[post_date.getDay()];
-                } else {
-                    date = ampm_time + ", " + days_passed + " days ago";
-                }
-            }
-        } else {
-            date = tdate[1] + "/" + tdate[2];
-        }
-    } else {
-        var years_passed = current_year - tdate[0];
-        if (years_passed == 1) {
-            date = "last year";
-        } else {
-            date = years_passed + " years ago";
-        }
-    }
-
-    return date;
-}
-
-function format_number(n) {
-    if (n < 10) return '0' + n;
-    return n;
+    return new Date().getTime();
 }
 
 // https://www.npmjs.com/package/nanoid

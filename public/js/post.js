@@ -1,4 +1,10 @@
 function treat_posts() {
+    for (let el of document.querySelectorAll(".date-relative")) {
+        const timestamp = Number(el.textContent);
+        el.textContent = get_relative_date(timestamp);
+        el.title = get_absolute_date(timestamp);
+    }
+
     for (let album of document.querySelectorAll(".album")) {
         treat_album(album);
     }
@@ -139,4 +145,91 @@ function get_audio_time_string(seconds) {
     } else {
         return min + ':' + sec;
     }
+}
+
+function get_absolute_date(timestamp) {
+    var date = new Date(Number(timestamp));
+
+    var month = format_number(date.getMonth() + 1);
+    var day = format_number(date.getDate());
+    var hour = format_number(date.getHours());
+    var min = format_number(date.getMinutes());
+    var sec = format_number(date.getSeconds());
+
+    return date.getFullYear() + '/' + month + '/' + day + ' ' + hour + ':' + min + ':' + sec
+}
+
+function get_relative_date(timestamp) {
+    var date;
+
+    var current_date = new Date();
+    var post_date = new Date(Number(timestamp));
+
+    let a = get_absolute_date(timestamp).split(" ");
+    let hours = post_date.getHours();
+
+    var ampm_time = 
+        (hours > 12 ? hours - 12 : hours) +
+        (hours > 12 ? "pm" : "am");
+    if (ampm_time == "12am") ampm_time = "midnight";
+
+    let current_year = current_date.getFullYear();
+    if (current_year == post_date.getFullYear()) {
+        if (current_date.getMonth() == post_date.getMonth()) {
+            let current_day = current_date.getDate();
+            if (current_day == post_date.getDate()) {
+                var seconds_elapsed = (current_date - post_date) / 1000;
+                var minutes_elapsed = seconds_elapsed / 60;
+                var hours_elapsed = minutes_elapsed / 60;
+
+                if (hours_elapsed < 1) {
+                    if (minutes_elapsed < 1) {
+                        if (seconds_elapsed < 5) {
+                            date = "now"
+                        } else {
+                            date = Math.floor(seconds_elapsed) + " seconds ago"
+                        }
+                    } else {
+                        if (minutes_elapsed < 2) {
+                            date = "a minute ago";
+                        } else {
+                            date = Math.floor(minutes_elapsed) + " minutes ago";
+                        }
+                    }
+                } else {
+                    if (hours_elapsed < 2) {
+                        date = "an hour ago";
+                    } else {
+                        date = ampm_time;
+                    }
+                }
+            } else {
+                var days_passed = current_day - Number(post_date.getDate());
+                if (days_passed == 1) {
+                    date = ampm_time + ", yesterday";
+                } else if (days_passed < 7) {
+                    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                    date = ampm_time + ", " + weekdays[post_date.getDay()];
+                } else {
+                    date = ampm_time + ", " + days_passed + " days ago";
+                }
+            }
+        } else {
+            date = (post_date.getMonth() + 1) + "/" + post_date.getDate();
+        }
+    } else {
+        var years_passed = current_year - post_date.getFullYear();
+        if (years_passed == 1) {
+            date = "last year";
+        } else {
+            date = years_passed + " years ago";
+        }
+    }
+
+    return date;
+}
+
+function format_number(n) {
+    if (n < 10) return '0' + n;
+    return n;
 }

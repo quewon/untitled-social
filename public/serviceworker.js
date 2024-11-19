@@ -1,7 +1,7 @@
 // should be versioned to update cached resources
 
-const static_cache_name = 'site-static-v1-02';
-const dynamic_cache_name = 'site-dynamic-v1-02';
+const static_cache_name = 'site-static-v1-03';
+const dynamic_cache_name = 'site-dynamic-v1-03';
 const dynamic_cache_limit = 30;
 
 const static_assets = [
@@ -9,6 +9,7 @@ const static_assets = [
     '/manifest.json',
 
     '/new',
+    '/how-to-install',
 
     '/css/global.css',
     '/css/index.css',
@@ -17,6 +18,7 @@ const static_assets = [
     '/css/responsive.css',
     
     '/js/app.js',
+    '/js/index.js',
     '/js/post.js',
     '/js/postbuilder.js',
     '/js/lib/heic2any.min.js',

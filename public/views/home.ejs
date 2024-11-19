@@ -33,7 +33,7 @@
                                 <a class="share-anchor" href="/posts/<%= post.path %>" title="go to post">--/></a>
                             </td>
                             <td class="flex">
-                                <span class="grow">from <a href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span title="<%= post.timestamp %>"><%= post.date_relative %></span></span>
+                                <span class="grow">from <a href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span class="date-relative"><%= post.timestamp %></span></span>
                                 <a href="/reply/<%= post.path %>">reply</a>
                             </td>
                         </tr>
@@ -44,7 +44,7 @@
                                     <a class="grow" href="/posts/<%= post.replying_to.path %>">
                                         <%= post.replying_to.title %>
                                         <% if (post.replying_to.title == "[album]" || post.replying_to.title == "[image]" || post.replying_to.title == "[audio]") { %>
-                                            · <%= post.replying_to.date_relative %>
+                                            · <span class="date-relative"><%= post.replying_to.timestamp %></span>
                                         <% } %>
                                     </a>
                                     <span>by <a href="/posts/<%= post.replying_to.author_path %>"><%= post.replying_to.author %></a></span>
