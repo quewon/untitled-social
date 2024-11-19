@@ -4,7 +4,6 @@ var db;
 
 const RESET_DB = false;
 const BACKUP_DB = true;
-const CONVERT_FROM_UTC = true;
 
 if (!fs.existsSync('db')) {
     fs.mkdirSync('db');
@@ -122,30 +121,4 @@ exports.queryall = (db, table, obj, additional) => {
     const stmt = db.prepare("SELECT * FROM " + table + " " + conditions);
 
     return stmt.all(obj);
-}
-
-if (CONVERT_FROM_UTC) {
-    var all_posts = exports.queryall(db, "posts", {}, "ORDER BY timestamp DESC");
-    for (let post of all_posts) {
-        if (post.timestamp.split(" ").length > 1) {
-            // format is YYYY-MM-DD HH:MM:SS
-            var ds = post.timestamp.split(" ")[0].split("-");
-            var ts = post.timestamp.split(" ")[1].split(":");
-
-            var date = new Date();
-            date.setUTCFullYear(ds[0]);
-            date.setUTCMonth(Number(ds[1]) - 1);
-            date.setUTCDate(ds[2]);
-            date.setUTCHours(ts[0]);
-            date.setUTCMinutes(ts[1]);
-            date.setUTCSeconds(ts[2]);
-
-            var new_timestamp = date.getTime();
-            exports.update(db, "posts", {
-                timestamp: post.timestamp,
-            }, {
-                timestamp: new_timestamp
-            })
-        }
-    }
 }
