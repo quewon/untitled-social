@@ -132,10 +132,14 @@ async function upload_post() {
     .catch(err => console.log(err))
 
     upload_dialog.close();
-    
-    if (json && json.path) {
-        localStorage.setItem("name", post_name.value);
-        location.href = '/' + json.path;
+
+    if (json) {
+        if (json.path) {
+            localStorage.setItem("name", post_name.value);
+            location.href = '/' + json.path;
+        } else {
+            alert("weird! something's wrong. maybe let quewon know?");
+        }
     } else {
         alert("you're offline (or the server is). try again later!");
     }
