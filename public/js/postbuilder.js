@@ -168,7 +168,7 @@ async function add_files(files) {
         var block = await add_file(file);
         if (block) {
             new_blocks.push(block);
-            block.remove();
+            if (new_blocks.length > 1) block.remove();
         }
     }
 
