@@ -19,6 +19,16 @@ body, html {
 body {
     background: var(--bg);
     color: var(--color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100svh;
+}
+
+.scroll-container {
+    flex-grow: 1;
+    overflow-y: scroll;
 }
 
 /* styling */

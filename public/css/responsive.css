@@ -6,6 +6,10 @@ footer {
     margin-bottom: env(safe-area-inset-bottom);
 }
 
+main:not(:has(footer)) {
+    margin-bottom: env(safe-area-inset-bottom);
+}
+
 @media only screen and (max-width: 767px) {
     main, footer {
         text-align: center;

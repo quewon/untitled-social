@@ -16,128 +16,130 @@
 
     <%- include('fragments/header.ejs')  %>
 
-    <main>
-        <div>
-            <label>name</label><br>
+    <div class="scroll-container">
+        <main>
             <div>
-                <input autofocus type="text" placeholder="anonymous" id="post-name">
-            </div>
-            <div class="previous-name-tooltip hidden"><small>leave blank to use previous name</small></div>
-
-            <br>
-
-            <label>post</label><br>
-            <div id="post-builder"></div>
-
-            <div class="buttonbar">
-                <span>+</span>
-                <button onclick="add_post_block('text')" alt="add text block" title="add text block">text</button>
-                <button onclick="this.nextElementSibling.click()" alt="add media file(s)" title="add media file(s)">media</button>
-                    <input type="file" multiple="multiple" accept="image/*, audio/*, video/*">
-                <button onclick="add_post_block('rec')" alt="record audio" title="record audio">record</button>
-                <button onclick="add_post_block('draw')" alt="doodle something" title="doodle something">doodle</button>
-                <span class="grow"></span>
-                <button class="post-button" onclick="confirm_dialog.showModal()">post</button>
-            </div>
-
-            <p>
-                <details>
-                    <summary>[?] formatting tips</summary>
-                    <p>hello. here are some ways to spice up your text.</p>
-                    <table>
-                        <tr>
-                            <th>STYLE</th>
-                            <th>TYPE IT LIKE THIS</th>
-                            <th>& IT'LL LOOK LIKE THIS</th>
-                        </tr>
-                        <tr>
-                            <th>italic</th>
-                            <td>*italic text*</td>
-                            <td><i>italic text</i></td>
-                        </tr>
-                        <tr>
-                            <th>bold</th>
-                            <td>**bold text**</td>
-                            <td><b>bold text</b></td>
-                        </tr>
-                        <tr>
-                            <th>bold and italic</th>
-                            <td>***bold and italic text***</td>
-                            <td><b><i>bold and italic text</i></b></td>
-                        </tr>
-                        <tr>
-                            <th>strikethrough</th>
-                            <td>~~strikethrough~~</td>
-                            <td><s>strikethrough</s></td>
-                        </tr>
-                        <tr>
-                            <th>heading 1</th>
-                            <td># heading 1</td>
-                            <td><h1>heading 1</h1></td>
-                        </tr>
-                        <tr>
-                            <th>heading 2</th>
-                            <td>## heading 2</td>
-                            <td><h2>heading 2</h2></td>
-                        </tr>
-                        <tr>
-                            <th>heading 3</th>
-                            <td>### heading 3</td>
-                            <td><h3>heading 3</h3></td>
-                        </tr>
-                        <tr>
-                            <th>link</th>
-                            <td>[link](https://website.com)</td>
-                            <td><a>link</a></td>
-                        </tr>
-                        <tr>
-                            <th>read more...</th>
-                            <td>---</td>
-                            <td>breaks your post into two. everything under the dashes becomes hidden until a user clicks <a>read more...</a>.<br>(the dashes should be on its own line.)</td>
-                        </tr>
-                    </table>
-                </details>
-            </p>
-        </div>
-
-        <% if (locals.replying_to) { %>
-            <div class="replying-to">
-                <div class="post">
-                    <table>
-                        <tr>
-                            <td colspan="2">
-                                <% if (replying_to.body == '') { %>
-                                    replying to
-                                    <a href="/posts/<%= replying_to.path %>">a shout</a>
-                                    by 
-                                    <a href="/posts/<%= replying_to.path %>"><em><%= replying_to.author %></em></a>...
-                                <% } else { %>
-                                    replying to
-                                    <a href="/posts/<%= replying_to.path %>">this post</a>
-                                    by 
-                                    <a href="/posts/<%= replying_to.author_path %>"><em><%= replying_to.author %></em></a>...
-                                <% } %>
-                            </td>
-                        </tr>
-                        <% if (replying_to.replying_to) { %>
+                <label>name</label><br>
+                <div>
+                    <input autofocus type="text" placeholder="anonymous" id="post-name">
+                </div>
+                <div class="previous-name-tooltip hidden"><small>leave blank to use previous name</small></div>
+    
+                <br>
+    
+                <label>post</label><br>
+                <div id="post-builder"></div>
+    
+                <div class="buttonbar">
+                    <span>+</span>
+                    <button onclick="add_post_block('text')" alt="add text block" title="add text block">text</button>
+                    <button onclick="this.nextElementSibling.click()" alt="add media file(s)" title="add media file(s)">media</button>
+                        <input type="file" multiple="multiple" accept="image/*, audio/*, video/*">
+                    <button onclick="add_post_block('rec')" alt="record audio" title="record audio">record</button>
+                    <button onclick="add_post_block('draw')" alt="doodle something" title="doodle something">doodle</button>
+                    <span class="grow"></span>
+                    <button class="post-button" onclick="confirm_dialog.showModal()">post</button>
+                </div>
+    
+                <p>
+                    <details>
+                        <summary>[?] formatting tips</summary>
+                        <p>hello. here are some ways to spice up your text.</p>
+                        <table>
                             <tr>
-                                <td>re:</td>
-                                <td class="flex">
-                                    <a class="grow" href="/posts/<%= replying_to.replying_to.path %>"><%= replying_to.replying_to.title %></a>
-                                    <span>by <a href="/posts/<%= replying_to.replying_to.author_path %>"><%= replying_to.replying_to.author %></a></span>
+                                <th>STYLE</th>
+                                <th>TYPE IT LIKE THIS</th>
+                                <th>& IT'LL LOOK LIKE THIS</th>
+                            </tr>
+                            <tr>
+                                <th>italic</th>
+                                <td>*italic text*</td>
+                                <td><i>italic text</i></td>
+                            </tr>
+                            <tr>
+                                <th>bold</th>
+                                <td>**bold text**</td>
+                                <td><b>bold text</b></td>
+                            </tr>
+                            <tr>
+                                <th>bold and italic</th>
+                                <td>***bold and italic text***</td>
+                                <td><b><i>bold and italic text</i></b></td>
+                            </tr>
+                            <tr>
+                                <th>strikethrough</th>
+                                <td>~~strikethrough~~</td>
+                                <td><s>strikethrough</s></td>
+                            </tr>
+                            <tr>
+                                <th>heading 1</th>
+                                <td># heading 1</td>
+                                <td><h1>heading 1</h1></td>
+                            </tr>
+                            <tr>
+                                <th>heading 2</th>
+                                <td>## heading 2</td>
+                                <td><h2>heading 2</h2></td>
+                            </tr>
+                            <tr>
+                                <th>heading 3</th>
+                                <td>### heading 3</td>
+                                <td><h3>heading 3</h3></td>
+                            </tr>
+                            <tr>
+                                <th>link</th>
+                                <td>[link](https://website.com)</td>
+                                <td><a>link</a></td>
+                            </tr>
+                            <tr>
+                                <th>read more...</th>
+                                <td>---</td>
+                                <td>breaks your post into two. everything under the dashes becomes hidden until a user clicks <a>read more...</a>.<br>(the dashes should be on its own line.)</td>
+                            </tr>
+                        </table>
+                    </details>
+                </p>
+            </div>
+    
+            <% if (locals.replying_to) { %>
+                <div class="replying-to">
+                    <div class="post">
+                        <table>
+                            <tr>
+                                <td colspan="2">
+                                    <% if (replying_to.body == '') { %>
+                                        replying to
+                                        <a href="/posts/<%= replying_to.path %>">a shout</a>
+                                        by 
+                                        <a href="/posts/<%= replying_to.path %>"><em><%= replying_to.author %></em></a>...
+                                    <% } else { %>
+                                        replying to
+                                        <a href="/posts/<%= replying_to.path %>">this post</a>
+                                        by 
+                                        <a href="/posts/<%= replying_to.author_path %>"><em><%= replying_to.author %></em></a>...
+                                    <% } %>
                                 </td>
                             </tr>
+                            <% if (replying_to.replying_to) { %>
+                                <tr>
+                                    <td>re:</td>
+                                    <td class="flex">
+                                        <a class="grow" href="/posts/<%= replying_to.replying_to.path %>"><%= replying_to.replying_to.title %></a>
+                                        <span>by <a href="/posts/<%= replying_to.replying_to.author_path %>"><%= replying_to.replying_to.author %></a></span>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </table>
+                        <% if (replying_to.body != '') { %>
+                            <div class="content">
+                                <%- replying_to.body %>
+                            </div>
                         <% } %>
-                    </table>
-                    <% if (replying_to.body != '') { %>
-                        <div class="content">
-                            <%- replying_to.body %>
-                        </div>
-                    <% } %>
+                    </div>
                 </div>
-            </div>
-        <% } %>
-    </main>
+            <% } %>
+        </main>
+    </div>
 
     <template id="text-block-template">
         <div class="text block" data-type="text">
