@@ -166,14 +166,19 @@
 
     // enable push notifications
 
-    if (window.Notification) {
-        var subscribe_button = document.getElementById("subscription-anchor");
-        subscribe_button.onclick = subscribe;
-        subscribe_button.classList.remove("hidden");
-    }
+    var service_worker;
+
+    window.addEventListener("load", async () => {
+        service_worker = await navigator.serviceWorker.ready;
+        if (service_worker) {
+            var subscribe_button = document.getElementById("subscription-anchor");
+            subscribe_button.onclick = subscribe;
+            subscribe_button.classList.remove("hidden");
+        }
+    })
 
     async function subscribe() {
-        let service_worker = await navigator.serviceWorker.ready;
+        if (!service_worker) return;
         let push = await service_worker.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: 'BOGPWXp9LKTvrB7CZzDnBKRcxmHW3xB-z4lnhXlzk-tH6gYAIIiZgwdht5Cvr9CIcQSQIlihicwCerc19os7A74'

@@ -13,8 +13,8 @@ function treat_posts() {
         treat_audio(audio);
     }
 
-    for (let image of document.querySelectorAll(".image")) {
-        if (image.src.endsWith("-doodle")) image.classList.add("doodle");
+    for (let image of document.querySelectorAll("img")) {
+        if (image.src && image.src.endsWith("-doodle")) image.classList.add("doodle");
     }
 }
 
