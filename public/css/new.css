@@ -232,7 +232,7 @@ textarea {
     }
 }
 
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
     .draw .buttons button.selected {
         background: var(--normal-button-active-color);
     }
@@ -245,4 +245,4 @@ textarea {
         border-color: var(--color);
         color: var(--color);
     }
-} */
+}
