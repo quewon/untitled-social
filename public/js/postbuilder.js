@@ -320,7 +320,13 @@ function start_recording(block) {
                 mimeType = 'audio/webm';
             }
 
-            const recorder = new MediaRecorder(stream, { mimeType: mimeType });
+            const recorder = new MediaRecorder(stream, {
+                mimeType: mimeType,
+                audio: true,
+                video: false,
+                noiseSuppression: false,
+                echoCancellation: false
+            });
             block.classList.add("recording");
             recorder.start();
 
