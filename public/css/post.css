@@ -145,7 +145,7 @@ img, video {
 .navigation button {
     width: 3em;
     text-align: center;
-    color: white;
+    color: var(--bg);
     pointer-events: all;
 }
 
@@ -156,7 +156,7 @@ img, video {
     border-radius: 2em;
     margin: .5em;
     font-family: monospace;
-    color: white;
+    color: var(--bg);
 }
 
 .navigation button, .counter {

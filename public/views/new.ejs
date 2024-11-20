@@ -181,7 +181,7 @@
     <template id="rec-block-template">
         <div class="rec block">
             <div class="wrapper">
-                <img src="/res/microphone.png">
+                <img class="doodle" src="/res/microphone.png">
                 <div class="time">0:00</div>
                 <button>stop</button>
             </div>
@@ -191,9 +191,9 @@
 
     <template id="draw-block-template">
         <div class="draw block" data-type="image">
-            <canvas width="300" height="300"></canvas>
+            <canvas class="doodle" width="300" height="300"></canvas>
             <div class="buttons">
-                <button class="pencil"><img src="/res/pencil.png" alt="pencil" title="pencil"></button>
+                <button class="pencil"><img class="doodle" src="/res/pencil.png" alt="pencil" title="pencil"></button>
                 <button class="eraser"><img src="/res/eraser.png" alt="eraser" title="eraser"></button>
             </div>
             <%- include('fragments/post-options.ejs') %>

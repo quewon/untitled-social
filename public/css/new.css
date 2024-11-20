@@ -31,12 +31,12 @@ details th {
     text-align: left;
 }
 details tr:first-child th {
-    background: black;
+    background: var(--color);
     color: var(--post-bg);
     border-right-color: var(--post-bg);
 }
 details tr:first-child th:last-child {
-    border-right-color: black;
+    border-right-color: var(--color);
 }
 
 .post {
@@ -54,7 +54,7 @@ input::placeholder, textarea::placeholder {
 }
 
 input[type="text"], textarea {
-    border: 1px dotted black;
+    border: 1px dotted var(--color);
     padding: .5em;
     border-radius: 0;
 }
@@ -97,7 +97,7 @@ input[type="file"] {
 }
 .post-button:hover, .post-button:active {
     background: var(--theme-color);
-    color: white;
+    color: var(--bg);
 }
 
 .block .options {
@@ -145,7 +145,7 @@ textarea {
     box-sizing: border-box;
     margin: auto;
     padding: .5em;
-    border: 1px dotted black;
+    border: 1px dotted var(--color);
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -183,7 +183,7 @@ textarea {
     text-align: center;
 }
 .draw canvas {
-    border: 1px dotted black;
+    border: 1px dotted var(--color);
 }
 .draw .buttons {
     position: absolute;
@@ -195,8 +195,8 @@ textarea {
     gap: .5em;
 }
 .draw .buttons button {
-    background: white;
-    border: 1px dotted black;
+    background: var(--bg);
+    border: 1px dotted var(--color);
     width: 4.5em;
 }
 .draw .buttons button img {
@@ -231,3 +231,18 @@ textarea {
         max-width: calc(100% - 1em);
     }
 }
+
+/* @media (prefers-color-scheme: dark) {
+    .draw .buttons button.selected {
+        background: var(--normal-button-active-color);
+    }
+
+    .rec.recording .wrapper {
+        background: #492424;
+        border-color: #ff9f9f;
+    }
+    .rec.recording .wrapper button {
+        border-color: var(--color);
+        color: var(--color);
+    }
+} */

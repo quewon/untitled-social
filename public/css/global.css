@@ -2,17 +2,23 @@
     --line-height: 1.4rem;
     --max-post-width: 30rem;
 
+    --bg: white;
+    --color: black;
     --theme-color: #076ad3;
-
     --post-bg: white;
-    --album-bg: black;
-    --post-border: rgba(0, 0, 0, .2);
+    --post-border: lightgray;
+    --normal-button-active-color: lightgray;
 }
 
 body, html {
     margin: 0;
     font-family: sans-serif;
     line-height: var(--line-height);
+}
+
+body {
+    background: var(--bg);
+    color: var(--color);
 }
 
 /* styling */
@@ -50,6 +56,7 @@ input, textarea, button {
     font-size: inherit;
     color: inherit;
     line-height: var(--line-height);
+    background: var(--bg);
 }
 
 a, a:visited {
@@ -64,7 +71,7 @@ a, a:visited {
 }
 a:hover, a:active {
     background: var(--theme-color);
-    color: white;
+    color: var(--bg);
     text-decoration: none;
 }
 
@@ -75,7 +82,7 @@ em {
 
 *::selection {
     background: var(--theme-color);
-    color: white;
+    color: var(--bg);
 }
 
 dialog button {
@@ -84,12 +91,12 @@ dialog button {
 }
 dialog button:hover {
     background: var(--theme-color);
-    color: white;
+    color: var(--bg);
 }
 
 button, input[type="button"], input[type="submit"], .dialog-close-button {
-    border: 1px solid black;
-    color: black;
+    border: 1px solid var(--color);
+    color: var(--color);
     padding: .5em;
     text-decoration: underline;
     text-decoration-style: dotted;
@@ -100,8 +107,8 @@ button:hover, button:active,
 input[type="submit"]:hover, input[type="submit"]:active,
 input[type="button"]:hover, input[type="button"]:active,
 .dialog-close-button:hover, .dialog-close-button:active {
-    background: lightgray;
-    color: black;
+    background: var(--normal-button-active-color);
+    color: var(--color);
     text-decoration: none;
 }
 

@@ -12,6 +12,10 @@ function treat_posts() {
     for (let audio of document.querySelectorAll(".audio")) {
         treat_audio(audio);
     }
+
+    for (let image of document.querySelectorAll(".image")) {
+        if (image.src.endsWith("-doodle")) image.classList.add("doodle");
+    }
 }
 
 function treat_album(block) {
