@@ -57,7 +57,7 @@ main:not(:has(footer)) {
         --normal-button-active-color: var(--post-border);
     }
 
-    .doodle {
+    .doodle, .icon-button {
         filter: invert(.9);
     }
 
