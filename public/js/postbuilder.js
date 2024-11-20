@@ -48,31 +48,41 @@ function add_post_block(type) {
 
 function post_to_markdown() {
     var markdown = "";
+    var files = [];
 
     var blocks = post_builder.getElementsByClassName("block");
     for (let i=0; i<blocks.length; i++) {
         var block = blocks[i];
         var src = block.dataset.src;
 
+        var file_index = files.length;
+
         switch (block.dataset.type) {
             case "text":
                 markdown += block.querySelector("textarea").value + "\n\n";
                 break;
             case "image":
-                markdown += "![image](" + src + ")\n\n";
+                files[file_index] = file_of_objecturl[src];
+                markdown += "![image](media/" + file_index + ")\n\n";
                 break;
             case "audio":
-                markdown += "![audio](" + src + ")\n\n";
+                files[file_index] = file_of_objecturl[src];
+                markdown += "![audio](media/" + file_index + ")\n\n";
                 break;
             case "video":
-                markdown += "![video](" + src + ")\n\n";
+                files[file_index] = file_of_objecturl[src];
+                markdown += "![video](media/" + file_index + ")\n\n";
                 break;
             case "album":
                 markdown += "![album](\n";
                 var slides = block.querySelector(".slides");
                 for (let i=0; i<slides.children.length; i++) {
                     let b = slides.children[i];
-                    markdown += "    ![" + b.dataset.type + "](" + b.dataset.src + ")";
+
+                    file_index = files.length;
+                    files[file_index] = file_of_objecturl[b.dataset.src];
+
+                    markdown += "    ![" + b.dataset.type + "](media/" + file_index + ")";
                     if (i < slides.children.length - 1) markdown += ",\n"
                 }
                 markdown += "\n)\n\n";
@@ -80,7 +90,10 @@ function post_to_markdown() {
         }
     }
 
-    return markdown.trim();
+    return {
+        markdown: markdown.trim(),
+        files: files
+    }
 }
 
 // publish post
@@ -97,27 +110,27 @@ if (stored_name) {
 
 async function upload_post() {
     upload_dialog.showModal();
-    uploading_post = true;
 
-    await upload_all_files();
-
-    if (!uploading_post) return;
+    var post = post_to_markdown();
 
     if (post_name.value.trim() == "") post_name.value = stored_name;
 
     var form = new FormData();
     form.append("name", post_name.value);
-    form.append("post", post_to_markdown());
+    form.append("post", post.markdown);
+
+    for (let file of post.files)
+        form.append("files", file);
+    
     form.append("replying_to", replying_to);
 
     var json = await fetch('/publish', {
         method: 'POST',
         body: form
     })
-    .then((res) => res.json())
-    .catch((err) => console.log(err))
+    .then(res => res.json())
+    .catch(err => console.log(err))
 
-    uploading_post = false;
     upload_dialog.close();
     
     if (json && json.path) {
@@ -139,11 +152,9 @@ function get_file_block_src_element(block) {
             } else {
                 return block.querySelector("img");
             }
-            break;
         case "video":
         case "audio":
             return block.querySelector("source");
-            break;
     }
     return null;
 }
@@ -157,6 +168,7 @@ async function add_files(files) {
         var block = await add_file(file);
         if (block) {
             new_blocks.push(block);
+            block.remove();
         }
     }
 
@@ -231,74 +243,8 @@ function all_file_blocks() {
     return post_builder.querySelectorAll(query);
 }
 
-function all_files_uploaded() {
-    var blocks = all_file_blocks();
-    for (let block of blocks) {
-        if (!block.classList.contains("upload-complete")) return false;
-    }
-    return true;
-}
-
-var uploading_post = false;
-
-async function upload_all_files() {
-    var blocks = all_file_blocks();
-
-    var failed_upload_count = 0;
-    
-    while (!all_files_uploaded() && !post_builder.classList.contains("adding-files")) {
-        var counted_failed_upload = false;
-
-        // attempt to re-upload failed uploads
-        for (let block of blocks) {
-            if (!uploading_post) return;
-            if (block.classList.contains("upload-failed")) {
-                if (!counted_failed_upload) {
-                    failed_upload_count++;
-                    console.log(failed_upload_count);
-                    counted_failed_upload = true;
-
-                    if (failed_upload_count > 3) {
-                        alert("failed to upload media up to 3 times in a row. check your network connection--otherwise, the server might be down!");
-                        uploading_post = false;
-                        upload_dialog.close();
-                        return;
-                    }
-                }
-            }
-            if (block.dataset.src && !block.classList.contains("upload-complete") && !block.classList.contains("saving")) {
-                await upload_file(file_of_objecturl[block.dataset.src], block);
-            }
-        }
-
-        await wait(500);
-    }
-}
-
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function upload_file(file, block) {
-    var form = new FormData();
-    form.append("file", file);
-
-    var json = await fetch('/upload', {
-        method: 'POST',
-        body: form
-    })
-    .then((res) => res.json())
-    .catch((err) => console.log(err))
-
-    if (json && json.url) {
-        block.dataset.src = json.url;
-        if (block) {
-            block.classList.remove("upload-failed");
-            block.classList.add("upload-complete");
-        }
-    } else {
-        if (block) block.classList.add("upload-failed");
-    }
 }
 
 // recording
@@ -429,8 +375,6 @@ function setup_canvas(block) {
     pencil.onclick();
 
     canvas.onmousedown = canvas.ontouchstart = e => {
-        if (block.classList.contains("upload-complete")) return;
-
         mousedown = true;
         canvas.classList.add("drawing");
 
@@ -447,8 +391,7 @@ function setup_canvas(block) {
     
     function drawend() {
         canvas.classList.remove("drawing");
-        if (block.classList.contains("upload-complete")) return;
-
+        
         if (prev_point) {
             let x = prev_point.x;
             let y = prev_point.y;
@@ -462,7 +405,6 @@ function setup_canvas(block) {
         // turn canvas into blob
         block.classList.add("saving");
         canvas.toBlob(blob => {
-            if (block.classList.contains("upload-complete")) return;
             if (block.dataset.src in file_of_objecturl)
                 delete file_of_objecturl[block.dataset.src];
             const url = URL.createObjectURL(blob);

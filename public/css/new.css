@@ -207,9 +207,6 @@ textarea {
     background: lightyellow;
 }
 
-.draw.upload-complete .buttons {
-    display: none;
-}
 .draw canvas.drawing {
     border-style: solid;
 }

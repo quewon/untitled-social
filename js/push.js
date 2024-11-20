@@ -24,7 +24,7 @@ exports.send = (subscription, title, body, url) => {
 }
 
 exports.broadcast = (title, url) => {
-    const subs = sqlite.queryall(sqlite.db, "subscriptions", {});
+    const subs = sqlite.queryall("subscriptions", {});
     for (let sub of subs) {
         exports.send(JSON.parse(sub.json), title, null, url)
     }

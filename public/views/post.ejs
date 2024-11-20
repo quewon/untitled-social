@@ -11,78 +11,93 @@
 
     <div class="scroll-container">
         <main>
-            <div class="post">
-                <table>
-                    <tr>
-                        <td>
-                            <a tabindex="0" onclick="history.back()">
-                                &lt;\--
-                            </a>
-                        </td>
-                        <td class="flex">
-                            <span class="grow">from <a href="/posts/<%= author_path %>"><em><%= author %></em></a> · <span class="date-relative"><%= timestamp %></span></span>
-                            <a href="/reply/<%= path %>">reply</a>
-                        </td>
-                    </tr>
-                    <% if (locals.replying_to) { %>
+            <% if (timestamp != -1) { %>
+                <% if (!locals.live || locals.live == false) { %>
+                    <div class="post-not-live-banner">
+                        this post is being processed :)
+                    </div>
+                <% } %>
+
+                <div class="post">
+                    <table>
                         <tr>
-                            <td>re:</td>
+                            <td>
+                                <a tabindex="0" onclick="history.back()">
+                                    &lt;\--
+                                </a>
+                            </td>
                             <td class="flex">
-                                <a class="grow" href="/posts/<%= replying_to.path %>"><%= replying_to.title %></a>
-                                <span>by <a href="/posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></span>
+                                <span class="grow">from <a href="/posts/<%= author_path %>"><em><%= author %></em></a> · <span class="date-relative"><%= timestamp %></span></span>
+                                <a href="/reply/<%= path %>">reply</a>
                             </td>
                         </tr>
-                    <% } %>
-                </table>
-                <% if (body != '') { %>
-                    <div class="content">
-                        <%- body %>
-                    </div>
-                <% } %>
-            </div>
-    
-            <% if (locals.replies && replies.length > 0) { %>
-                <div><p style="font-family: monospace">replies:</p></div>
-                <% for (let i=0; i<replies.length; i++) { %>
-                    <% let post = replies[i] %>
-                    <div class="post">
-                        <table>
+                        <% if (locals.replying_to) { %>
                             <tr>
-                                <td>
-                                    <a href="/posts/<%= post.path %>" title="go to post">--/></a>
-                                </td>
+                                <td>re:</td>
                                 <td class="flex">
-                                    <span class="grow">from <a href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span class="date-relative"><%= post.timestamp %></span></span>
-                                    <a href="/reply/<%= post.path %>">reply</a>
+                                    <a class="grow" href="/posts/<%= replying_to.path %>"><%= replying_to.title %></a>
+                                    <span>by <a href="/posts/<%= replying_to.author_path %>"><%= replying_to.author %></a></span>
                                 </td>
                             </tr>
-                        </table>
-                        <% if (post.body != '') { %>
-                            <div class="content">
-                                <%- post.preview_body %>
-                                <% if (post.preview_body != post.body) { %>
-                                    <p class="read-more"><a href="/posts/<%= post.path %>">read more...</a></p>
-                                <% } %>
-                            </div>
                         <% } %>
-                        <table>
-                            <% if (post.reply_count > 0) { %>
+                    </table>
+                    <% if (body != '') { %>
+                        <div class="content">
+                            <%- body %>
+                        </div>
+                    <% } %>
+                </div>
+
+                <% if (locals.replies && replies.length > 0) { %>
+                    <div><p style="font-family: monospace">replies:</p></div>
+                    <% for (let i=0; i<replies.length; i++) { %>
+                        <% let post = replies[i] %>
+                        <div class="post">
+                            <table>
                                 <tr>
                                     <td>
-                                        <a href="/posts/<%= post.path %>">
-                                            <%= post.reply_count %>
-                                            <% if (post.reply_count > 1) { %>
-                                                replies
-                                            <% } else { %> 
-                                                reply
-                                            <% } %>
-                                        </a>
+                                        <a href="/posts/<%= post.path %>" title="go to post">--/></a>
+                                    </td>
+                                    <td class="flex">
+                                        <span class="grow">from <a href="/posts/<%= post.author_path %>"><em><%= post.author %></em></a> · <span class="date-relative"><%= post.timestamp %></span></span>
+                                        <a href="/reply/<%= post.path %>">reply</a>
                                     </td>
                                 </tr>
+                            </table>
+                            <% if (post.body != '') { %>
+                                <div class="content">
+                                    <%- post.preview_body %>
+                                    <% if (post.preview_body != post.body) { %>
+                                        <p class="read-more"><a href="/posts/<%= post.path %>">read more...</a></p>
+                                    <% } %>
+                                </div>
                             <% } %>
-                        </table>
-                    </div>
+                            <table>
+                                <% if (post.reply_count > 0) { %>
+                                    <tr>
+                                        <td>
+                                            <a href="/posts/<%= post.path %>">
+                                                <%= post.reply_count %>
+                                                <% if (post.reply_count > 1) { %>
+                                                    replies
+                                                <% } else { %> 
+                                                    reply
+                                                <% } %>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </table>
+                        </div>
+                    <% } %>
                 <% } %>
+            <% } else { %>
+                <p>this post does not exist!</p>
+                <p>
+                    <a tabindex="0" onclick="history.back()">
+                        &lt;\--
+                    </a>
+                </p>
             <% } %>
         </main>
     </div>
@@ -92,5 +107,24 @@
 <script src="/js/post.js"></script>
 <script>
     treat_posts();
+
+    // post is not live
+    if (document.querySelector(".post-not-live-banner")) {
+        check_live();
+    }
+
+    async function check_live() {
+        var json = await fetch(window.location.href + '/is-live', {
+            method: 'GET',
+        })
+        .then(res => res.json())
+        .catch(err => console.log(err))
+
+        if (json && json.live) {
+            window.location.reload();
+        } else {
+            setTimeout(check_live, 1000);
+        }
+    }
 </script>
 </html>

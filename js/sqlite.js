@@ -36,6 +36,7 @@ if (!fs.existsSync('db/db.db')) {
             "author_path"	TEXT,
             "path"	TEXT,
             "replying_to" TEXT,
+            "live"	INTEGER,
             PRIMARY KEY("post_id")
         );
         CREATE TABLE "subscriptions" (
@@ -52,7 +53,7 @@ if (!fs.existsSync('db/db.db')) {
 
 exports.db = db;
 
-exports.insert = (db, table, obj) => {
+exports.insert = (table, obj) => {
     var keynames = "";
     var keys = "";
     for (let key in obj) {
@@ -66,7 +67,7 @@ exports.insert = (db, table, obj) => {
     return stmt.run(obj);
 }
 
-exports.delete = (db, table, obj) => {
+exports.delete = (table, obj) => {
     var conditions = "";
     for (let key in obj) {
         conditions += "WHERE " + key + "=@" + key + " AND ";
@@ -77,28 +78,28 @@ exports.delete = (db, table, obj) => {
     return stmt.run(obj);
 }
 
-exports.update = (db, table, where, set) => {
+exports.update = (table, where, set) => {
     var obj = {};
 
     var where_conditions = "";
     for (let key in where) {
         obj["where_"+key] = where[key];
-        where_conditions += "WHERE " + key + "=@where_" + key + " AND ";
+        where_conditions += key + "=@where_" + key + ", ";
     }
-    where_conditions = where_conditions.slice(0, -5);
+    where_conditions = where_conditions.slice(0, -2);
 
     var set_conditions = "";
     for (let key in set) {
         obj["set_"+key] = set[key];
-        set_conditions += "SET " + key + "=@set_" + key + " AND ";
+        set_conditions += key + "=@set_" + key + ", ";
     }
-    set_conditions = set_conditions.slice(0, -5);
+    set_conditions = set_conditions.slice(0, -2);
 
-    const stmt = db.prepare("UPDATE " + table + " " + set_conditions + " " + where_conditions);
+    const stmt = db.prepare("UPDATE " + table + " SET " + set_conditions + " WHERE " + where_conditions);
     return stmt.run(obj);
 }
 
-exports.query = (db, table, obj) => {
+exports.query = (table, obj) => {
     var conditions = "";
     for (let key in obj) {
         conditions += "WHERE " + key + "=@" + key + " AND ";
@@ -109,7 +110,7 @@ exports.query = (db, table, obj) => {
     return stmt.get(obj);
 }
 
-exports.queryall = (db, table, obj, additional) => {
+exports.queryall = (table, obj, additional) => {
     var conditions = "";
     for (let key in obj) {
         conditions += "WHERE " + key + "=@" + key + " AND ";

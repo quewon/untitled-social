@@ -64,14 +64,14 @@ app.get('/posts/:author', (req, res) => {
 
 app.get('/posts/:author/:id', (req, res) => {
     const path = req.params.author + '/' + req.params.id;
-    const post = sqlite.query(sqlite.db, "posts", { path: path });
+    const post = sqlite.query("posts", { path: path });
 
     if (post) {
         res.render('post', parse_post_with_replies(post));
     } else {
         res.render('post', {
             title: '?',
-            timestamp: 0,
+            timestamp: -1,
             author: req.params.author,
             author_path: req.params.author,
             preview_body: 'this post does not exist!',
@@ -90,7 +90,7 @@ app.get('/new', (req, res) => {
 
 app.get('/reply/:author/:id', (req, res) => {
     const path = req.params.author + '/' + req.params.id;
-    const post = sqlite.query(sqlite.db, "posts", { path: path });
+    const post = sqlite.query("posts", { path: path });
 
     if (post) {
         res.render('new', {
@@ -105,6 +105,16 @@ app.get('/page/:pagenumber', (req, res) => {
     const page = Number(req.params.pagenumber) || 0;
     const feed = get_feed(page - 1);
     res.render('home', { feed: feed, page: page, max_page: get_max_page() });
+})
+
+app.get('/posts/:author/:id/is-live', (req, res) => {
+    const path = req.params.author + '/' + req.params.id;
+    const post = sqlite.query("posts", { path: path });
+    if (post && post.live == 1) {
+        res.send({ live: true });
+    } else {
+        res.send({ live: false })
+    }
 })
 
 function get_max_page() {
@@ -125,19 +135,9 @@ function get_feed(page) {
 
 const upload = require('./js/upload.js');
 
-app.post('/upload', upload.uploadMulter, upload.uploadB2, (req, res) => {
-    try {
-        res.send({
-            url: res.locals.url
-        });
-    }
-    catch (error) {
-        console.error("upload error " + err.statusCode);
-        res.send();
-    }
-});
+app.post('/publish', upload.uploadMulter, async (req, res) => {
+    var post;
 
-app.post('/publish', upload.none, (req, res) => {
     try {
         var replying_to = req.body.replying_to.trim();
         if (replying_to == "") {
@@ -149,49 +149,92 @@ app.post('/publish', upload.none, (req, res) => {
 
         const body = req.body.post.trim();
         const path = get_author_path(name) + '/' + nanoid(8);
-        
-        sqlite.insert(sqlite.db, "posts", {
+
+        post = {
             author: name,
             author_path: get_author_path(name),
-            body: body,
-            timestamp: create_timestamp(),
-            path: path,
-            replying_to: replying_to
-        });
-
-        update_posts_in_memory();
-
-        if (replying_to) {
-            const reply_author = sqlite.query(sqlite.db, "posts", { path: replying_to }).author;
-            push.broadcast(`${name} replied to ${reply_author}'s post`, '/posts/'+path);
-        } else {
-            push.broadcast(`${name} wrote a new post`, '/posts/'+path);
-        }
+            body,
+            path,
+            replying_to,
+            live: 0
+        };
+        
+        sqlite.insert("posts", post);
 
         res.send({
             message: "post published!",
             path: 'posts/' + path
         })
     }
-    catch (error) {
-        console.error("publish error " + err.statusCode);
+    catch {
+        console.error("error creating post");
         res.send({ message: "error" });
+    }
+
+    try {
+        for (let i=0; i<req.files.length; i++) {
+            req.files[i].temp_path = 'media/' + i;
+        }
+
+        var files_not_uploaded = req.files;
+
+        var limit = 10;
+        while (files_not_uploaded.length > 0) {
+            var promises = [];
+            for (let file of files_not_uploaded) {
+                promises.push(upload.uploadB2(file));
+            }
+
+            var urls = await Promise.allSettled(promises);
+            for (let i=files_not_uploaded.length-1; i>=0; i--) {
+                if (urls[i].status == 'fulfilled') {
+                    post.body = post.body.replaceAll(`](${files_not_uploaded[i].temp_path})`, `](${urls[i].value})`)
+                    files_not_uploaded.splice(i, 1);
+                }
+            }
+
+            limit--;
+            if (limit <= 0) {
+                console.error("reached b2 upload failure limit. purging post.");
+                sqlite.delete("posts", { path: post.path });
+                return;
+            }
+        }
+
+        sqlite.update("posts", { path: post.path }, {
+            body: post.body,
+            live: 1,
+            timestamp: create_timestamp()
+        });
+
+        update_posts_in_memory();
+
+        if (post.replying_to) {
+            const reply_author = sqlite.query("posts", { path: post.replying_to }).author;
+            push.broadcast(`${post.name} replied to ${reply_author}'s post`, '/posts/'+post.path);
+        } else {
+            push.broadcast(`${post.name} wrote a new post`, '/posts/'+post.path);
+        }
+    }
+    catch {
+        console.error("error uploading files. purging post.");
+        sqlite.delete("posts", { path: post.path });
     }
 });
 
 app.post('/subscribe', upload.none, (req, res) => {
     try {
         var sub = JSON.parse(req.body.data);
-        var sub_exists = sqlite.query(sqlite.db, "subscriptions", { endpoint: sub.endpoint });
+        var sub_exists = sqlite.query("subscriptions", { endpoint: sub.endpoint });
 
         if (sub_exists) {
-            sqlite.update(sqlite.db, "subscriptions", { endpoint: sub.endpoint }, {
+            sqlite.update("subscriptions", { endpoint: sub.endpoint }, {
                 timestamp: create_timestamp()
             })
 
             push.send(sub, "notifications already enabled", "to turn them off, consult your site or app settings.");
         } else {
-            sqlite.insert(sqlite.db, "subscriptions", {
+            sqlite.insert("subscriptions", {
                 timestamp: create_timestamp(),
                 json: req.body.data,
                 endpoint: sub.endpoint
@@ -205,13 +248,15 @@ app.post('/subscribe', upload.none, (req, res) => {
         })
     }
     catch (error) {
-        console.error("subscribe error " + err.statusCode);
+        console.error("subscribe error " + error.statusCode);
         res.send({ message: "error" });
     }
 })
 
 function update_posts_in_memory() {
-    posts_in_memory = sqlite.queryall(sqlite.db, "posts", {}, "ORDER BY timestamp DESC");
+    posts_in_memory = sqlite.queryall("posts", {
+        live: 1
+    }, "ORDER BY timestamp DESC");
 }
 
 function get_author_path(name) {
@@ -233,7 +278,8 @@ function parse_post(post) {
         body: parse_markdown(post.body),
         path: post.path,
         reply_count: reply_count,
-        replying_to: post.replying_to ? parse_post_minimal(sqlite.query(sqlite.db, "posts", { path: post.replying_to })) : null
+        replying_to: post.replying_to ? parse_post_minimal(sqlite.query("posts", { path: post.replying_to })) : null,
+        live: post.live == 1 ? true : false
     }
 }
 

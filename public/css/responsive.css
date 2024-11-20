@@ -50,8 +50,9 @@ main:not(:has(footer)) {
 @media (prefers-color-scheme: dark) {
     :root {
         --bg: #1b1b1c;
-        --color: #e8e8e8;
+        --color: var(--dark-mode-color);
         --theme-color: #5ebfff;
+        --alert-color: orange;
         --post-bg: #1b1b1c;
         --post-border: rgba(255, 255, 255, .3);
         --normal-button-active-color: var(--post-border);
