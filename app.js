@@ -67,7 +67,7 @@ app.get('/posts/:author/:id', (req, res) => {
     const post = sqlite.query(sqlite.db, "posts", { path: path });
 
     if (post) {
-        res.render('post', parse_post(post));
+        res.render('post', parse_post_with_replies(post));
     } else {
         res.render('post', {
             title: '?',
@@ -131,7 +131,8 @@ app.post('/upload', upload.uploadMulter, upload.uploadB2, (req, res) => {
             url: res.locals.url
         });
     }
-    catch {
+    catch (error) {
+        console.error("upload error " + err.statusCode);
         res.send();
     }
 });
@@ -173,7 +174,7 @@ app.post('/publish', upload.none, (req, res) => {
         })
     }
     catch (error) {
-        console.log(error);
+        console.error("publish error " + err.statusCode);
         res.send({ message: "error" });
     }
 });
@@ -204,7 +205,7 @@ app.post('/subscribe', upload.none, (req, res) => {
         })
     }
     catch (error) {
-        console.log(error);
+        console.error("subscribe error " + err.statusCode);
         res.send({ message: "error" });
     }
 })
@@ -218,11 +219,9 @@ function get_author_path(name) {
 }
 
 function parse_post(post) {
-    var reply_posts = [];
+    var reply_count = 0;
     for (let reply of posts_in_memory) {
-        if (reply.replying_to && reply.replying_to == post.path) {
-            reply_posts.push(parse_post_minimal(reply))
-        }
+        if (reply.replying_to && reply.replying_to == post.path) reply_count++;
     }
 
     return {
@@ -233,10 +232,22 @@ function parse_post(post) {
         preview_body: get_body_preview(post.body),
         body: parse_markdown(post.body),
         path: post.path,
-        replies: reply_posts,
-        reply_count: reply_posts.length,
+        reply_count: reply_count,
         replying_to: post.replying_to ? parse_post_minimal(sqlite.query(sqlite.db, "posts", { path: post.replying_to })) : null
     }
+}
+
+function parse_post_with_replies(post) {
+    var parsed = parse_post(post);
+
+    parsed.replies = [];
+    for (let reply of posts_in_memory) {
+        if (reply.replying_to && reply.replying_to == post.path) {
+            parsed.replies.push(parse_post(reply))
+        }
+    }
+    
+    return parsed;
 }
 
 function parse_post_minimal(post) {

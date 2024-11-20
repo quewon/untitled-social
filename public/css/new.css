@@ -45,7 +45,7 @@ details tr:first-child th:last-child {
     max-width: var(--max-post-width);
 }
 
-label, .replying-to, .options, .buttonbar {
+label, .options, .buttonbar {
     font-family: monospace;
 }
 
