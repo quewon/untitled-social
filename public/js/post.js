@@ -22,52 +22,61 @@ function treat_album(block) {
     var wrapper = block.querySelector(".slides-wrapper");
     var slides = block.querySelector(".slides");
 
+    block.dataset.slides_count = slides.children.length;
+    block.dataset.slide_index = 1;
+
     // slide counter
 
     var counter = document.createElement("div");
     counter.className = "counter";
     counter.textContent = "1/" + slides.children.length;
-    block.appendChild(counter);
 
-    // navigation buttons
+    // nav bubbles
 
-    block.dataset.slides_count = slides.children.length;
-    block.dataset.slide_index = 1;
-
-    var nav = document.createElement("div");
-    nav.className = "navigation";
-
-    var button_prev = document.createElement("button");
-    var button_next = document.createElement("button");
-    button_prev.textContent = "<";
-    button_next.textContent = ">";
-    nav.appendChild(button_prev);
-    nav.appendChild(button_next);
-
-    button_prev.onclick = () => {
-        let index = Number(block.dataset.slide_index);
-        index--;
-        if (index < 1) index = Number(block.dataset.slides_count);
-
-        wrapper.scrollLeft = (index - 1) * wrapper.clientWidth;
-        block.dataset.slide_index = index;
-    }
-
-    button_next.onclick = () => {
-        let index = Number(block.dataset.slide_index);
-        index++;
-        if (index > Number(block.dataset.slides_count)) index = 1;
-
-        wrapper.scrollLeft = (index - 1) * wrapper.clientWidth;
-        block.dataset.slide_index = index;
+    var bubbles = document.createElement("div");
+    bubbles.className = "bubbles";
+    for (let i=0; i<slides.children.length; i++) {
+        var bubble = document.createElement("div");
+        if (slides.children.length > 5) bubble.classList.add("hidden");
+        bubbles.appendChild(bubble);
     }
 
     wrapper.onscroll = function() {
         block.dataset.slide_index = Math.round(this.scrollLeft / this.clientWidth) + 1;
         counter.textContent = block.dataset.slide_index + "/" + block.dataset.slides_count;
+
+        let index = Number(block.dataset.slide_index) - 1;
+        let slides = Number(block.dataset.slides_count);
+        for (let i=0; i<bubbles.children.length; i++) {
+            let bubble = bubbles.children[i];
+            if (i == index) {
+                bubble.classList.add("selected");
+            } else {
+                bubble.classList.remove("selected");
+            }
+            if (slides > 5) {
+                if (
+                    index < slides - 2 && i == index + 3 ||
+                    index > 2 && i == index - 3
+                ) {
+                    bubble.classList.remove("hidden");
+                    bubble.classList.add("small");
+                } else {
+                    bubble.classList.remove("small");
+                    if (i < index - 2.5 || i > index + 2.5) {
+                        bubble.classList.add("hidden");
+                    } else {
+                        bubble.classList.remove("hidden");
+                    }
+                }
+            }
+        }
     }
 
-    block.appendChild(nav);
+    block.appendChild(counter);
+    block.appendChild(bubbles);
+
+    wrapper.onscroll();
 }
 
 function treat_audio(block) {
@@ -164,6 +173,8 @@ function get_absolute_date(timestamp) {
 }
 
 function get_relative_date(timestamp) {
+    if (timestamp == 0) return "soon";
+
     var date;
 
     var current_date = new Date();

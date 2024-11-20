@@ -2,12 +2,16 @@
     --line-height: 1.4rem;
     --max-post-width: 30rem;
 
+    --dark-mode-color: #e8e8e8;
+
     --bg: white;
     --color: black;
     --theme-color: #076ad3;
+    --alert-color: rgb(208, 92, 14);
     --post-bg: white;
     --post-border: lightgray;
     --normal-button-active-color: lightgray;
+    --album-bg: var(--color);
 }
 
 body, html {
@@ -24,6 +28,7 @@ body {
     flex-direction: column;
     height: 100vh;
     height: 100svh;
+    touch-action: none;
 }
 
 .scroll-container {
