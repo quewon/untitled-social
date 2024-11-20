@@ -51,10 +51,6 @@ if (!fs.existsSync('db/db.db')) {
     db = new Database('db/db.db');
 }
 
-// TEMP FUNCTION
-db.prepare("ALTER TABLE posts ADD live INTEGER").run();
-db.prepare("UPDATE posts SET live=1").run();
-
 exports.db = db;
 
 exports.insert = (table, obj) => {
