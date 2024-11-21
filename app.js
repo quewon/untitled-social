@@ -18,7 +18,7 @@ const max_title_length = 40;
 
 //
 
-app.use(compression({ level: 1 }));
+app.use(compression());
 app.use('/', express.static(path.join(__dirname, 'public')));
     // use form data
     app.use(express.json({ limit: "1gb" }));
