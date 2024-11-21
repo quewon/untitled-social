@@ -66,7 +66,8 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
     const is_static = static_assets.includes(e.request.url.replace(self.location.origin, ''));
-    const prioritize_cached = e.request.url.includes('media/') || e.request.url.includes('res/') || is_static;
+    const is_media = e.request.url.includes('backblazeb2.com') || e.request.url.includes('res/');
+    const prioritize_cached = is_media || is_static;
 
     e.respondWith(
         caches.match(e.request).then(cacheRes => {
@@ -94,7 +95,7 @@ self.addEventListener('fetch', e => {
                 })
             }
         }).catch((err) => {
-            if (!e.request.url.includes('media/') && !e.request.url.includes('res/')) {
+            if (!is_media) {
                 return caches.match('/fallback.html')
             } else {
                 return err;
