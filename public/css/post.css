@@ -76,6 +76,7 @@ img, video {
 }
 .not-loaded .doodle {
     background: transparent;
+    min-height: unset;
 }
 
 .doodle {
