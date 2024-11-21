@@ -2,3 +2,7 @@ node_modules
 db
 .env
 .DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+README.md
