@@ -66,7 +66,7 @@ table .flex > *:last-child {
 .image, .video {
     text-align: center;
 }
-img, video {
+.image img, .video video {
     width: 100%;
 }
 
@@ -79,7 +79,7 @@ img, video {
     min-height: unset;
 }
 
-.doodle {
+.image .doodle {
     aspect-ratio: 1;
 }
 
