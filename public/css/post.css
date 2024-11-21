@@ -70,6 +70,10 @@ img, video {
     width: 100%;
 }
 
+.doodle {
+    aspect-ratio: 1;
+}
+
 .audio audio {
     width: 100%;
 }

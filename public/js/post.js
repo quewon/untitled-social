@@ -1,4 +1,8 @@
 function treat_posts() {
+    for (let image of document.querySelectorAll("img")) {
+        treat_image(image);
+    }
+
     for (let el of document.querySelectorAll(".date-relative")) {
         const timestamp = Number(el.textContent);
         el.textContent = get_relative_date(timestamp);
@@ -12,10 +16,16 @@ function treat_posts() {
     for (let audio of document.querySelectorAll(".audio")) {
         treat_audio(audio);
     }
+}
 
-    for (let image of document.querySelectorAll("img")) {
-        if (image.src && image.src.endsWith("-doodle")) image.classList.add("doodle");
-    }
+function treat_image(image) {
+    if (image.src.endsWith("-doodle")) image.classList.add("doodle");
+
+    // on firefox, loading has to be set before src
+    let src = image.src;
+    image.removeAttribute("src");
+    image.setAttribute("loading", "lazy");
+    image.setAttribute("src", src);
 }
 
 function treat_album(block) {
