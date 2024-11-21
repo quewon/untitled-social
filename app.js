@@ -105,10 +105,10 @@ app.get('/page/:pagenumber', (req, res) => {
 app.get('/posts/:author/:id/is-live', (req, res) => {
     const path = req.params.author + '/' + req.params.id;
     const post = sqlite.query("posts", { path: path });
-    if (post && post.live == 1) {
-        res.send({ live: true });
+    if (post) {
+        res.send({ live: post.live == 1 })
     } else {
-        res.send({ live: false })
+        res.send({ live: null, post_not_found: true })
     }
 })
 

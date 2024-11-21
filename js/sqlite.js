@@ -2,8 +2,13 @@ const Database = require('better-sqlite3');
 const fs = require('fs');
 var db;
 
+//
+
 const RESET_DB = false;
 const BACKUP_DB = true;
+const CLEANUP_DEAD_POSTS = true;
+
+//
 
 if (!fs.existsSync('db')) {
     fs.mkdirSync('db');
@@ -122,4 +127,10 @@ exports.queryall = (table, obj, additional) => {
     const stmt = db.prepare("SELECT * FROM " + table + " " + conditions);
 
     return stmt.all(obj);
+}
+
+//
+
+if (CLEANUP_DEAD_POSTS) {
+    exports.delete("posts", { live: 0 });
 }
