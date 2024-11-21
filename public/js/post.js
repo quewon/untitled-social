@@ -206,7 +206,7 @@ function get_relative_date(timestamp) {
     var ampm_time = 
         (hours > 12 ? hours - 12 : hours) +
         (hours > 12 ? "pm" : "am");
-    if (ampm_time == "12am") ampm_time = "midnight";
+    if (ampm_time == "0am") ampm_time = "midnight";
 
     let current_year = current_date.getFullYear();
     if (current_year == post_date.getFullYear()) {
