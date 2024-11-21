@@ -1,4 +1,6 @@
 const max_file_size = 1000 * 1000 * 10;
+const max_transfer_size = 1000 * 1000 * 1000;
+
 const replying_to = document.getElementById("replying_to").textContent;
 
 const block_templates = {
@@ -123,6 +125,17 @@ async function upload_post() {
         form.append("files", file);
     
     form.append("replying_to", replying_to);
+
+    var size = 0;
+    for (var e of form.entries()) {
+        size += e[0].length;
+        if (e[1] instanceof Blob) size += e[1].size;
+        else size += e[1].length;
+    }
+    if (size > max_transfer_size) {
+        alert("this post exceeds the max upload size of 1 GB. please make your post smaller!");
+        return;
+    }
 
     var json = await fetch('/publish', {
         method: 'POST',

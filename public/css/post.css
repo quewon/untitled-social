@@ -181,8 +181,10 @@ img, video {
 
 .post-not-live-banner {
     border: 1px solid var(--alert-color);
-    color: var(--alert-color);
     padding: .5em
+}
+.post-not-live-banner em {
+    color: var(--alert-color);
 }
 
 .content > .image,
