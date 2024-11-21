@@ -49,13 +49,15 @@ main:not(:has(footer)) {
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg: #1b1b1c;
+        --bg: var(--dark-mode-bg);
         --color: var(--dark-mode-color);
         --theme-color: #5ebfff;
         --alert-color: orange;
         --post-bg: #1b1b1c;
         --post-border: rgba(255, 255, 255, .3);
         --normal-button-active-color: var(--post-border);
+        --album-bg: var(--post-border);
+        --album-bubbles: var(--color);
     }
 
     .doodle, .icon-button {

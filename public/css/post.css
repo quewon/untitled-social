@@ -146,7 +146,7 @@ img, video {
     margin-left: 5px;
     width: 5px;
     height: 5px;
-    background: var(--color);
+    background: var(--album-bubbles);
     border-radius: 50%;
     transition: width 200ms, height 200ms, margin-left 200ms;
 }

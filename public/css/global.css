@@ -3,6 +3,7 @@
     --max-post-width: 30rem;
 
     --dark-mode-color: #e8e8e8;
+    --dark-mode-bg: #1b1b1c;
 
     --bg: white;
     --color: black;
@@ -11,7 +12,8 @@
     --post-bg: white;
     --post-border: lightgray;
     --normal-button-active-color: lightgray;
-    --album-bg: var(--color);
+    --album-bg: var(--dark-mode-bg);
+    --album-bubbles: var(--post-border);
 }
 
 body, html {
