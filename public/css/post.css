@@ -44,6 +44,10 @@ table .flex > *:last-child {
 .content {
     padding: 1em;
 }
+.content em {
+    font-style: italic;
+    font-weight: normal;
+}
 
 /* blocks */
 
