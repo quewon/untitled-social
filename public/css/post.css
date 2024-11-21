@@ -70,6 +70,14 @@ img, video {
     width: 100%;
 }
 
+.not-loaded img {
+    background: var(--post-border);
+    min-height: var(--max-post-width);
+}
+.not-loaded .doodle {
+    background: transparent;
+}
+
 .doodle {
     aspect-ratio: 1;
 }

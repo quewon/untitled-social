@@ -1,5 +1,5 @@
 function treat_posts() {
-    for (let image of document.querySelectorAll("img")) {
+    for (let image of document.querySelectorAll(".image")) {
         treat_image(image);
     }
 
@@ -18,14 +18,24 @@ function treat_posts() {
     }
 }
 
-function treat_image(image) {
-    if (image.src.endsWith("-doodle")) image.classList.add("doodle");
+function treat_image(block) {
+    let image = block.querySelector("img");
 
     // on firefox, loading has to be set before src
     let src = image.src;
     image.removeAttribute("src");
     image.setAttribute("loading", "lazy");
     image.setAttribute("src", src);
+
+    if (image.src.endsWith("-doodle")) {
+        image.classList.add("doodle");
+        image.removeAttribute("alt");
+    }
+
+    block.classList.add("not-loaded");
+    image.onload = function() {
+        this.classList.remove("not-loaded");
+    }.bind(block);
 }
 
 function treat_album(block) {
