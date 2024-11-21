@@ -20,7 +20,12 @@ exports.send = (subscription, title, body, url) => {
     }
 
     push.sendNotification(subscription, json)
-    .catch(err => console.log(err))
+    .catch(error => {
+        if (error.statusCode == '410') {
+            sqlite.delete("subscriptions", { endpoint: error.endpoint });
+            console.log("deleted expired notification subscription.");
+        }
+    })
 }
 
 exports.broadcast = (title, url) => {
