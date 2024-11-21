@@ -5,6 +5,8 @@ if (navigator.serviceWorker) {
 
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     set_dark_mode();
+} else {
+    set_light_mode();
 }
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {

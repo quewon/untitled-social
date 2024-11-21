@@ -18,15 +18,10 @@ const max_title_length = 40;
 
 //
 
-var posts_in_memory;
-update_posts_in_memory();
-
-//
-
 app.use(compression({ level: 1 }));
 app.use('/', express.static(path.join(__dirname, 'public')));
     // use form data
-    app.use(express.json());
+    app.use(express.json({ limit: "1gb" }));
     app.use(express.urlencoded({ extended: false }));
     // ejs
     app.set('view engine', 'ejs');
@@ -44,7 +39,7 @@ app.get('/how-to-install', (req, res) => {
 
 app.get('/posts', (req, res) => {
     var feed = [];
-    for (let post of posts_in_memory) {
+    for (let post of get_live_posts()) {
         feed.push(parse_post_minimal(post));
     }
 
@@ -53,7 +48,7 @@ app.get('/posts', (req, res) => {
 
 app.get('/posts/:author', (req, res) => {
     var feed = [];
-    for (let post of posts_in_memory) {
+    for (let post of get_live_posts()) {
         if (post.author_path == req.params.author) {
             feed.push(parse_post_minimal(post));
         }
@@ -123,7 +118,7 @@ function get_max_page() {
 }
 
 function get_feed(page) {
-    const posts = posts_in_memory.slice(page * posts_per_page, page * posts_per_page + posts_per_page);
+    const posts = get_live_posts().slice(page * posts_per_page, page * posts_per_page + posts_per_page);
     var feed = [];
     for (let post of posts) {
         feed.push(parse_post(post));
@@ -207,8 +202,6 @@ app.post('/publish', upload.uploadMulter, async (req, res) => {
             timestamp: create_timestamp()
         });
 
-        update_posts_in_memory();
-
         if (post.replying_to) {
             const reply_author = sqlite.query("posts", { path: post.replying_to }).author;
             push.broadcast(`${post.author} replied to ${reply_author}'s post`, '/posts/'+post.path);
@@ -253,8 +246,8 @@ app.post('/subscribe', upload.none, (req, res) => {
     }
 })
 
-function update_posts_in_memory() {
-    posts_in_memory = sqlite.queryall("posts", {
+function get_live_posts() {
+    return sqlite.queryall("posts", {
         live: 1
     }, "ORDER BY timestamp DESC");
 }
@@ -265,7 +258,7 @@ function get_author_path(name) {
 
 function parse_post(post) {
     var reply_count = 0;
-    for (let reply of posts_in_memory) {
+    for (let reply of get_live_posts()) {
         if (reply.replying_to && reply.replying_to == post.path) reply_count++;
     }
 
@@ -287,7 +280,7 @@ function parse_post_with_replies(post) {
     var parsed = parse_post(post);
 
     parsed.replies = [];
-    for (let reply of posts_in_memory) {
+    for (let reply of get_live_posts()) {
         if (reply.replying_to && reply.replying_to == post.path) {
             parsed.replies.push(parse_post(reply))
         }
