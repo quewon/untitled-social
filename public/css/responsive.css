@@ -58,13 +58,10 @@ main:not(:has(footer)) {
         --normal-button-active-color: var(--post-border);
         --album-bg: var(--post-border);
         --album-bubbles: var(--color);
+        --dialog-backdrop: rgba(0, 0, 0, .6);
     }
 
     .doodle, .icon-button {
         filter: invert(.9);
-    }
-
-    dialog::backdrop {
-        background: rgba(0, 0, 0, .5);
     }
 }

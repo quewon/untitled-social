@@ -1,4 +1,10 @@
+var image_dialog;
+
 function treat_posts() {
+    image_dialog = document.createElement("dialog");
+    image_dialog.className = "image-dialog";
+    document.body.appendChild(image_dialog);
+
     for (let image of document.querySelectorAll(".image")) {
         treat_image(image);
     }
@@ -30,6 +36,11 @@ function treat_image(block) {
     if (image.src.endsWith("-doodle")) {
         image.classList.add("doodle");
         image.removeAttribute("alt");
+    } else {
+        image.onclick = function() {
+            image_dialog.innerHTML = '<img onclick="image_dialog.close()" src="' + this.src + '">';
+            image_dialog.showModal();
+        }.bind(image);
     }
 
     block.classList.add("not-loaded");

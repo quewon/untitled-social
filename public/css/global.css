@@ -14,6 +14,7 @@
     --normal-button-active-color: lightgray;
     --album-bg: var(--dark-mode-bg);
     --album-bubbles: var(--post-border);
+    --dialog-backdrop: rgba(255, 255, 255, .7);
 }
 
 body, html {
@@ -66,7 +67,7 @@ dialog {
     background: var(--bg);
 }
 dialog::backdrop {
-    background: rgba(255, 255, 255, .5);
+    background: var(--dialog-backdrop);
 }
 
 input, textarea, button {
