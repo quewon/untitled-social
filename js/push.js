@@ -28,9 +28,10 @@ exports.send = (subscription, title, body, url) => {
     })
 }
 
-exports.broadcast = (title, url) => {
+exports.broadcast = (title, url, excluded_endpoint) => {
     const subs = sqlite.queryall("subscriptions", {});
     for (let sub of subs) {
-        exports.send(JSON.parse(sub.json), title, null, url)
+        if (sub.endpoint != excluded_endpoint)
+            exports.send(JSON.parse(sub.json), title, null, url)
     }
 }

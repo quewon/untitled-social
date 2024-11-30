@@ -151,6 +151,8 @@
             applicationServerKey: 'BOGPWXp9LKTvrB7CZzDnBKRcxmHW3xB-z4lnhXlzk-tH6gYAIIiZgwdht5Cvr9CIcQSQIlihicwCerc19os7A74'
         });
 
+        localStorage.setItem("endpoint", push.endpoint);
+
         let form = new FormData();
         form.append("data", JSON.stringify(push));
 

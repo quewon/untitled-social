@@ -204,9 +204,9 @@ app.post('/publish', upload.uploadMulter, async (req, res) => {
 
         if (post.replying_to) {
             const reply_author = sqlite.query("posts", { path: post.replying_to }).author;
-            push.broadcast(`${post.author} replied to ${reply_author}'s post`, '/posts/'+post.path);
+            push.broadcast(`${post.author} replied to ${reply_author}'s post`, '/posts/'+post.path, req.body.endpoint);
         } else {
-            push.broadcast(`${post.author} wrote a new post`, '/posts/'+post.path);
+            push.broadcast(`${post.author} wrote a new post`, '/posts/'+post.path, req.body.endpoint);
         }
     }
     catch {

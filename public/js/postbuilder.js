@@ -137,6 +137,18 @@ async function upload_post() {
         return;
     }
 
+    var endpoint = localStorage.getItem("endpoint");
+    if (!endpoint) {
+        var service_worker = await navigator.serviceWorker.ready;
+        let push = await service_worker.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: 'BOGPWXp9LKTvrB7CZzDnBKRcxmHW3xB-z4lnhXlzk-tH6gYAIIiZgwdht5Cvr9CIcQSQIlihicwCerc19os7A74'
+        });
+        localStorage.setItem("endpoint", push.endpoint);
+    }
+
+    form.append("endpoint", endpoint);
+
     var json = await fetch('/publish', {
         method: 'POST',
         body: form
