@@ -227,7 +227,8 @@ table .flex > *:last-child {
 }
 
 .image-dialog {
-    padding: 0;
+    padding: 3vh;
+    box-sizing: border-box;
     margin: 0;
     border: none;
     width: 100%;

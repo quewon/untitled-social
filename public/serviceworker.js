@@ -1,8 +1,8 @@
 // should be versioned to update cached resources
 
-const static_cache_name = 'site-static-v1-1-9';
-const dynamic_cache_name = 'site-dynamic-v1-1-9';
-const dynamic_cache_limit = 30;
+const static_cache_name = 'site-static-v1-2';
+const dynamic_cache_name = 'site-dynamic-v1-2';
+const dynamic_cache_limit = 50;
 
 const static_assets = [
     '/fallback.html', // <-- make sure it looks like the other pages!
@@ -50,6 +50,7 @@ self.addEventListener('install', e => {
         caches.open(static_cache_name).then((cache) => {
             cache.addAll(static_assets);
         })
+        .then(() => self.skipWaiting())
     )
 })
 
