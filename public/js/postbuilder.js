@@ -145,6 +145,7 @@ async function upload_post() {
             applicationServerKey: 'BOGPWXp9LKTvrB7CZzDnBKRcxmHW3xB-z4lnhXlzk-tH6gYAIIiZgwdht5Cvr9CIcQSQIlihicwCerc19os7A74'
         });
         localStorage.setItem("endpoint", push.endpoint);
+        endpoint = push.endpoint;
     }
 
     form.append("endpoint", endpoint);
