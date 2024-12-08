@@ -344,7 +344,13 @@ function parse_markdown(markdown) {
                     element += `<img src='${src}'>`;
                     break;
                 case "audio":
-                    element += `<audio controls preload="metadata"><source src='${src}'></audio>`;
+                    let type = '';
+                    let s = src.split(".");
+                    if (s.length > 0) {
+                        type = s[s.length - 1];
+                        if (type == 'mp3') type = 'mpeg';
+                    }
+                    element += `<audio controls preload="auto"><source src='${src}' type='audio/${type}'></audio>`;
                     break;
                 case "video":
                     element += `<video controls><source src='${src}'></video>`;
