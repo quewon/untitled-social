@@ -178,9 +178,12 @@ main {
 
 /*  */
 
+header, footer, nav {
+    padding: .5em .75em;
+}
+
 header {
     background: var(--post-bg);
-    padding: .5em .75em;
     border-bottom: 1px dotted var(--theme-color);
 
     display: flex;
@@ -206,7 +209,6 @@ header > .grow {
 footer {
     background: var(--post-bg);
     border-top: 1px dotted var(--theme-color);
-    padding: .75em;
 
     display: flex;
     flex-direction: column;
@@ -215,6 +217,8 @@ footer {
 nav {
     display: flex;
     gap: 2em;
+    background: var(--theme-color);
+    padding: .3em;
 }
 nav pre {
     margin: 0;

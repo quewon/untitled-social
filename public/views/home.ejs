@@ -11,6 +11,20 @@
 
     <div class="scroll-container">
         <main>
+            <nav>
+                <% if (page > 1) { %>
+                    <a href="/page/<%= Number(page) - 1%>"><···</a>
+                <% } else { %>
+                    <pre>   </pre>
+                <% } %>
+                <small><%= page %></small>
+                <% if (page < max_page) { %>
+                    <a href="/page/<%= Number(page) + 1 %>">···></a>
+                <% } else { %>
+                    <pre>   </pre>
+                <% } %>
+            </nav>
+
             <% for (let post of feed) { %>
                 <div class="post">
                     <table>
@@ -73,7 +87,7 @@
                 <p><i>end of posts.</i></p>
             <% } %>
         </main>
-    
+
         <footer>
             <nav>
                 <% if (page > 1) { %>
