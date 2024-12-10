@@ -217,8 +217,7 @@ footer {
 nav {
     display: flex;
     gap: 2em;
-    background: var(--theme-color);
-    padding: .3em;
+    padding: 0;
 }
 nav pre {
     margin: 0;
