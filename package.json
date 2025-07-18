@@ -9,7 +9,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "backblaze-b2": "^1.7.0",
+    "backblaze-b2": "^1.7.1",
     "better-sqlite3": "^11.3.0",
     "compression": "^1.7.4",
     "dotenv": "^16.4.5",
