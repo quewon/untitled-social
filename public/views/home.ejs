@@ -126,16 +126,17 @@
         e.preventDefault();
         install_prompt = e;
         install_button.textContent = "install app";
-        install_button.href = "";
+        install_button.href = "javascript:0;";
         install_button.onclick = install_app;
     });
 
     window.addEventListener('appinstalled', disable_install_prompt);
 
     async function install_app() {
-        if (!install_prompt) return;
+        if (!install_prompt) return false;
         await install_prompt.prompt();
         disable_install_prompt();
+        return false;
     }
 
     function disable_install_prompt() {
