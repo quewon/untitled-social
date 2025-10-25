@@ -162,7 +162,7 @@
         if (!service_worker) return;
         let push = await service_worker.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: 'BOGPWXp9LKTvrB7CZzDnBKRcxmHW3xB-z4lnhXlzk-tH6gYAIIiZgwdht5Cvr9CIcQSQIlihicwCerc19os7A74'
+            applicationServerKey: '<%= process.env.VAPID_PUBLIC_KEY %>'
         });
 
         localStorage.setItem("endpoint", push.endpoint);
