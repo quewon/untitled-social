@@ -11,6 +11,8 @@ const push = require('./js/push.js');
 const port = process.env.PORT || 8080;
 const app = express();
 
+const sanitize = require('sanitize-html');
+
 // settings
 
 const posts_per_page = 10;
@@ -173,27 +175,23 @@ app.post('/publish', upload.uploadMulter, async (req, res) => {
 
         var files_not_uploaded = req.files;
 
-        var limit = 10;
-        while (files_not_uploaded.length > 0) {
-            var promises = [];
-            for (let file of files_not_uploaded) {
-                promises.push(upload.uploadB2(file));
-            }
+        var promises = [];
+        for (let file of files_not_uploaded) {
+            promises.push(upload.uploadB2(file));
+        }
 
-            var urls = await Promise.allSettled(promises);
-            for (let i=files_not_uploaded.length-1; i>=0; i--) {
-                if (urls[i].status == 'fulfilled') {
-                    post.body = post.body.replaceAll(`](${files_not_uploaded[i].temp_path})`, `](${urls[i].value})`)
-                    files_not_uploaded.splice(i, 1);
-                }
+        var urls = await Promise.allSettled(promises);
+        for (let i=files_not_uploaded.length-1; i>=0; i--) {
+            if (urls[i].status == 'fulfilled') {
+                post.body = post.body.replaceAll(`](${files_not_uploaded[i].temp_path})`, `](${urls[i].value})`)
+                files_not_uploaded.splice(i, 1);
             }
+        }
 
-            limit--;
-            if (limit <= 0) {
-                console.error("reached b2 upload failure limit. purging post.");
-                sqlite.delete("posts", { path: post.path });
-                return;
-            }
+        if (files_not_uploaded.length > 0) {
+            console.error("upload failed. purging post.");
+            sqlite.delete("posts", { path: post.path });
+            return;
         }
 
         sqlite.update("posts", { path: post.path }, {
@@ -221,10 +219,6 @@ app.post('/subscribe', upload.none, (req, res) => {
         var sub_exists = sqlite.query("subscriptions", { endpoint: sub.endpoint });
 
         if (sub_exists) {
-            sqlite.update("subscriptions", { endpoint: sub.endpoint }, {
-                timestamp: create_timestamp()
-            })
-
             push.send(sub, "notifications already enabled", "to turn them off, consult your site or app settings.");
         } else {
             sqlite.insert("subscriptions", {
@@ -366,6 +360,15 @@ function parse_markdown(markdown) {
     }
     
     markdown = markdown.replace(/(.)\r\n(?!\r\n)/g, '$1  \r\n');
+
+    markdown = sanitize(markdown, {
+        allowedTags: sanitize.defaults.allowedTags.concat([ 'img', 'audio', 'video', 'embed' ]),
+        allowedAttributes: false,
+        parser: {
+            lowerCaseTags: false,
+            lowerCaseAttributeNames: false
+        }
+    });
 
     return marked.parse(markdown);
 }
