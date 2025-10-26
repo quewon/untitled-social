@@ -20,7 +20,7 @@ if (!fs.existsSync('db')) {
             
             db.backup(`db/backup-${date}.db`)
             .then(() => {
-                console.log('backup complete!');
+                console.log(`backup complete! ${fs.readdirSync("db").length - 1} total backups stored.`);
             })
             .catch((err) => {
                 console.log('backup failed:', err);

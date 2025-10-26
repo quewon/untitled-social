@@ -1,6 +1,10 @@
 const B2 = require('backblaze-b2');
 const multer = require('multer');
 
+if (!process.env.BUCKET_NAME || !process.env.BUCKET_ID || !process.env.KEY || !process.env.KEY_ID) {
+    throw Error("environment variables for b2 credentials not defined.");
+}
+
 // settings
 
 const max_file_size = 10 * (1000 * 1000) //10mb
@@ -20,7 +24,7 @@ exports.uploadB2 = async (file) => {
     const b2 = new B2({
         applicationKeyId: process.env.KEY_ID,
         applicationKey: process.env.KEY
-    });
+    })
     const auth_response = await b2.authorize();
     const { downloadUrl } = auth_response.data;
 
