@@ -148,9 +148,12 @@ async function upload_post() {
         let push = await service_worker.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: VAPID_KEY
-        });
-        localStorage.setItem("endpoint", push.endpoint);
-        endpoint = push.endpoint;
+        })
+        .catch(err => console.error(err))
+        if (push) {
+            localStorage.setItem("endpoint", push.endpoint);
+            endpoint = push.endpoint;
+        }
     }
 
     form.append("endpoint", endpoint);
@@ -516,6 +519,6 @@ async function preview_post() {
     }
     previousMarkdown = markdown;
 
-    preview_dialog.querySelector("[name=post_name]").textContent = post_name.value || localStorage.getItem("name");
+    preview_dialog.querySelector("[name=post_name]").textContent = post_name.value || localStorage.getItem("name") || "anonymous";
     preview_dialog.showModal();
 }
