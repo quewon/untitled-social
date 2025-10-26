@@ -5,21 +5,24 @@ function treat_posts() {
     image_dialog.className = "image-dialog";
     document.body.appendChild(image_dialog);
 
-    for (let image of document.querySelectorAll(".image")) {
-        treat_image(image);
-    }
-
     for (let el of document.querySelectorAll(".date-relative")) {
         const timestamp = Number(el.textContent);
         el.textContent = get_relative_date(timestamp);
         el.title = get_absolute_date(timestamp);
     }
+    for (content of document.querySelectorAll(".content")) {
+        treat_post(content);
+    }
+}
 
-    for (let album of document.querySelectorAll(".album")) {
+function treat_post(content) {
+    for (let image of content.querySelectorAll(".image")) {
+        treat_image(image);
+    }
+    for (let album of content.querySelectorAll(".album")) {
         treat_album(album);
     }
-
-    for (let audio of document.querySelectorAll(".audio")) {
+    for (let audio of content.querySelectorAll(".audio")) {
         treat_audio(audio);
     }
 }

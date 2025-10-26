@@ -87,7 +87,7 @@ input[type="file"] {
 }
 #post-preview-dialog .post {
     width: 100%;
-    max-height: 50vh;
+    max-height: 65vh;
     overflow-y: scroll;
     color: var(--color);
     text-align: left;

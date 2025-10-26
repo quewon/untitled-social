@@ -89,7 +89,7 @@ function post_to_markdown(preview) {
                     file_index = files.length;
                     files[file_index] = file_of_objecturl[b.dataset.src];
 
-                    markdown += `    ![${b.dataset.type}](${ preview ? src.replace('blob:','') : "media/" + file_index })`;
+                    markdown += `    ![${b.dataset.type}](${ preview ? b.dataset.src.replace('blob:','') : "media/" + file_index })`;
                     if (i < slides.children.length - 1) markdown += ",\n"
                 }
                 markdown += "\n)\n\n";
@@ -513,9 +513,19 @@ async function preview_post() {
         if (res.post.trim() !== "") {
             var content = document.createElement("div");
             content.className = "content";
-            content.innerHTML = res.post.replaceAll(`http://localhost`, `blob:http://localhost`);
+            content.innerHTML = res.post;
+            for (let image of content.querySelectorAll(".image")) {
+                const srcel = image.querySelector("img");
+                srcel.src = srcel.src.replaceAll(location.origin, `blob:${location.origin}`);
+            }
+            for (let media of content.querySelectorAll(".audio, .video")) {
+                const srcel = media.querySelector("source");
+                srcel.src = srcel.src.replaceAll(location.origin, `blob:${location.origin}`);
+            }
             preview_dialog.querySelector("table").after(content);
         }
+
+        treat_post(content);
     }
     previousMarkdown = markdown;
 
