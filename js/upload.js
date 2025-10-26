@@ -1,4 +1,5 @@
 const B2 = require('backblaze-b2');
+const fs = require('fs');
 const multer = require('multer');
 
 if (!process.env.BUCKET_NAME || !process.env.BUCKET_ID || !process.env.KEY || !process.env.KEY_ID) {
@@ -8,15 +9,22 @@ if (!process.env.BUCKET_NAME || !process.env.BUCKET_ID || !process.env.KEY || !p
 // settings
 
 const max_file_size = 10 * (1000 * 1000) //10mb
+const max_file_count = 10;
 
 //
 
 exports.none = multer({ storage: multer.memoryStorage() }).none();
 
 exports.uploadMulter = multer({
-    storage: multer.memoryStorage(),
+    storage: multer.diskStorage({
+        destination: 'tmp',
+        filename: (req, file, cb) => {
+            cb(null, nanoid(16));
+        }
+    }),
     limits: {
-        fileSize: max_file_size
+        fileSize: max_file_size,
+        files: max_file_count
     }
 }).array('files');
 
@@ -37,7 +45,7 @@ exports.uploadB2 = async (file) => {
         uploadUrl,
         uploadAuthToken: authorizationToken,
         fileName: nanoid(8) + '-' + new Date().toLocaleDateString().replaceAll('/','-') + '-' + file.originalname.replace(/[()]/g,'-'),
-        data: file.buffer
+        data: fs.readFileSync(file.path)
     });
 
     if (file_info.data?.fileName ?? null) {

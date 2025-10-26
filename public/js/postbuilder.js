@@ -170,7 +170,7 @@ async function upload_post() {
             document.body.classList.add("publishing");
             location.href = '/' + json.path;
         } else {
-            alert("weird! something's wrong. maybe let quewon know?");
+            alert("weird! your post failed to upload. please inform quewon as this shouldn't be happening.");
         }
     } else {
         alert("you're offline (or the server is). try again later!");

@@ -123,7 +123,7 @@
 
         if (json && (json.live || json.post_not_found)) {
             if (json.post_not_found) {
-                alert("this post was purged due to an error! you probably got unlucky and posted it right as the server was being restarted. sorry about that!");
+                alert("this post was purged due to an uploading error. sorry about that!");
                 history.back();
             } else if (json.live) {
                 window.location.reload();

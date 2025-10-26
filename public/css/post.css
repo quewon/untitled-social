@@ -77,11 +77,9 @@
 
 .not-loaded img {
     background: var(--post-border);
-    min-height: var(--max-post-width);
 }
 .not-loaded .doodle {
     background: transparent;
-    min-height: unset;
 }
 
 .image .doodle {

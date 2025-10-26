@@ -7,6 +7,7 @@ const compression = require('compression');
 const marked = require('marked');
 const sqlite = require('./js/sqlite.js');
 const push = require('./js/push.js');
+const fs = require('fs');
 
 const port = process.env.PORT || 8080;
 const app = express();
@@ -165,21 +166,26 @@ app.post('/publish', upload.uploadMulter, async (req, res) => {
         sqlite.insert("posts", post);
 
         res.send({
-            message: "post published!",
+            message: "post added!",
             path: 'posts/' + path
         })
     }
     catch {
-        console.error("error creating post");
+        console.error("error creating post.");
+        if (post) sqlite.delete("posts", { path: post.path });
+        for (let file of req.files) {
+            fs.unlink(file.path, () => {});
+        }
         res.send({ message: "error" });
+        return;
     }
-
+    
     try {
         for (let i=0; i<req.files.length; i++) {
             req.files[i].temp_path = 'media/' + i;
         }
 
-        var files_not_uploaded = req.files;
+        var files_not_uploaded = [...req.files];
 
         var promises = [];
         for (let file of files_not_uploaded) {
@@ -194,10 +200,12 @@ app.post('/publish', upload.uploadMulter, async (req, res) => {
             }
         }
 
+        for (let file of req.files) {
+            fs.unlink(file.path, () => {});
+        }
+
         if (files_not_uploaded.length > 0) {
-            console.error("upload failed. purging post.");
-            sqlite.delete("posts", { path: post.path });
-            return;
+            throw new Error("files not fully uploaded.");
         }
 
         sqlite.update("posts", { path: post.path }, {
@@ -214,8 +222,11 @@ app.post('/publish', upload.uploadMulter, async (req, res) => {
         }
     }
     catch {
-        console.error("error uploading files. purging post.");
+        console.error("error uploading files.");
         sqlite.delete("posts", { path: post.path });
+        for (let file of req.files) {
+            fs.unlink(file.path, () => {});
+        }
     }
 });
 
