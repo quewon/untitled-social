@@ -1,4 +1,5 @@
-const max_file_size = 1000 * 1000 * 10;
+const max_file_size_mb = 100;
+const max_file_count = 10;
 const max_transfer_size = 1000 * 1000 * 1000;
 
 const replying_to = document.getElementById("replying_to").textContent;
@@ -27,8 +28,9 @@ window.onbeforeunload = () => {
 // ios safari requires change function to be applied through javascript
 
 const file_input = document.querySelector("input[type='file']");
-file_input.onchange = () => {
-    add_files(file_input.files)
+file_input.onchange = async () => {
+    await add_files(file_input.files);
+    file_input.value = "";
 }
 
 // build post
@@ -199,6 +201,11 @@ function get_file_block_src_element(block) {
 }
 
 async function add_files(files) {
+    if (files.length + Object.keys(file_of_objecturl).length > max_file_count) {
+        alert(`you can only attach up to ${max_file_count} files in a post!`)
+        return;
+    }
+
     var new_blocks = [];
 
     post_builder.classList.add("adding-files");
@@ -229,8 +236,8 @@ async function add_files(files) {
 }
 
 async function add_file(file) {
-    if (file.size > max_file_size) {
-        alert("File too large :(\n(max file size: 10 MB)");
+    if (file.size > max_file_size_mb * 1000 * 1000) {
+        alert(`file too large :(\n(max file size: ${max_file_size_mb} MB)`);
         return;
     }
 

@@ -8,7 +8,7 @@ if (!process.env.BUCKET_NAME || !process.env.BUCKET_ID || !process.env.KEY || !p
 
 // settings
 
-const max_file_size = 10 * (1000 * 1000) //10mb
+const max_file_size = 100 * (1000 * 1000) //100mb
 const max_file_count = 10;
 
 //
