@@ -5,39 +5,39 @@
     background: var(--post-bg);
 }
 
-.post table {
+.post > table {
     width: 100%;
     font-family: monospace;
     margin-left: .5em;
     margin-right: .5em;
     width: calc(100% - 1em);
 }
-.post table td {
+.post > table td {
     padding: 0;
     padding-left: .5em;
     padding-right: .5em;
     white-space: nowrap;
     vertical-align: top;
 }
-.post table td:nth-child(2) {
+.post > table td:nth-child(2) {
     white-space: wrap;
     width: 100%;
 }
-.post table td:first-child {
+.post > table td:first-child {
     padding-left: 0;
     width: 3em;
 }
-.post table td:last-child {
+.post > table td:last-child {
     padding-right: 0;
 }
 
-table .flex {
+.post > table .flex {
     display: flex;
     gap: 1em;
     justify-content: space-between;
     box-sizing: border-box;
 }
-table .flex > *:last-child {
+.post > table .flex > *:last-child {
     white-space: nowrap;
 }
 

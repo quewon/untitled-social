@@ -132,6 +132,12 @@ function get_feed(page) {
 
 const upload = require('./js/upload.js');
 
+app.post('/api/preview', upload.none, async (req, res) => {
+    res.send({
+        post: parse_markdown(req.body.post)
+    })
+})
+
 app.post('/publish', upload.uploadMulter, async (req, res) => {
     var post;
 
@@ -362,8 +368,9 @@ function parse_markdown(markdown) {
     markdown = markdown.replace(/(.)\r\n(?!\r\n)/g, '$1  \r\n');
 
     markdown = sanitize(markdown, {
-        allowedTags: sanitize.defaults.allowedTags.concat([ 'img', 'audio', 'video', 'embed' ]),
+        allowedTags: sanitize.defaults.allowedTags.concat([ 'img', 'audio', 'video', 'embed', 'source' ]),
         allowedAttributes: false,
+        nonBooleanAttributes: [],
         parser: {
             lowerCaseTags: false,
             lowerCaseAttributeNames: false

@@ -18,6 +18,12 @@ const media_tags = ['image', 'video', 'audio'];
 
 var file_of_objecturl = {};
 
+window.onbeforeunload = () => {
+    if (!document.body.classList.contains("publishing") && post_builder.getElementsByClassName("block").length > 0) {
+        return "discard post?"
+    }
+}
+
 // ios safari requires change function to be applied through javascript
 
 const file_input = document.querySelector("input[type='file']");
@@ -48,7 +54,7 @@ function add_post_block(type) {
     return element;
 }
 
-function post_to_markdown() {
+function post_to_markdown(preview) {
     var markdown = "";
     var files = [];
 
@@ -56,7 +62,6 @@ function post_to_markdown() {
     for (let i=0; i<blocks.length; i++) {
         var block = blocks[i];
         var src = block.dataset.src;
-
         var file_index = files.length;
 
         switch (block.dataset.type) {
@@ -65,15 +70,15 @@ function post_to_markdown() {
                 break;
             case "image":
                 files[file_index] = file_of_objecturl[src];
-                markdown += "![image](media/" + file_index + ")\n\n";
+                markdown += `![image](${ preview ? src.replace('blob:','') : "media/" + file_index })\n\n`;
                 break;
             case "audio":
                 files[file_index] = file_of_objecturl[src];
-                markdown += "![audio](media/" + file_index + ")\n\n";
+                markdown += `![audio](${ preview ? src.replace('blob:','') : "media/" + file_index })\n\n`;
                 break;
             case "video":
                 files[file_index] = file_of_objecturl[src];
-                markdown += "![video](media/" + file_index + ")\n\n";
+                markdown += `![video](${ preview ? src.replace('blob:','') : "media/" + file_index })\n\n`;
                 break;
             case "album":
                 markdown += "![album](\n";
@@ -84,7 +89,7 @@ function post_to_markdown() {
                     file_index = files.length;
                     files[file_index] = file_of_objecturl[b.dataset.src];
 
-                    markdown += "    ![" + b.dataset.type + "](media/" + file_index + ")";
+                    markdown += `    ![${b.dataset.type}](${ preview ? src.replace('blob:','') : "media/" + file_index })`;
                     if (i < slides.children.length - 1) markdown += ",\n"
                 }
                 markdown += "\n)\n\n";
@@ -142,7 +147,7 @@ async function upload_post() {
         var service_worker = await navigator.serviceWorker.ready;
         let push = await service_worker.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: 'BOGPWXp9LKTvrB7CZzDnBKRcxmHW3xB-z4lnhXlzk-tH6gYAIIiZgwdht5Cvr9CIcQSQIlihicwCerc19os7A74'
+            applicationServerKey: VAPID_KEY
         });
         localStorage.setItem("endpoint", push.endpoint);
         endpoint = push.endpoint;
@@ -162,6 +167,7 @@ async function upload_post() {
     if (json) {
         if (json.path) {
             localStorage.setItem("name", post_name.value);
+            document.body.classList.add("publishing");
             location.href = '/' + json.path;
         } else {
             alert("weird! something's wrong. maybe let quewon know?");
@@ -479,4 +485,37 @@ function setup_canvas(block) {
     canvas.addEventListener("contextmenu", e => {
         e.preventDefault();
     })
+}
+
+// preview
+
+const preview_dialog = document.getElementById("post-preview-dialog");
+var previousMarkdown;
+
+async function preview_post() {
+    const markdown = post_to_markdown(true).markdown;
+    if (markdown !== previousMarkdown) {
+        if (preview_dialog.querySelector(".content"))
+            preview_dialog.querySelector(".content").remove();
+
+        var form = new FormData();
+        form.append("post", markdown);
+        var res = await fetch('/api/preview', {
+            method: 'POST',
+            body: form
+        })
+        .then(res => res.json())
+        .catch(err => console.log(err))
+
+        if (res.post.trim() !== "") {
+            var content = document.createElement("div");
+            content.className = "content";
+            content.innerHTML = res.post.replaceAll(`http://localhost`, `blob:http://localhost`);
+            preview_dialog.querySelector("table").after(content);
+        }
+    }
+    previousMarkdown = markdown;
+
+    preview_dialog.querySelector("[name=post_name]").textContent = post_name.value || localStorage.getItem("name");
+    preview_dialog.showModal();
 }
