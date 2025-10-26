@@ -10,6 +10,6 @@ untitled social is hosted on the cheapest DigitalOcean droplet I could find. Its
 
 It's built on Node.js using ejs views. There is no user system. Users make posts essentially anonymously, but have the ability to sign and index the post with their name. All posts are made on a single global feed. Posts can contain text, of course, as well as images, videos, audio (which you can record in-app) and doodles (images that you can draw in-app). It has PWA functionality with notifications, so it can easily be used as a mobile app.
 
-[Here](https://quewon.github.io/text/2024-11-19-untitled-social.html) is a link to a copy of one of the first posts I made on untitled social, writing in length about what I wanted it to be.
+[Here](https://quewon.github.io/text/untitled%20social%20manifesto) is a link to a copy of one of the first posts I made on untitled social, writing in length about what I wanted it to be.
 
 As of May 2025 it has been about 6 months since I shared the link with my friends, and untitled social has settled as a place to post noncommittally, among known and close friends, random thoughts or news or seeking advice. 871 posts have been made between 6 people. There were 348 posts made in November which has dropped down to 22 posts made in April. Some friends use it more frequently than others. Some write longer posts. For me, it continues to fill a gap that I feel in the internet.
