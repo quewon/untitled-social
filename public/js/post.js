@@ -63,7 +63,6 @@ function treat_album(block) {
 
     var counter = document.createElement("div");
     counter.className = "counter";
-    counter.textContent = "1/" + slides.children.length;
 
     // nav bubbles
 
@@ -76,7 +75,7 @@ function treat_album(block) {
     }
 
     wrapper.onscroll = function() {
-        block.dataset.slide_index = Math.round(this.scrollLeft / this.clientWidth) + 1;
+        block.dataset.slide_index = Math.round(this.scrollLeft / this.clientWidth) + 1 || 1;
         counter.textContent = block.dataset.slide_index + "/" + block.dataset.slides_count;
 
         let index = Number(block.dataset.slide_index) - 1;
