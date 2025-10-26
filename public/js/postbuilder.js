@@ -523,9 +523,8 @@ async function preview_post() {
                 srcel.src = srcel.src.replaceAll(location.origin, `blob:${location.origin}`);
             }
             preview_dialog.querySelector("table").after(content);
+            treat_post(content);
         }
-
-        treat_post(content);
     }
     previousMarkdown = markdown;
 
