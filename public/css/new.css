@@ -200,6 +200,10 @@ textarea {
 .audio .download-button {
     display: none;
 }
+#post-preview-dialog .audio .download-button {
+    display: block;
+    pointer-events: none;
+}
 
 /* draw block */
 
