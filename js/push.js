@@ -1,7 +1,7 @@
 const push = require('web-push');
 const sqlite = require('./sqlite.js');
 
-push.setVapidDetails('mailto:' + process.env.ADMIN_EMAIL, process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
+push.setVapidDetails('mailto:' + process.env.VAPID_ADMIN_EMAIL, process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
 
 exports.send = (subscription, title, body, url) => {
     var json;

@@ -230,16 +230,16 @@
                         </a>
                     </td>
                     <td class="flex">
-                        <span class="grow">from <a href="javascript:0;"><em name="post_name"></em></a> · <span class="date-relative">0</span></span>
-                        <a href="javascript:0;">reply</a>
+                        <span class="grow">from <a><em name="post_name"></em></a> · <span class="date-relative">0</span></span>
+                        <a>reply</a>
                     </td>
                 </tr>
                 <% if (locals.replying_to) { %>
                     <tr>
                         <td>re:</td>
                         <td class="flex">
-                            <a class="grow" href="javascript:0;"><%= replying_to.title %></a>
-                            <span>by <a href="javascript:0;"><%= replying_to.author %></a></span>
+                            <a class="grow"><%= replying_to.title %></a>
+                            <span>by <a><%= replying_to.author %></a></span>
                         </td>
                     </tr>
                 <% } %>

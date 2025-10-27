@@ -16,8 +16,8 @@ const sanitize = require('sanitize-html');
 
 // settings
 
-const posts_per_page = 10;
-const max_title_length = 40;
+const POSTS_PER_PAGE = 10;
+const MAX_TITLE_LENGTH = 40;
 
 //
 
@@ -117,11 +117,11 @@ app.get('/posts/:author/:id/is-live', (req, res) => {
 
 function get_max_page() {
     let stmt = sqlite.db.prepare("SELECT COUNT(*) AS count FROM posts");
-    return Math.ceil(stmt.get().count / posts_per_page);
+    return Math.ceil(stmt.get().count / POSTS_PER_PAGE);
 }
 
 function get_feed(page) {
-    const posts = get_live_posts().slice(page * posts_per_page, page * posts_per_page + posts_per_page);
+    const posts = get_live_posts().slice(page * POSTS_PER_PAGE, page * POSTS_PER_PAGE + POSTS_PER_PAGE);
     var feed = [];
     for (let post of posts) {
         feed.push(parse_post(post));
@@ -152,7 +152,16 @@ app.post('/publish', upload.uploadMulter, async (req, res) => {
         name = name == "" ? "anonymous" : name;
 
         const body = req.body.post.trim();
-        const path = get_author_path(name) + '/' + nanoid(8);
+        var path = get_author_path(name) + '/' + nanoid(8);
+
+        var i=0;
+        while (sqlite.query("posts", { path: path })) {
+            path = get_author_path(name) + '/' + nanoid(8);
+            i++;
+            if (i > 1000) {
+                throw new Error(`reached post limit for ${get_author_path(name)}`);
+            }
+        }
 
         post = {
             author: name,
@@ -223,7 +232,7 @@ app.post('/publish', upload.uploadMulter, async (req, res) => {
     }
     catch {
         console.error("error uploading files.");
-        sqlite.delete("posts", { path: post.path });
+        sqlite.update("posts", { path: post.path }, { live: 0 });
         for (let file of req.files) {
             fs.unlink(file.path, () => {});
         }
@@ -394,7 +403,7 @@ function parse_markdown(markdown) {
 function get_post_title(post) {
     var title = post.body.split("\n")[0];
     if (title != "") {
-        title = title.substring(0, max_title_length);
+        title = title.substring(0, MAX_TITLE_LENGTH);
     }
 
     if (title.includes("![album](")) title = "[album]";
@@ -413,8 +422,8 @@ function create_timestamp() {
 }
 
 // https://www.npmjs.com/package/nanoid
-let a="useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
 function nanoid(e=21) {
+    let a="useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
     let t = "", r = crypto.getRandomValues(new Uint8Array(e));
     for (let n=0; n<e; n++)
         t += a[63 & r[n]];
