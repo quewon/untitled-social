@@ -66,6 +66,10 @@ self.addEventListener('activate', e => {
 })
 
 self.addEventListener('fetch', e => {
+    if (e.request.headers.has('range')) {
+        return;
+    }
+
     const is_static = static_assets.includes(e.request.url.replace(self.location.origin, ''));
     const is_media = e.request.url.includes('backblazeb2.com') || e.request.url.includes('res/');
     const prioritize_cached = is_media || is_static;
@@ -79,9 +83,6 @@ self.addEventListener('fetch', e => {
                         if (is_static) limit_cache_size(dynamic_cache_name, dynamic_cache_limit);
                         return fetchRes;
                     })
-                })
-                .catch((err) => {
-                    return err;
                 })
             } else {
                 return fetch(e.request).then(fetchRes => {
