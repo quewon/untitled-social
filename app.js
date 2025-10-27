@@ -371,7 +371,19 @@ function parse_markdown(markdown) {
                         if (type == 'mp3') type = 'mpeg';
                         else if (type == 'm4a') type = 'x-m4a';
                     }
-                    element += `<audio controls preload="auto"><source src='${src}' type='audio/${type}'></audio>`;
+                    if (type === 'm4a') {
+                        element += `<audio controls preload="auto">
+                            <source src='${src}' type='audio/x-m4a'>
+                            <source src='${src}' type='audio/mp3'>
+                        </audio>`;
+                    } else if (type === 'mp3') {
+                        element += `<audio controls preload="auto">
+                            <source src='${src}' type='audio/mpeg'>
+                            <source src='${src}' type='audio/mp3'>
+                        </audio>`;
+                    } else {
+                        element += `<audio controls preload="auto"><source src='${src}' type='audio/${type}'></audio>`;
+                    }
                     break;
                 case "video":
                     element += `<video controls><source src='${src}'></video>`;
