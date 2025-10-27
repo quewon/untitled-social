@@ -372,7 +372,7 @@ function parse_markdown(markdown) {
                     if (type === 'm4a') {
                         element += `<audio controls preload="auto">
                             <source src='${src}' type='audio/x-m4a'>
-                            <source src='${src}' type='audio/mp3'>
+                            <source src='${src}' type='audio/mp4'>
                         </audio>`;
                     } else if (type === 'mp3') {
                         element += `<audio controls preload="auto">
