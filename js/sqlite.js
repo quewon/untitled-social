@@ -2,7 +2,7 @@ const Database = require('better-sqlite3');
 const fs = require('fs');
 var db;
 
-//
+// settings
 
 const RESET_DB = false;
 const BACKUP_DB = true;
@@ -10,27 +10,28 @@ const CLEANUP_DEAD_POSTS = true;
 
 //
 
-if (!fs.existsSync('db')) {
+if (!fs.existsSync('db'))
     fs.mkdirSync('db');
-} else {
-    if (fs.existsSync('db/db.db')) {
-        if (BACKUP_DB) {
-            db = new Database('db/db.db');
-            const date = new Date().toLocaleDateString().replaceAll('/','-');
-            
-            db.backup(`db/backup-${date}.db`)
-            .then(() => {
-                console.log(`backup complete! ${fs.readdirSync("db").length - 1} total backups stored.`);
-            })
-            .catch((err) => {
-                console.log('backup failed:', err);
-            });
-        }
-        if (RESET_DB) fs.unlinkSync('db/db.db');
+if (fs.existsSync('db/db.db')) {
+    if (BACKUP_DB) {
+        db = new Database('db/db.db');
+        const date = new Date().toLocaleDateString().replaceAll('/','-');
+        
+        db.backup(`db/backup-${date}.db`)
+        .then(() => {
+            console.log(`backup complete! ${fs.readdirSync("db").length - 3} total backups stored.`);
+        })
+        .catch((err) => {
+            console.log('backup failed:', err);
+        });
     }
-}
-
-if (!fs.existsSync('db/db.db')) {
+    if (RESET_DB) {
+        fs.unlinkSync('db/db.db');
+        fs.unlinkSync('db/db.db-shm');
+        fs.unlinkSync('db/db.db-wal');
+    }
+    db = new Database('db/db.db');
+} else {
     db = new Database('db/db.db');
     db.exec(`
         CREATE TABLE "posts" (
@@ -52,9 +53,9 @@ if (!fs.existsSync('db/db.db')) {
             PRIMARY KEY("subscription_id")
         );
     `);
-} else {
-    db = new Database('db/db.db');
 }
+
+db.pragma('journal_mode = WAL');
 
 exports.db = db;
 
