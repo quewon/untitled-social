@@ -1,15 +1,19 @@
-# [untitled social](https://quewon.github.io/projects/2024-untitled-social/)
+# [untitled social](https://quewon.github.io/projects/untitled%20social/)
 
-untitled social is a small alternative social media that I made for and with a local group of friends in Seoul. We were starting to hang out pretty consistently. We all shared an exhaustion with modern social media, and we had our own various reasons for it. The performativity of an appearance-centric social media culture, the obligation to share things and keep up with it, the toxic algorithms that prioritized engagement over all.
+*untitled social* is a barebones alternative social media designed for small-scale use. it's built on Node.js and Express, using ejs for templating, SQLite for the database, and Backblaze B2 for media hosting.
 
-At the same time all of us had an intimate relationship with the internet and had experienced the way it could be genuinely informative, stoking our curiosity, culturally fulfilling, and sincerely social.
+what *untitled social* has:
+- one global feed that people can post on
+- a modular post builder that can contain markdown-formatted text, images, video, and audio
+- progressive web app (PWA) functionality with responsive ui
+- a push notification system
 
-So at the time I was drifting away from social media, but didn't cut it out of my life entirely. I didn't post but I still used it to see what my friends were up to and communicate with them. The only place I consistently posted anything was [Cohost](https://en.wikipedia.org/wiki/Cohost), and I really liked what it did for me as a slow social media with no complex feed algorithm based on collected user data, and no numbers. It felt like old internet forums I frequented: communal, cozy.
+what it doesn't have:
+- a user system (posters can attach a "name" to a post, but posts are made essentially anonymously)
+- limited curation (no tags, no followers, no site search, etc. posts can be filtered by "name")
+- likes/votes
+- deleting or editing posts
 
-untitled social is hosted on the cheapest DigitalOcean droplet I could find. Its domain is a subdomain of a Free DNS domain. Multimedia is stored and hosted through Backblaze B2, which has a daily free usage allowance, and so for the scope of the website basically costs nothing. All in all running the website costs me around 7,000 KRW (~$5) a month.
+these choices were made intentionally to limit the scope of *untitled social*. but feel free to build on it or modify it to your liking, and feel free to leave an issue on github if you have any questions about it.
 
-It's built on Node.js using ejs views. There is no user system. Users make posts essentially anonymously, but have the ability to sign and index the post with their name. All posts are made on a single global feed. Posts can contain text, of course, as well as images, videos, audio (which you can record in-app) and doodles (images that you can draw in-app). It has PWA functionality with notifications, so it can easily be used as a mobile app.
-
-[Here](https://quewon.github.io/text/untitled%20social%20manifesto) is a link to a copy of one of the first posts I made on untitled social, writing in length about what I wanted it to be.
-
-As of May 2025 it has been about 6 months since I shared the link with my friends, and untitled social has settled as a place to post noncommittally, among known and close friends, random thoughts or news or seeking advice. 871 posts have been made between 6 people. There were 348 posts made in November which has dropped down to 22 posts made in April. Some friends use it more frequently than others. Some write longer posts. For me, it continues to fill a gap that I feel in the internet.
+you can host *untitled social* on any server but the configuration for the DigitalOcean droplet (VPS) i'm using is: 512 MB memory / 10 GB disk / Ubuntu 24.04 (LTS) x64. i'm currently using Apache (v2.4.58) to serve it and FreeDNS for a free domain :) along with B2's generous free tier this setup runs me less than $5 a month, though do keep in mind this is at a low usage rate.
