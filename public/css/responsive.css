@@ -59,6 +59,7 @@ main:not(:has(footer)) {
         --album-bg: var(--post-border);
         --album-bubbles: var(--color);
         --dialog-backdrop: rgba(0, 0, 0, .6);
+        color-scheme: dark;
     }
 
     .doodle, .icon-button {
